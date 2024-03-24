@@ -29,6 +29,7 @@
                                     <form method="post" action="/register">
                                         <div class="form-group">
                                             <input type="text" required="" name="name" placeholder="Username">
+                                            <span class="spanName"></span>
                                         </div>
                                         <div class="form-group">
                                             <input type="text" required="" name="email" placeholder="Email">
@@ -37,21 +38,32 @@
                                             <input type="text" required="" name="mno" placeholder="Mobile number">
                                         </div>
                                         <div class="form-group">
-                                            <input required="" type="password" name="password" placeholder="Password">
+                                            <input required="" type="password" name="password" id="password"
+                                                onkeyup="check();" placeholder="Password">
+                                        </div>
+                                        <div class="form-group">
+                                            <input required="" type="password" name="confirmPassword"
+                                                id="confirmPassword" placeholder="Confirm Password" onkeyup="check();">
+                                            <span id="message"></span>
                                         </div>
 
-                                        <!-- <div class="login_footer form-group">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox12" value="">
-                                                        <label class="form-check-label" for="exampleCheckbox12"><span>I agree to terms &amp; Policy.</span></label>
-                                                    </div>
+
+                                        <div class="p">
+
+                                            <div class="">
+                                                <div class="">
+                                                    <input class="form-check-input" type="checkbox" name="showPassword"
+                                                        id="showPassword" onclick="passwordVisibility()">
+                                                    <label class="form-check-label" for="exampleCheckbox12"><span>Show
+                                                            Password</span></label>
                                                 </div>
-                                                <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
-                                            </div> -->
+                                            </div>
+                                        </div>
+
+
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-fill-out btn-block hover-up"
-                                                name="login">Submit &amp; Register</button>
+                                                id="register" name="login" disabled>Submit &amp; Register</button>
                                         </div>
                                     </form>
                                     <div class="divider-text-center mt-15 mb-15">
@@ -73,5 +85,32 @@
         </div>
     </section>
 </main>
+
+<script>
+    const check = function () {
+        if (document.getElementById('password').value == document.getElementById('confirmPassword').value) {
+            document.getElementById('message').style.color = 'green'
+            document.getElementById('message').innerHTML = 'Both passwords are matching'
+            document.getElementById('register').disabled = false;
+        } else {
+            document.getElementById('register').disabled = true;
+            document.getElementById('message').style.color = 'red'
+            document.getElementById('message').innerHTML = 'confirm password is not matching with password filed'
+        }
+    }
+
+    let passwordVisibility = function () {
+        let x = document.getElementById("password")
+        let y = document.getElementById("confirmPassword")
+        if (x.type === "password") {
+            x.type = "text"
+            y.type = "text"
+        } else {
+            x.type = "password"
+            y.type = "password"
+        }
+    }
+
+</script>
 
 <!-- *^*^*^*^*^*^*^*^*^*^*^*^*^*^* -->

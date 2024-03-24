@@ -4,6 +4,51 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const config = require('../config/config')
 
+const nodemailer = require('nodemailer')
+
+// ---- nodeMailer ----
+
+const sendVerifyMail = async (name, email, otp) => {
+    console.log(otp)
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        requireTLS: true,
+        auth: {
+            user: 'abhinandts116@gmail.com',
+            pass: 'vbzm mdaz pjgy czsb'
+        }
+
+    })
+
+    const mailOptions = {
+        from: 'abhinandts116@gmail.com',
+        to: email,
+        subject: 'Verification mail',
+        html: '<p> Hi' + name + ',' + otp + ' is your OTP </p>'
+    }
+
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("Email has been sent", info.response)
+
+
+
+    const reverseval = transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            console.log(error)
+            return false
+        } else {
+            console.log("email has sent", info.response)
+            return false
+        }
+    })
+    console.log(reverseval)
+
+    return reverseval
+}
+
 const securePassword = async (password) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10)
@@ -30,11 +75,11 @@ const loadRegister = async (req, res) => {
 
 const generateOtp = () => Math.floor(1000 + Math.random() * 9000)
 
-
 // ----insertUser------------------------
 
 const insertUser = async (req, res) => {
     try {
+        let sendVerifyMailRes
 
         const otp = generateOtp()
         console.log(`Otp generated from ${otp}`)
@@ -45,9 +90,21 @@ const insertUser = async (req, res) => {
         }
         req.session.Data = data
 
-        // const sessionotp = req.session.Data.otp
-        console.log(`otp from session ${req.session.Data.otp}`)
-        res.redirect('/verify_otp')
+        if (data) {
+            sendVerifyMailRes = sendVerifyMail(req.session.Data.name, req.session.Data.email, req.session.Data.otp)
+            if (sendVerifyMailRes) {
+                console.log("email true")
+            }
+            else {
+                console.log("emnail false");
+            }
+        }
+
+        if (sendVerifyMailRes) {
+            res.redirect('/verify_otp')
+        } else {
+            res.redirect('/register')
+        }
 
     } catch (error) {
         console.log(error.message)
@@ -68,6 +125,8 @@ const verifyOtp = async (req, res) => {
         console.log(error.message)
     }
 }
+
+
 
 const compareOtp = async (req, res) => {
     try {
