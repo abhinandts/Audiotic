@@ -1,5 +1,6 @@
 const User = require('../models/userModel')
 const bcrypt = require('bcrypt')
+const mongoose = require('mongoose')
 
 const session = require('express-session')
 const config = require('../config/config')
@@ -19,7 +20,6 @@ const sendVerifyMail = async (name, email, otp) => {
             user: 'abhinandts116@gmail.com',
             pass: 'vbzm mdaz pjgy czsb'
         }
-
     })
 
     const mailOptions = {
@@ -75,7 +75,7 @@ const loadRegister = async (req, res) => {
 
 const generateOtp = () => Math.floor(1000 + Math.random() * 9000)
 
-// ----insertUser------------------------
+// ---- User registration ------------------------
 
 const insertUser = async (req, res) => {
     try {
@@ -88,7 +88,9 @@ const insertUser = async (req, res) => {
         const data = {
             name, email, mobile, password, otp
         }
+        console.log(data)
         req.session.Data = data
+
 
         if (data) {
             sendVerifyMailRes = sendVerifyMail(req.session.Data.name, req.session.Data.email, req.session.Data.otp)
@@ -96,7 +98,7 @@ const insertUser = async (req, res) => {
                 console.log("email true")
             }
             else {
-                console.log("emnail false");
+                console.log("email false");
             }
         }
 
@@ -115,35 +117,28 @@ const insertUser = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     try {
-        // console.log(`the generated OTP : ${req.session} `)
-
         res.render('otp_page')
-
-        console.log("OTP verification page loaded")
-
     } catch (error) {
         console.log(error.message)
     }
 }
 
 
-
 const compareOtp = async (req, res) => {
     try {
-        console.log(req.body.otp)
         const otpValue = req.body.otp
 
         const sessionOtp = req.session.Data.otp
 
-        console.log(`value in session data is ${sessionOtp}`)
-
         if (sessionOtp == otpValue) {
 
-            console.log("OTP verified")
+            const userData = await req.session.Data
+            const user = new User(userData)
+
+            await user.save()
 
             res.render('home')
         } else {
-            console.log("OTP not verified")
             res.render('error')
         }
     } catch (error) {
@@ -151,17 +146,59 @@ const compareOtp = async (req, res) => {
     }
 }
 
-// const loadHomePage = async (req, res) => {
-//     try {
 
-//     } catch (error) {
+// ---- user login -------------------------------
 
-//     }
-// }
+const loadLogin = async (req, res) => {
+    try {
+        res.render('login')
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const verifyLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const data = {
+            email, password,
+        }
+        console.log(data)
+
+        const userData = await User.findOne({ email: email })
+        console.log(userData)
+
+        if (userData) {
+            if (data.password === userData.password) {
+                res.redirect('/home')
+            } else {
+                res.render('login', { message: 'Password is not matching' })
+            }
+
+        } else {
+            console.log("no user found")
+            res.render('login', { message: 'No users found with the email. please re-enter email' })
+
+        }
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const loadHome = async (req, res) => {
+    try {
+        res.render('home')
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 module.exports = {
     loadRegister,
     insertUser,
     verifyOtp,
-    compareOtp
+    compareOtp,
+    loadLogin,
+    verifyLogin,
+    loadHome,
 }

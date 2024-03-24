@@ -2,7 +2,7 @@
 const express = require("express")
 const ejsLayouts = require('express-ejs-layouts')
 const session = require('express-session')
-// const sessionSecret = require('../config/config')
+
 const config = require('../config/config')
 
 const user_route = express()
@@ -38,5 +38,11 @@ user_route.post('/register', userController.insertUser)
 
 user_route.get('/verify_otp', userController.verifyOtp)
 user_route.post('/verify_otp', userController.compareOtp)
+
+user_route.get('/login',userController.loadLogin)
+user_route.post('/login',userController.verifyLogin)
+
+user_route.get('/home',userController.loadHome)
+
 
 module.exports = user_route
