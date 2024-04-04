@@ -1,4 +1,3 @@
-
 const express = require("express")
 const ejsLayouts = require('express-ejs-layouts')
 const session = require('express-session')
@@ -8,21 +7,23 @@ const config = require('../config/config')
 const user_route = express()
 
 user_route.use(ejsLayouts)
-user_route.set('layout', './layouts/fullWidth')
+user_route.set('layout', '../user/layouts/fullWidth')
 
-user_route.use(express.static('public'))
-user_route.use('/css', express.static(__dirname + 'public/css'))
-user_route.use('/fonts', express.static(__dirname + 'public/fonts'))
-user_route.use('/imgs', express.static(__dirname + 'public/imgs'))
-user_route.use('/js', express.static(__dirname + 'public/js'))
-user_route.use('/sass', express.static(__dirname + 'public/sass'))
+user_route.use(express.static('public/user'))
 
-user_route.set('views', './views/users')
+user_route.use('/css', express.static(__dirname + '/public/user/css'))
+user_route.use('/fonts', express.static(__dirname + '/public/user/fonts'))
+user_route.use('/imgs', express.static(__dirname + '/public/user/imgs'))
+user_route.use('/js', express.static(__dirname + '/public/user/js'))
+user_route.use('/sass', express.static(__dirname + '/public/user/sass'))
+
+user_route.set('views', './views/user')
 
 const bodyParser = require('body-parser')
 user_route.use(bodyParser.json())
-user_route.use(bodyParser.urlencoded({ extended: true }))
+user_route.use(bodyParser.urlencoded({ extended: true })) 
 
+const userController = require('../controllers/userController')
 
 //session
 user_route.use(session({
@@ -31,7 +32,6 @@ user_route.use(session({
     saveUninitialized: false
 }))
 
-const userController = require('../controllers/userController')
 
 user_route.get("/register", userController.loadRegister)
 user_route.post('/register', userController.insertUser)
@@ -43,6 +43,5 @@ user_route.get('/login',userController.loadLogin)
 user_route.post('/login',userController.verifyLogin)
 
 user_route.get('/home',userController.loadHome)
-
 
 module.exports = user_route

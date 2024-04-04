@@ -1,17 +1,21 @@
 const mongoose = require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/audiotic")
+mongoose.connect("mongodb://127.0.0.1:27017/Audiotic")
 
 const express = require("express")
 const app = express()
 const session = require('express-session')
 
-
-
-
 //for users
 const userRoute = require('./routes/userRoute')
 app.use('/',userRoute)
-app.set('view engine','ejs')
+
+
+//---- for admin
+const adminRoute = require('./routes/adminRoute')
+app.use('/admin',adminRoute)
+
+
+app.set('view engine','ejs') 
 
 
 app.use(session({
@@ -25,10 +29,6 @@ app.use(session({
 
 
 
-
-
 app.listen(4000,function (){
     console.log(`http://localhost:4000/`)
 })
-
-

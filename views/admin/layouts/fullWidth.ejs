@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <%- include('../partials/style') %>
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+
+    <% if (sidebar) { %>
+        <%- include('../partials/sidebar') %>
+    <% } %>
+
+                <main class="main-wrap">
+
+                    <% if (header) { %>
+                        <%- include('../partials/header') %>
+                    <% } %>
+
+                    <!-- content-main // -->
+                            <%- body %>
+                    <!-- content-main end// -->
+
+                    <% if (footer) { %>
+                        <%- include('../partials/footer') %>
+                    <% } %>
+
+                </main>
+
+    <%- include('../partials/script') %>
+</body>
+
+</html>

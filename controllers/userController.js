@@ -34,7 +34,6 @@ const sendVerifyMail = async (name, email, otp) => {
     console.log("Email has been sent", info.response)
 
 
-
     const reverseval = transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
             console.log(error)
@@ -59,12 +58,11 @@ const securePassword = async (password) => {
     }
 }
 
-// ----------- Load register ----------------
+// ---- /register ----------------
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('registration')
-        console.log("register Page loaded")
+        res.render('registration',{title:'Register'})
     }
     catch (error) {
         console.log(error.message)
@@ -105,7 +103,7 @@ const insertUser = async (req, res) => {
         if (sendVerifyMailRes) {
             res.redirect('/verify_otp')
         } else {
-            res.redirect('/register')
+            res.render('/register')
         }
 
     } catch (error) {
@@ -117,12 +115,11 @@ const insertUser = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     try {
-        res.render('otp_page')
+        res.render('otp_page',{title:'verify Otp'})
     } catch (error) {
         console.log(error.message)
     }
 }
-
 
 const compareOtp = async (req, res) => {
     try {
@@ -137,7 +134,7 @@ const compareOtp = async (req, res) => {
 
             await user.save()
 
-            res.render('home')
+            res.redirect('/home')
         } else {
             res.render('error')
         }
@@ -160,17 +157,13 @@ const loadLogin = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        const data = {
-            email, password,
-        }
-        console.log(data)
+        const data = { email, password, }
 
         const userData = await User.findOne({ email: email })
-        console.log(userData)
 
         if (userData) {
             if (data.password === userData.password) {
-                res.redirect('/home')
+                res.redirect('/home',)
             } else {
                 res.render('login', { message: 'Password is not matching' })
             }
@@ -187,7 +180,7 @@ const verifyLogin = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        res.render('home')
+        res.render('home',{title:"Home"})
     } catch (error) {
         console.log(error.message)
     }

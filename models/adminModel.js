@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -13,14 +13,6 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    mobile:{
-        type:String,
-        required:true
-    },
-    is_active:{
-        type:Number,
-        default:1
-    }
 })
 
-module.exports = mongoose.model('User',userSchema)
+module.exports = mongoose.model('Admin',adminSchema)
