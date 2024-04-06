@@ -44,4 +44,6 @@ user_route.post('/login',userController.verifyLogin)
 
 user_route.get('/home',userController.loadHome)
 
+
+
 module.exports = user_route

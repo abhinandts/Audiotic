@@ -18,8 +18,8 @@ const userSchema = new mongoose.Schema({
         required:true
     },
     is_active:{
-        type:Number,
-        default:1
+        type:Boolean,
+        default:true
     }
 })
 

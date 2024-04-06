@@ -20,8 +20,11 @@ const bodyParser = require('body-parser')
 adminRoute.use(bodyParser.json())
 adminRoute.use(bodyParser.urlencoded({ extended: true }))
 
+// ---- controllers --------------------------------
 const adminController = require('../controllers/adminController')
-
+const categoryController = require('../controllers/categoryController')
+const productController = require('../controllers/productController')
+// ----------------------------------------
 
 adminRoute.get("/login", adminController.loadLogin)
 adminRoute.post("/login", adminController.verifyLogin)
@@ -29,6 +32,28 @@ adminRoute.post("/login", adminController.verifyLogin)
 adminRoute.get("/dashboard", adminController.loadDashboard)
 
 adminRoute.get("/users",adminController.loadUsers)
+
+adminRoute.get("/blockUser/:userId",adminController.blockUser)
+adminRoute.get("/unblockUser/:userId",adminController.unblockUser)
+
+// ---- category ----
+
+adminRoute.get("/category",categoryController.loadCategory)
+
+adminRoute.post("/addCategory",categoryController.addCategory)
+
+adminRoute.get("/disable/:categoryId",categoryController.disableCategory)
+
+adminRoute.get("/editCategory/:categoryId",categoryController.editCategory)
+adminRoute.post("/editCategory",categoryController.saveCategory)
+
+// ---- product ----
+
+adminRoute.get("/products",productController.products)
+
+adminRoute.get("/newProduct",productController.newProduct)
+adminRoute.post("/newProduct",productController.addProduct)
+
 
 adminRoute.get("*", (req, res) => {
     res.redirect('/admin')

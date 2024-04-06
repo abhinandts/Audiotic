@@ -40,6 +40,7 @@
                 </div>
             </div>
         </header> <!-- card-header end// -->
+
         <!-- ------------------------------------------------------------------------------- -->
 
         <div class="card-body">
@@ -61,29 +62,40 @@
                                     <!-- <img src="assets/imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item"> -->
                                 </div>
                                 <div class="info">
-                                    <h6 class="mb-0"><%= element.name%></h6>
+                                    <h6 class="mb-0">
+                                        <%= element.name%>
+                                    </h6>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-4 col-price"> <span><%= element.email %></span> </div>
+                        <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>
+                                <%= element.email %>
+                            </span> </div>
                         <div class="col-lg-2 col-sm-2 col-4 col-status">
-                            <span class="badge rounded-pill alert-success">Active</span>
+                            <% if(element.is_active){ %>
+                                <span class="badge rounded-pill alert-success">Active</span>
+                                <% }else{ %>
+                                    <span class="badge rounded-pill alert-danger">Blocked</span>
+                                <% } %>
                         </div>
                         <div class="col-lg-1 col-sm-2 col-4 col-date">
                             <!-- <span>02.11.2022</span> -->
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                            <a href="#" class="btn btn-sm font-sm rounded btn-brand">
+                        <div class="col-lg-2 col-sm-2 col-4 col-action text-end ">
+                            <!-- <a href="#" class="btn btn-sm font-sm rounded btn-brand">
                                 <i class="material-icons md-edit"></i> view
+                            </a> -->
+                            <a href="/admin/blockUser/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                <i class="material-icons md-block"></i> Block
                             </a>
-                            <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                <i class="material-icons md-delete_forever"></i> block / unblock
+                            <a href="/admin/unblockUser/<%= element._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                <i class="material-icons md-verified_user"></i> Unblock
                             </a>
                         </div>
                     </div> <!-- row .// -->
                 </article> <!-- itemlist  .// -->
 
-            <% }); %>
+                <% }); %>
 
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->

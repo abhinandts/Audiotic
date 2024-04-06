@@ -54,25 +54,51 @@ const loadDashboard = async (req, res) => {
 
 // ---- /users -----------------------------
 
-const loadUsers = async(req,res)=>{
+const loadUsers = async (req, res) => {
     try {
-
         const userData = await User.find()
-        console.log(userData)
 
-        res.render('users',{title:'Users',header:true,sidebar:true,footer:true,userData})
+        res.render('users', { title: 'Users', header: true, sidebar: true, footer: true, userData })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// ---- /blockUser & /unblockUser -----------------
+
+const blockUser = async (req, res) => {
+
+    const userId = req.params.userId
+    console.log(userId)
+    try {
+        await User.findByIdAndUpdate(userId, { $set: { is_active: false } })
+
+        res.redirect('/admin/users')
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const unblockUser = async (req, res) => {
+    const userId = req.params.userId
+    try {
+        await User.findByIdAndUpdate(userId, { $set: { is_active: true } })
+
+        res.redirect('/admin/users')
 
     } catch (error) {
         console.log(error.message)
     }
 }
 
-
-
-
 module.exports = {
     loadLogin,
     verifyLogin,
     loadDashboard,
-    loadUsers
+    loadUsers,
+    blockUser,
+    unblockUser,
+    // products,
+    // newProduct,
 }
