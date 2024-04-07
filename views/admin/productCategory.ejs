@@ -1,0 +1,104 @@
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Categories </h2>
+            <p>Add, edit or delete a category</p>
+        </div>
+        <div>
+            <input type="text" placeholder="Search Categories" class="form-control bg-white">
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form method="post" action="/admin/addCategory">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="name"
+                                id="product_name" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" name="description" required></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Create category</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" />
+                                        </div>
+                                    </th>
+                                    <!-- <th>ID</th> -->
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Block/Unblock</th>
+                                    <th class="text-end">Edit<i class="material-icons md-edit"></i></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% categoryData.forEach((x)=>{ %>
+
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" />
+                                            </div>
+                                        </td>
+                                        <!-- <td>21</td> -->
+                                        <td><b>
+                                                <%= x.name %>
+                                            </b></td>
+                                        <td>
+                                            <%= x.description %>
+                                        </td>
+                                        <td>
+                                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                                <% if(x.is_active){ %>
+                                                    <span class="badge rounded-pill alert-success">Active</span>
+                                                    <% }else{ %>
+                                                        <span class="badge rounded-pill alert-danger">Disabled</span>
+                                                        <% } %>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="/admin/disable/<%- x._id %>"
+                                                class="btn btn-sm font-sm btn-light rounded">
+                                                <% if(x.is_active){ %>
+                                                    <i class="material-icons md-toggle_on"></i> Disable
+                                                    <% }else{ %>
+                                                        <i class="material-icons md-toggle_off"></i>Enable
+                                                        <% } %>
+                                            </a>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <a href="/admin/editCategory/<%- x._id %>"
+                                                class="btn btn-sm font-sm btn-light rounded">
+                                                 Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <% }) %>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- .col// -->
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section>

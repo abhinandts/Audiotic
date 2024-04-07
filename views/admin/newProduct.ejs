@@ -1,0 +1,78 @@
+<section class="content-main">
+    <form action="/admin/newProduct" method="post">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+
+                    <div>
+                        <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body ">Discard</a>
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">save</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Details</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Product title</label>
+                            <input type="text" required placeholder="Type here" class="form-control" id="product_name">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Full Specification</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Maximum Retail Price</label>
+                                    <div class="row gx-2">
+                                        <input placeholder="₹" type="text" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Price</label>
+                                    <input placeholder="₹" type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="form-label">Category</label>
+                                <select class="form-select">
+                                    <% categoryData.forEach(element => {%>
+                                        <option> <%= element.name %></option>
+                                    <%  }); %>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+
+                        </div>
+                        <label class="form-check mb-4">
+
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Media</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <img src="/admin/imgs/theme/upload.svg" alt="">
+                            <input class="form-control" type="file" required>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>
+    </form>
+</section>
