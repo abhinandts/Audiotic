@@ -20,33 +20,36 @@
 
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" required placeholder="Type here" class="form-control" id="product_name">
+                            <input type="text" required placeholder="Type here" class="form-control" name="productName">
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Full Specification</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" required></textarea>
+                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications"
+                                required></textarea>
                         </div>
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Maximum Retail Price</label>
                                     <div class="row gx-2">
-                                        <input placeholder="₹" type="text" class="form-control" required>
+                                        <input placeholder="₹" type="text" name="mrp" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" class="form-control" required>
+                                    <input placeholder="₹" type="text" name="price" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <label class="form-label">Category</label>
-                                <select class="form-select">
-                                    <% categoryData.forEach(element => {%>
-                                        <option> <%= element.name %></option>
-                                    <%  }); %>
+                                <select class="form-select" name="category">
+                                    <% categoryData.forEach(element=> {%>
+                                        <option>
+                                            <%= element.name %>
+                                        </option>
+                                        <% }); %>
                                 </select>
                             </div>
                         </div>
@@ -60,7 +63,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+
+            <!-- <div class="col-lg-3">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Media</h4>
@@ -68,11 +72,11 @@
                     <div class="card-body">
                         <div class="input-upload">
                             <img src="/admin/imgs/theme/upload.svg" alt="">
-                            <input class="form-control" type="file" required>
+                            <input class="form-control" type="file" >
                         </div>
                     </div>
-                </div> <!-- card end// -->
-            </div>
+                </div> 
+            </div> -->
         </div>
     </form>
 </section>
