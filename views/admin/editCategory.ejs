@@ -13,16 +13,17 @@
                 <div class="col-md-3">
                     <form method="post" action="/admin/editCategory">
                         <input type="hidden" name="categoryId" value="<%= category.id %>">
-                        
+
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
-                            <input type="text" placeholder="Type here" class="form-control" name="name" value="<%= category.name %>"
-                                id="product_name" />
+                            <input type="text" placeholder="Type here" class="form-control" name="name"
+                                value="<%= category.name %>" id="product_name" />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" name="description"><%= category.description %></textarea>
+                            <textarea placeholder="Type here" class="form-control"
+                                name="description"><%= category.description %></textarea>
                         </div>
 
                         <div class="d-grid">

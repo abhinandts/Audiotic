@@ -74,7 +74,7 @@ const blockUser = async (req, res) => {
         await User.findByIdAndUpdate(userId, { $set: { is_active: false } })
 
         res.redirect('/admin/users')
-        
+
     } catch (error) {
         console.log(error.message)
     }

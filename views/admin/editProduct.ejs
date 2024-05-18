@@ -1,9 +1,10 @@
 <section class="content-main">
-    <form action="/admin/newProduct" method="post" enctype="multipart/form-data">
+    <form method="post" action="/admin/editProduct/<%=product._id %>" >
+
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
-                    <h2 class="content-title">Add New Product</h2>
+                    <h2 class="content-title">Edit <%= product.productName %></h2>
 
                     <div>
                         <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body ">Discard</a>
@@ -20,32 +21,35 @@
 
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" required placeholder="Type here" class="form-control" name="productName">
+                            <input type="text" required placeholder="Type here" class="form-control" name="productName"
+                                value="<%= product.productName %>">
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Full Specification</label>
                             <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications"
-                                required></textarea>
+                                required><%= product.productSpecifications %></textarea>
                         </div>
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Maximum Retail Price</label>
                                     <div class="row gx-2">
-                                        <input placeholder="₹" type="text" name="mrp" class="form-control" required>
+                                        <input placeholder="₹" type="text" name="mrp" class="form-control" required
+                                            value="<%= product.mrp %>">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" name="price" class="form-control" required>
+                                    <input placeholder="₹" type="text" name="price" class="form-control" required
+                                        value="<%= product.price %>">
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <label class="form-label">Category</label>
                                 <select class="form-select" name="category">
-                                    <% categoryData.forEach(element=> {%>
+                                    <% categories.forEach(element=> {%>
                                         <option>
                                             <%= element.name %>
                                         </option>
@@ -63,6 +67,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-3">
                 <div class="card mb-4">
                     <div class="card-header">
@@ -76,6 +81,35 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
+
+        <!-- images -->
+
+        <!-- <div style="display: flex;">
+
+            <% product.image.forEach(image=>{ %>
+
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>
+                                <%= image %>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <img src="/admin/productImages/<%=image%>" alt="no image">
+                                <button type="button" class="btn btn-outline-secondary">Remove</button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <% }) %>
+        </div> -->
     </form>
 </section>

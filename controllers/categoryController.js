@@ -42,15 +42,11 @@ const disableCategory = async (req, res) => {
         if (category.is_active) {
             category.is_active = !category.is_active
             await category.save()
-            console.log("false")
-
-            res.redirect('/admin/category')
         } else {
             category.is_active = true
             await category.save()
-            console.log("true")
-            res.redirect('/admin/category')
         }
+        res.redirect('/admin/category')
 
     } catch (error) {
         console.log(error.message)
@@ -61,7 +57,6 @@ const disableCategory = async (req, res) => {
 
 const editCategory = async (req, res) => {
     try {
-
         const category = await Category.findById(req.params.categoryId)
 
         res.render('editCategory', { title: "Edit Category", header: true, sidebar: true, footer: true, category })
@@ -85,9 +80,9 @@ const saveCategory = async (req, res) => {
         // value.description = data.description
         // await value.save()
 
-        const {categoryId,name,description} = req.body
+        const { categoryId, name, description } = req.body
 
-        await Category.findByIdAndUpdate(categoryId,{name,description})
+        await Category.findByIdAndUpdate(categoryId, { name, description })
 
         res.redirect('/admin/category')
 

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 
 const productSchema = new mongoose.Schema({
-    name:{
+    productName:{
         type:String,
         required:true
     },
-    specification:{
+    productSpecifications:{
         type:String,
         require:true
     },
@@ -25,9 +25,8 @@ const productSchema = new mongoose.Schema({
         type:Array,
         require:true
     },category:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Category',
-        require:true
+        type:String,
+        required:true
     },
     is_active :{
         type:Boolean,
@@ -35,3 +34,12 @@ const productSchema = new mongoose.Schema({
     }
 })
 module.exports = mongoose.model('Product',productSchema)
+
+
+
+
+// category:{
+//     type:mongoose.Schema.Types.ObjectId,
+//     ref:'Category',
+//     require:true
+// }

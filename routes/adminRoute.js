@@ -1,12 +1,38 @@
 const express = require('express')
 const ejsLayouts = require('express-ejs-layouts')
 
+const path = require('node:path')
+// ------------------------------------------------------------
+
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        
+      cb(null, path.join(__dirname,'../public/admin/productImages'))
+    },
+    
+    filename: function (req, file, cb) {
+        
+      const name =file.originalname
+      cb(null, name)
+    }
+  })
+  
+  const upload = multer({ storage: storage})
+
+// ------------------------------------------------------------
+
+
 const adminRoute = express()
+
+
 
 adminRoute.use(ejsLayouts)
 adminRoute.set('layout','../admin/layouts/fullwidth')
 
 adminRoute.use(express.static('public/admin'))
+
 
 adminRoute.use('/css', express.static(__dirname + '/public/admin/css'))
 adminRoute.use('/fonts', express.static(__dirname + '/public/admin/fonts'))
@@ -49,10 +75,17 @@ adminRoute.post("/editCategory",categoryController.saveCategory)
 
 // ---- product ----
 
-adminRoute.get("/products",productController.products)
+adminRoute.get("/products",productController.loadProducts)
 
 adminRoute.get("/newProduct",productController.newProduct)
-adminRoute.post("/newProduct",productController.addProduct)
+adminRoute.post("/newProduct",upload.array('image',5),productController.addProduct)
+
+adminRoute.get("/blockProduct/:productId",productController.blockProduct)
+
+adminRoute.get("/editProduct/:productId",productController.editProduct)
+adminRoute.post("/editProduct/:productId",productController.updateProduct)
+
+
 
 
 adminRoute.get("*", (req, res) => {
