@@ -2,85 +2,49 @@
 <html class="no-js" lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Evara - eCommerce HTML Template</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/imgs/theme/favicon.svg">
-    <!-- Template CSS -->
-    <link rel="stylesheet" href="user/css/main.css?v=3.4">
+    <%- include('../partials/style') %>
 </head>
 
 <body>
-    <div class="wrapper">
 
-        <%- include('../partials/header.ejs') %>
+    <%- include('../partials/header') %>
 
-            <main>
-                <%- body %>
-            </main>
 
-            <%- include('../partials/footer.ejs') %>
+        <main class="main">
+            <div class="page-header breadcrumb-wrap">
+                <div class="container">
+                    <div class="breadcrumb">
+                        <a href="index.html" rel="nofollow">Home</a>
+                        <span></span> Pages
+                        <span></span> Login / Register
+                    </div>
+                </div>
+            </div>
 
-                <!-- Preloader Start -->
-                <div id="preloader-active">
-                    <div class="preloader d-flex align-items-center justify-content-center">
-                        <div class="preloader-inner position-relative">
-                            <div class="text-center">
-                                <h5 class="mb-5">Now Loading</h5>
-                                <div class="loader">
-                                    <div class="bar bar1"></div>
-                                    <div class="bar bar2"></div>
-                                    <div class="bar bar3"></div>
-                                </div>
-                            </div>
+            <%- body %>
+
+                <%- include('../partials/footer') %>
+
+        </main>
+
+        <!-- Preloader Start -->
+        <div id="preloader-active">
+            <div class="preloader d-flex align-items-center justify-content-center">
+                <div class="preloader-inner position-relative">
+                    <div class="text-center">
+                        <h5 class="mb-5">Now Loading</h5>
+                        <div class="loader">
+                            <div class="bar bar1"></div>
+                            <div class="bar bar2"></div>
+                            <div class="bar bar3"></div>
                         </div>
                     </div>
                 </div>
-                <!-- Vendor JS-->
-                <script src="/user/js/vendor/modernizr-3.6.0.min.js"></script>
-                <script src="/js/vendor/jquery-3.6.0.min.js"></script>
-                <script src="/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-                <script src="/js/vendor/bootstrap.bundle.min.js"></script>
-                <script src="/js/plugins/slick.js"></script>
-                <script src="/js/plugins/jquery.syotimer.min.js"></script>
-                <script src="/js/plugins/wow.js"></script>
-                <script src="/js/plugins/jquery-ui.js"></script>
-                <script src="/js/plugins/perfect-scrollbar.js"></script>
-                <script src="/js/plugins/magnific-popup.js"></script>
-                <script src="/js/plugins/select2.min.js"></script>
-                <script src="/js/plugins/waypoints.js"></script>
-                <script src="/js/plugins/counterup.js"></script>
-                <script src="/js/plugins/jquery.countdown.min.js"></script>
-                <script src="/js/plugins/images-loaded.js"></script>
-                <script src="/js/plugins/isotope.js"></script>
-                <script src="/js/plugins/scrollup.js"></script>
-                <script src="/js/plugins/jquery.vticker-min.js"></script>
-                <script src="/js/plugins/jquery.theia.sticky.js"></script>
-                <script src="/js/plugins/jquery.elevatezoom.js"></script>
-                <!-- Template  JS -->
-                <script src="/js/main.js?v=3.4"></script>
-                <script src="/js/shop.js?v=3.4"></script>
+            </div>
+        </div>
+
+
+        <%- include('../partials/script') %>
 </body>
 
 </html>
-
-
-
-
-
-
-</div>
-
-</body>
-
-</html>
-
-
-------------------------FULLWIDTH.EJS

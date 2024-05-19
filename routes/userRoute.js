@@ -11,6 +11,8 @@ user_route.set('layout', '../user/layouts/fullWidth')
 
 user_route.use(express.static('public/user'))
 
+user_route.use('/admin', express.static('public/admin'));
+
 user_route.use('/css', express.static(__dirname + '/public/user/css'))
 user_route.use('/fonts', express.static(__dirname + '/public/user/fonts'))
 user_route.use('/imgs', express.static(__dirname + '/public/user/imgs'))
@@ -44,6 +46,11 @@ user_route.post('/login',userController.verifyLogin)
 
 user_route.get('/home',userController.loadHome)
 
+user_route.get('/productPage',userController.loadProduct)
+
 
 
 module.exports = user_route
+
+
+// user_route.use('/images',express.static(__dirname+'/public/productImages'))

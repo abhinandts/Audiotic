@@ -1,4 +1,6 @@
 const User = require('../models/userModel')
+const Product = require('../models/productModel')
+
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
@@ -62,7 +64,7 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('registration',{title:'Register'})
+        res.render('registration', { title: 'Register' })
     }
     catch (error) {
         console.log(error.message)
@@ -115,7 +117,7 @@ const insertUser = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
     try {
-        res.render('otp_page',{title:'verify Otp'})
+        res.render('otp_page', { title: 'verify Otp' })
     } catch (error) {
         console.log(error.message)
     }
@@ -177,10 +179,28 @@ const verifyLogin = async (req, res) => {
         console.log(error.message)
     }
 }
+// ---- /home ------------------------------------------------------------
 
 const loadHome = async (req, res) => {
     try {
-        res.render('home',{title:"Home"})
+        const products = await Product.find()
+        console.log(products)
+
+        res.render('home', { title: "Home", products })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// ---- /productPage ------------------------------------------------------
+
+const loadProduct = async (req, res) => {
+    try {
+
+        const product = await Product.findById(req.query.productId)
+        console.log(product)
+
+        res.render('productPage',{product})
     } catch (error) {
         console.log(error.message)
     }
@@ -194,4 +214,5 @@ module.exports = {
     loadLogin,
     verifyLogin,
     loadHome,
+    loadProduct
 }

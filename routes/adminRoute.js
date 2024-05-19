@@ -23,16 +23,12 @@ const storage = multer.diskStorage({
 
 // ------------------------------------------------------------
 
-
 const adminRoute = express()
-
-
 
 adminRoute.use(ejsLayouts)
 adminRoute.set('layout','../admin/layouts/fullwidth')
 
-adminRoute.use(express.static('public/admin'))
-
+adminRoute.use(express.static('public'))
 
 adminRoute.use('/css', express.static(__dirname + '/public/admin/css'))
 adminRoute.use('/fonts', express.static(__dirname + '/public/admin/fonts'))
