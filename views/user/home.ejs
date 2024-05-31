@@ -140,7 +140,7 @@
                             type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
                     </li>
                 </ul>
-                <a href="#" class="view-more d-none d-md-flex">View More<i
+                <a href="/allProducts" class="view-more d-none d-md-flex">View More<i
                         class="fi-rs-angle-double-small-right"></i></a>
             </div>
             <!--End nav-tabs-->
@@ -157,34 +157,38 @@
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="/productPage">
-                                                <img class="default-img" src="/admin/productImages/<%=x.image[1]  %>" alt="nooooo">
-                                                <!-- <img class="hover-img" src="/admin/productImages/<%= x.image[0] %>" alt="imggggggg"> -->
+                                            <a href="/productPage?productId=<%- x._id  %>">
+                                                <img class="default-img" src="/admin/productImages/<%=x.image[1]  %>"
+                                                    alt="img error">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
-                                            <a aria-label="Quick view" class="action-btn hover-up"
+                                            <!-- <a aria-label="Quick view" class="action-btn hover-up"
                                                 data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                     class="fi-rs-eye"></i></a>
                                             <a aria-label="Add To Wishlist" class="action-btn hover-up"
                                                 href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                             <a aria-label="Compare" class="action-btn hover-up"
-                                                href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="new">New</span>
+                                            <!-- <span class="new">New</span> -->
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
                                         <div class="product-category">
-                                            <a href="shop-grid-right.html"><%= x.category %></a>
+                                            <a href="/allProducts">
+                                                <%= x.category.name %>
+                                            </a>
                                         </div>
                                         <!-- <h2><a href="shop-product-right.html"><%= x.productName  %></a></h2> -->
-                                        <h2><a href="/productPage?productId=<%- x._id  %>"><%= x.productName  %></a></h2>
+                                        <h2><a href="/productPage?productId=<%- x._id  %>">
+                                                <%= x.productName %>
+                                            </a></h2>
 
-                                        <div class="rating-result" title="90%">
+                                        <div>
                                             <span>
-                                                <span>50%</span>
+                                                <!-- <span>50%</span> -->
                                             </span>
                                         </div>
                                         <div class="product-price">

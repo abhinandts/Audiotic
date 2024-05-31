@@ -1,71 +1,70 @@
-
-    <section class="pt-150 pb-150">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 m-auto">
-                    <div class="row">
-
-                        <div class="col-lg-1"></div>
-                        <div class="col-lg-6">
-                            <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
-                                <div class="padding_eight_all bg-white">
-                                    <div class="heading_s1">
-                                        <h3 class="mb-30">Create an Account</h3>
+<section class="pt-100 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="row">
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-6">
+                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1">
+                                    <h3 class="mb-30">Create an account</h3>
+                                </div>
+                                <p class="mb-50 font-sm">
+                                    Your personal data will be used to support your experience throughout this
+                                    website, to manage access to your account, and for other purposes described in
+                                    our privacy policy.
+                                </p>
+                                <form method="post" id="form" action="/register">
+                                    <div class="form-group">
+                                        <input type="text" id="userName" placeholder="Username" name="name" required
+                                            onkeyup="validateUserName()">
+                                        <span id="userNameErr" style="color: crimson;"></span>
                                     </div>
-                                    <p class="mb-50 font-sm">
-                                        Your personal data will be used to support your experience throughout this
-                                        website, to manage access to your account, and for other purposes described in
-                                        our privacy policy
-                                    </p>
-                                    <form method="post" action="/register">
-                                        <div class="form-group">
-                                            <input type="text" required="" name="name" placeholder="Username">
-                                            <span class="spanName"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" required="" name="email" placeholder="Email">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" required="" name="mobile" placeholder="Mobile number">
-                                        </div>
-                                        <div class="form-group">
-                                            <input required="" type="password" name="password" id="password"
-                                                onkeyup="check();" placeholder="Password">
-                                        </div>
-                                        <div class="form-group">
-                                            <input required="" type="password" name="confirmPassword"
-                                                id="confirmPassword" placeholder="Confirm Password" onkeyup="check();">
-                                            <span id="message"></span>
-                                        </div>
+                                    <div class="form-group">
+                                        <input type="email" id="email" placeholder="Email" name="email" required
+                                            onkeyup="validateEmail()">
+                                        <span id="emailErr" style="color: crimson;"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="mNumber" placeholder="Mobile number" name="mobile"
+                                            required onkeyup="validateNumber()">
+                                        <span id="mNumberErr" style="color: crimson;"></span>
 
-                                        <div class="p">
-
+                                    </div>
+                                    <div class="form-group">
+                                        <input required="" type="password" name="password" id="password" name="password"
+                                            placeholder="Password" onkeyup="checkPasswords()">
+                                    </div>
+                                    <div class="form-group">
+                                        <input required="" type="password" name="confirmPassword" id="confirmPassword"
+                                            placeholder="Confirm Password" onkeyup="checkPasswords();">
+                                        <span id="passwordErr" style="color: crimson;"></span>
+                                    </div>
+                                    <div class="p">
+                                        <div class="">
                                             <div class="">
-                                                <div class="">
-                                                    <input class="form-check-input" type="checkbox" name="showPassword"
-                                                        id="showPassword" onclick="passwordVisibility()">
-                                                    <label class="form-check-label" for="exampleCheckbox12"><span>Show
-                                                            Password</span></label>
-                                                </div>
+                                                <input class="form-check-input" type="checkbox" name="showPassword"
+                                                    id="showPassword" onclick="passwordVisibility();">
+                                                <label class="form-check-label" for="exampleCheckbox12"><span>Show
+                                                        Password</span></label>
                                             </div>
                                         </div>
-
-
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-fill-out btn-block hover-up"
-                                                id="register" name="login" disabled>Submit &amp; Register</button>
-                                        </div>
-                                    </form>
-                                    <div class="divider-text-center mt-15 mb-15">
-                                        <span> or</span>
                                     </div>
-                                    <ul class="btn-login list_none text-center mb-15">
-                                        <li><a href="#" class="btn btn-facebook hover-up mb-lg-0 mb-sm-4">Login With
-                                                Facebook</a></li>
-                                        <li><a href="#" class="btn btn-google hover-up">Login With Google</a></li>
-                                    </ul>
-                                    <div class="text-muted text-center">Already have an account? <a href="#">Sign in
-                                            now</a></div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-fill-out btn-block hover-up" id="register"
+                                            name="login">Submit &amp; Register</button>
+                                    </div>
+                                </form>
+                                <div class="divider-text-center mt-15 mb-15">
+                                    <span> or</span>
+                                </div>
+                                <ul class="btn-login list_none text-center mb-15">
+
+                                    <li><a href="#" class="btn btn-google hover-up">Login With Google</a></li>
+                                </ul>
+                                <div class="text-muted text-center">Already have an account? <a href="/login">Sign in
+                                        now</a>
                                 </div>
                             </div>
                         </div>
@@ -73,33 +72,141 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <script>
-    const check = function () {
-        if (document.getElementById('password').value == document.getElementById('confirmPassword').value) {
-            document.getElementById('message').style.color = 'green'
-            document.getElementById('message').innerHTML = 'Both passwords are matching'
-            document.getElementById('register').disabled = false;
-        } else {
-            document.getElementById('register').disabled = true;
-            document.getElementById('message').style.color = 'red'
-            document.getElementById('message').innerHTML = 'confirm password is not matching with password filed'
-        }
-    }
+    let passwordInput = document.getElementById('password');
+    let confirmPasswordInput = document.getElementById('confirmPassword');
 
-    let passwordVisibility = function () {
-        let x = document.getElementById("password")
-        let y = document.getElementById("confirmPassword")
-        if (x.type === "password") {
-            x.type = "text"
-            y.type = "text"
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let form = document.getElementById('form');
+        let usernameInput = document.getElementById('userName');
+        let emailInput = document.getElementById('email');
+        let numberInput = document.getElementById('mNumber');
+        let submitButton = document.getElementById('register');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (validateInputs()) {
+                form.submit(); // submit the form if all inputs are valid
+            }
+        });
+
+        function validateInputs() {
+            let isUsernameValid = validateUserName();
+            let isEmailValid = validateEmail();
+            let isNumberValid = validateNumber();
+            let arePasswordsValid = checkPasswords();
+
+            return isUsernameValid && isEmailValid && isNumberValid && arePasswordsValid;
+        }
+
+        function validateUserName() {
+            let username = usernameInput.value.trim();
+            let userNameErr = document.getElementById('userNameErr');
+            let regex = /^[a-zA-Z]{4,12}$/;
+
+            if (username.length === 0) {
+                userNameErr.innerHTML = "Please enter Username (a-z/A-Z)";
+                usernameInput.style.borderColor = "red";
+                return false;
+            } else if (!regex.test(username)) {
+                userNameErr.innerHTML = "Username should have 4-12 characters";
+                usernameInput.style.borderColor = "red";
+                return false;
+            } else {
+                usernameInput.style.borderColor = "green";
+                userNameErr.innerHTML = "";
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            let email = emailInput.value.trim();
+            let emailErr = document.getElementById('emailErr');
+            let regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+            if (email.length === 0) {
+                emailErr.innerHTML = "Please enter valid email";
+                emailInput.style.borderColor = "red";
+                return false;
+            } else if (!regex.test(email)) {
+                emailErr.innerHTML = "Please enter a valid email address from the domain gmail.com";
+                emailInput.style.borderColor = "red";
+                return false;
+            } else {
+                emailInput.style.borderColor = "green";
+                emailErr.innerHTML = "";
+                return true;
+            }
+        }
+
+        function validateNumber() {
+            let number = numberInput.value.trim();
+            let err = document.getElementById('mNumberErr');
+            let regex = /^[0-9]{10}$/;
+
+            if (number.length === 0) {
+                err.innerHTML = "please enter 10 digits.";
+                numberInput.style.borderColor = "red";
+                return false;
+            } else if (!regex.test(number)) {
+                err.innerHTML = "Please enter valid 10-digit phone number";
+                numberInput.style.borderColor = "red";
+                return false;
+            } else {
+                numberInput.style.borderColor = "green";
+                err.innerHTML = "";
+                return true;
+            }
+        }
+
+        function checkPasswords() {
+            let password = passwordInput.value.trim();
+            let confirmPassword = confirmPasswordInput.value.trim();
+            let err = document.getElementById('passwordErr');
+            let regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+            if (password.length < 8) {
+                err.innerHTML = "Passwords should be at least 8 characters long";
+                passwordInput.style.borderColor = "red";
+                confirmPasswordInput.style.borderColor = "red";
+                return false;
+            } else if (password !== confirmPassword) {
+                err.innerHTML = "Passwords don't match";
+                passwordInput.style.borderColor = "red";
+                confirmPasswordInput.style.borderColor = "red";
+                return false;
+            } else if (!regex.test(password)) {
+                err.innerHTML = "Your password should include at least 8 characters, one letter, and one number.";
+                passwordInput.style.borderColor = "red";
+                confirmPasswordInput.style.borderColor = "red";
+                return false;
+            } else {
+                passwordInput.style.borderColor = "green";
+                confirmPasswordInput.style.borderColor = "green";
+                err.innerHTML = "";
+                return true;
+            }
+        }
+
+        usernameInput.addEventListener('input', validateInputs);
+        emailInput.addEventListener('input', validateInputs);
+        numberInput.addEventListener('input', validateInputs);
+        passwordInput.addEventListener('input', validateInputs);
+        confirmPasswordInput.addEventListener('input', validateInputs);
+    });
+
+    function passwordVisibility() {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            confirmPasswordInput.type = "text";
         } else {
-            x.type = "password"
-            y.type = "password"
+            passwordInput.type = "password";
+            confirmPasswordInput.type = "password";
         }
     }
 
 </script>
-
-<!-- *^*^*^*^*^*^*^*^*^*^*^*^*^*^* -->

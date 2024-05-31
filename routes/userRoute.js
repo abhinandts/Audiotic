@@ -34,12 +34,13 @@ user_route.use(session({
     saveUninitialized: false
 }))
 
-
 user_route.get("/register", userController.loadRegister)
 user_route.post('/register', userController.insertUser)
 
 user_route.get('/verify_otp', userController.verifyOtp)
 user_route.post('/verify_otp', userController.compareOtp)
+
+user_route.get('/resendOtp',userController.resendOtp)
 
 user_route.get('/login',userController.loadLogin)
 user_route.post('/login',userController.verifyLogin)
@@ -47,6 +48,12 @@ user_route.post('/login',userController.verifyLogin)
 user_route.get('/home',userController.loadHome)
 
 user_route.get('/productPage',userController.loadProduct)
+
+user_route.get('/allProducts',userController.allProducts)
+
+user_route.get('/product',userController.productByCategory)
+
+
 
 
 

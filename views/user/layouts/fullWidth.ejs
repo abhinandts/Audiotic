@@ -6,45 +6,47 @@
 </head>
 
 <body>
+    <% if(header){ %>
+        <%- include('../partials/header') %>
+            <%}%>
+    <% if(smallHeader){ %>
+        <%- include('../partials/smallheader') %>
+            <%}%>
 
-    <%- include('../partials/header') %>
-
-
-        <main class="main">
-            <div class="page-header breadcrumb-wrap">
-                <div class="container">
-                    <div class="breadcrumb">
-                        <a href="index.html" rel="nofollow">Home</a>
-                        <span></span> Pages
-                        <span></span> Login / Register
+            <main class="main">
+                <div class="page-header breadcrumb-wrap">
+                    <div class="container">
+                        <div class="breadcrumb">
+                            <a href="/home" rel="nofollow">Home</a>
+                            <span></span> <%= breadcrumb %>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <%- body %>
+                <%- body %>
 
-                <%- include('../partials/footer') %>
+                    <%if(footer){ %>
+                        <%- include('../partials/footer') %>
+                    <% } %>
+            </main>
 
-        </main>
-
-        <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="text-center">
-                        <h5 class="mb-5">Now Loading</h5>
-                        <div class="loader">
-                            <div class="bar bar1"></div>
-                            <div class="bar bar2"></div>
-                            <div class="bar bar3"></div>
+            <!-- Preloader Start -->
+            <div id="preloader-active">
+                <div class="preloader d-flex align-items-center justify-content-center">
+                    <div class="preloader-inner position-relative">
+                        <div class="text-center">
+                            <h5 class="mb-5">Now Loading</h5>
+                            <div class="loader">
+                                <div class="bar bar1"></div>
+                                <div class="bar bar2"></div>
+                                <div class="bar bar3"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-
-        <%- include('../partials/script') %>
+            <%- include('../partials/script') %>
 </body>
 
 </html>

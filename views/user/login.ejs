@@ -1,55 +1,114 @@
-
-    <section class="pt-150 pb-150">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 m-auto">
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <div
-                                class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
-                                <div class="padding_eight_all bg-white">
-                                    <div class="heading_s1">
-                                        <h3 class="mb-30">Login</h3>
-                                    </div>
-                                    <form method="post">
-                                        <% if(typeof message !=="undefined" ) { %>
-                                            <h4 style="color: crimson;">
-                                                <%= message %>
-                                            </h4>
-                                            <%}%>
-                                                <div class="form-group">
-                                                    <input type="text" required="" name="email"
-                                                        placeholder="Your Email">
-                                                </div>
-                                                <div class="form-group">
-                                                    <input required="" type="password" name="password"
-                                                        placeholder="Password">
-                                                </div>
-                                                <div class="login_footer form-group">
-                                                    <div class="chek-form">
-                                                        <div class="custome-checkbox">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                onclick="visiblePassword()" name="checkbox"
-                                                                id="exampleCheckbox1" value="">
-                                                            <label class="form-check-label"
-                                                                for="exampleCheckbox1"><span>show
-                                                                    password</span></label>
-                                                        </div>
-
-                                                    </div>
-                                                    <span id="message"></span>
-                                                    <a class="text-muted" href="#">Forgot password?</a>
-                                                </div>
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-fill-out btn-block hover-up"
-                                                        name="login">Log in</button>
-                                                </div>
-                                    </form>
+<section class="pt-150 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div
+                            class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1">
+                                    <h3 class="mb-30">Login</h3>
                                 </div>
+                                <form method="post">
+                                    <% if(typeof message !=="undefined" ) { %>
+                                        <h4 style="color: crimson;">
+                                            <%= message %>
+                                        </h4>
+                                        <%}%>
+                                    <div class="form-group">
+                                        <input type="text" required="" name="email" id="email" placeholder="Your Email"
+                                            onkeyup="validateEmail()" required>
+                                        <span id="emailErr" style="color: crimson;"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input required="" type="password" name="password" id="password"
+                                            placeholder="Password" onkeyup="validatePassword()" required>
+                                        <span id="passwordErr" style="color:crimson;"></span>
+                                    </div>
+                                    <div class="login_footer form-group">
+                                        <div class="chek-form">
+                                            <div class="custome-checkbox">
+                                                <input class="form-check-input" type="checkbox" name="checkbox"
+                                                    id="checkbox" onclick="showPassword()" value="">
+                                                <label class="form-check-label" for="checkbox"><span>show
+                                                        password</span></label>
+                                            </div>
+                                        </div>
+                                        <!-- <a class="text-muted" href="#">Forgot password?</a> -->
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" id="login" class="btn btn-fill-out btn-block hover-up"
+                                            name="login" disabled>Log in</button>
+                                    </div>
+                                </form>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-6">
+                        <div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<script>
+    let emailInput = document.getElementById('email')
+    let passwordInput = document.getElementById('password')
+
+    function validateEmail() {
+        let email = emailInput.value.trim()
+        let emailErrInput = document.getElementById('emailErr')
+        let regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/
+
+        if (email.length === 0) {
+            emailErrInput.innerHTML = "Please enter valid Email"
+            emailInput.style.borderColor = "red"
+            document.getElementById('login').disabled = true;
+
+        } else if (!regex.test(email)) {
+            emailErrInput.innerHTML = "Please enter email ends with gmail.com"
+            emailInput.style.borderColor = "red"
+            document.getElementById('login').disabled = true;
+
+        } else {
+            emailInput.style.borderColor = "green"
+            emailErrInput.innerHTML = ""
+            if(emailInput.value.trim()!=0){
+                document.getElementById('login').disabled = false;
+            }
+        }
+    }
+    function validatePassword() {
+        let password = passwordInput.value.trim()
+        let passwordErrInput = document.getElementById('passwordErr')
+        let regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
+        if (password.length === 0) {
+            passwordErrInput.innerHTML = "Please enter valid password"
+            passwordInput.style.borderColor = "red"
+        } else if (!regex.test(password)) {
+            passwordErrInput.innerHTML = "Incorrect password format"
+            passwordInput.style.borderColor = "red"
+        } else {
+            passwordInput.style.borderColor = "green"
+            passwordErrInput.innerHTML = ""
+            password.validity = true
+        }
+    }
+    function showPassword() {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text"
+        } else {
+            passwordInput.type = "password"
+        }
+
+    }
+
+
+
+</script>

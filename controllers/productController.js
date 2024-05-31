@@ -5,7 +5,7 @@ const Category = require('../models/categoryModel')
 
 const loadProducts = async (req, res) => {
     try {
-        const productData = await Product.find()
+        const productData = await Product.find().populate('category', 'name');
         res.render('productList', { title: 'Products', header: true, sidebar: true, footer: true, productData })
     } catch (error) {
         console.log(error.message)
@@ -17,7 +17,8 @@ const loadProducts = async (req, res) => {
 
 const newProduct = async (req, res) => {
     try {
-        const categoryData = await Category.find({}, { name: 1 })
+        const categoryData = await Category.find({ is_active: true }, { name: 1 })
+        // console.log(categoryData)
 
         res.render('newProduct', { title: "Add product", header: false, sidebar: false, footer: false, categoryData })
 
@@ -28,17 +29,16 @@ const newProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-
+        const { category } = req.body
         const { productName, productSpecifications, mrp, price } = req.body
-        console.log(productName, price)
-        const categories = await Category.find()
+        const cate = await Category.findOne({ name: category })
 
         const imageNames = req.files.map(file => file.filename)
 
         const product = new Product({
             productName,
             productSpecifications,
-            category: req.body.category,
+            category: cate._id,
             mrp,
             price,
             image: imageNames
@@ -91,7 +91,9 @@ const updateProduct = async (req, res) => {
     try {
 
         const { productName, productSpecifications, mrp, price, category } = req.body;
-        await Product.findByIdAndUpdate(req.params.productId, { productName, productSpecifications, mrp, price, category })
+        const catId = await Category.findOne({name:category}) 
+        console.log(catId)
+        await Product.findByIdAndUpdate(req.params.productId, { productName, productSpecifications, mrp, price, category:catId })
 
         res.redirect('/admin/products')
 

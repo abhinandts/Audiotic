@@ -81,9 +81,6 @@ adminRoute.get("/blockProduct/:productId",productController.blockProduct)
 adminRoute.get("/editProduct/:productId",productController.editProduct)
 adminRoute.post("/editProduct/:productId",productController.updateProduct)
 
-
-
-
 adminRoute.get("*", (req, res) => {
     res.redirect('/admin')
 })
