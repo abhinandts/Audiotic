@@ -12,7 +12,6 @@ const loadLogin = async (req, res) => {
             sidebar: false,
             footer: false
         })
-        console.log("admin login Page loaded")
     } catch (error) {
         console.log(error.message)
     }
@@ -29,11 +28,11 @@ const verifyLogin = async (req, res) => {
 
         if (adminData) {
             if (data.password === adminData.password) {
+                req.session.adminId = adminData.email
                 res.redirect('/admin/dashboard')
             } else {
                 res.render('login', { message: 'Password is incorrect' })
             }
-
         } else {
             res.render('adminlogin', { message: 'invalid ' })
         }
@@ -57,7 +56,6 @@ const loadDashboard = async (req, res) => {
 const loadUsers = async (req, res) => {
     try {
         const userData = await User.find()
-
         res.render('users', { title: 'Users', header: true, sidebar: true, footer: true, userData })
     } catch (error) {
         console.log(error.message)
@@ -92,6 +90,20 @@ const unblockUser = async (req, res) => {
     }
 }
 
+// ---- /logOut ----
+
+const logOut = async (req,res) => {
+    try {
+        console.log(req.session.adminId)
+        req.session.destroy()
+        console.log(req.session)
+        res.redirect('/admin/login')
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 module.exports = {
     loadLogin,
     verifyLogin,
@@ -99,6 +111,7 @@ module.exports = {
     loadUsers,
     blockUser,
     unblockUser,
+    logOut
     // products,
     // newProduct,
 }

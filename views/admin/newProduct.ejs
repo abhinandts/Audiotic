@@ -1,12 +1,11 @@
 <section class="content-main">
-    <form action="/admin/newProduct" method="post" enctype="multipart/form-data">
+    <form id="productForm" action="/admin/newProduct" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
                     <h2 class="content-title">Add New Product</h2>
-
                     <div>
-                        <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body ">Discard</a>
+                        <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body">Discard</a>
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">save</button>
                     </div>
                 </div>
@@ -15,51 +14,42 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Details</h4>
-                    </div>
+                    </div>d
                     <div class="card-body">
-
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" required placeholder="Type here" class="form-control" name="productName">
+                            <input type="text" required placeholder="Type here" class="form-control" name="productName" id="productName">
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Full Specification</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications"
-                                required></textarea>
+                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications" id="productSpecifications" required></textarea>
                         </div>
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Maximum Retail Price</label>
                                     <div class="row gx-2">
-                                        <input placeholder="₹" type="text" name="mrp" class="form-control" required>
+                                        <input placeholder="₹" type="text" id="mrp" name="mrp" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" name="price" class="form-control" required>
+                                    <input placeholder="₹" type="text" id="price" name="price" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <label class="form-label">Category</label>
-                                <select class="form-select" name="category">
-                                    <% categoryData.forEach(element=> {%>
-                                        <option>
+                                <select class="form-select" name="category" id="category" required>
+                                    <% categoryData.forEach(element => { %>
+                                        <option value="<%= element.name %>">
                                             <%= element.name %>
                                         </option>
-                                        <% }); %>
+                                    <% }); %>
                                 </select>
                             </div>
                         </div>
-
-                        <div class="mb-4">
-
-                        </div>
-                        <label class="form-check mb-4">
-
-                        </label>
                     </div>
                 </div>
             </div>
@@ -71,11 +61,40 @@
                     <div class="card-body">
                         <div class="input-upload">
                             <img src="/admin/imgs/theme/upload.svg" alt="">
-                            <input class="form-control" type="file" name="image" multiple>
+                            <input class="form-control" type="file" name="image" id="image" multiple required>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
+
+    <script>
+        document.getElementById('productForm').addEventListener('submit', function (event) {
+            const productName = document.getElementById('productName').value;
+            const productSpecifications = document.getElementById('productSpecifications').value;
+            const mrp = document.getElementById('mrp').value;
+            const price = document.getElementById('price').value;
+            const category = document.getElementById('category').value;
+            const image = document.getElementById('image').files.length;
+
+            if (!productName || !productSpecifications || !mrp || !price || !category || image === 0) {
+                event.preventDefault();
+                alert('Please fill out all required fields.');
+            }
+
+            const priceValue = parseFloat(price.replace('₹', '').trim());
+            const mrpValue = parseFloat(mrp.replace('₹', '').trim());
+
+            if (isNaN(priceValue) || isNaN(mrpValue) || priceValue < 0 || mrpValue < 0) {
+                event.preventDefault();
+                alert('Please enter valid numeric values for Price and MRP.');
+            }
+
+            if (priceValue > mrpValue) {
+                event.preventDefault();
+                alert('Price cannot be greater than MRP.');
+            }
+        });
+    </script>
 </section>

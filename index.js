@@ -1,5 +1,8 @@
 const mongoose = require("mongoose")
+require('dotenv').config()
+
 mongoose.connect("mongodb://127.0.0.1:27017/Audiotic")
+
 
 const express = require("express")
 const app = express()
@@ -29,6 +32,6 @@ app.use(session({
 
 
 
-app.listen(4000,function (){
+app.listen(process.env.PORT,function (){
     console.log(`http://localhost:4000/`)
 })

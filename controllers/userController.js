@@ -5,7 +5,6 @@ const Category = require('../models/categoryModel')
 const mongoose = require('mongoose')
 const session = require('express-session')
 
-const config = require('../config/config')
 const otpService = require('../utils/otp')
 
 

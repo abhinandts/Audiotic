@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
+require('dotenv').config()
 
-
-// ------ Generate OTP ----------------------
+// ------ Generate OTP --------
 
 const generateOtp = () => Math.floor(1000 + Math.random() * 9000)
 
@@ -15,8 +15,8 @@ const sendVerifyMail = async (name, email, otp) => {
         secure: false,
         requireTLS: true,
         auth: {
-            user: 'abhinandts116@gmail.com',
-            pass: 'vbzm mdaz pjgy czsb'
+            user: process.env.userEmail,
+            pass: process.env.userPassword
         }
     })
 

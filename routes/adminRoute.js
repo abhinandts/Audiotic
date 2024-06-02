@@ -1,5 +1,6 @@
 const express = require('express')
 const ejsLayouts = require('express-ejs-layouts')
+const auth = require('../middlewares/adminAuth')
 
 const path = require('node:path')
 // ------------------------------------------------------------
@@ -51,16 +52,18 @@ const productController = require('../controllers/productController')
 adminRoute.get("/login", adminController.loadLogin)
 adminRoute.post("/login", adminController.verifyLogin)
 
-adminRoute.get("/dashboard", adminController.loadDashboard)
+adminRoute.get("/logout",auth.isLogin,adminController.logOut)
 
-adminRoute.get("/users",adminController.loadUsers)
+adminRoute.get("/dashboard",auth.isLogin,adminController.loadDashboard)
 
-adminRoute.get("/blockUser/:userId",adminController.blockUser)
-adminRoute.get("/unblockUser/:userId",adminController.unblockUser)
+adminRoute.get("/users",auth.isLogin,adminController.loadUsers)
+
+adminRoute.get("/blockUser/:userId",auth.isLogin,adminController.blockUser)
+adminRoute.get("/unblockUser/:userId",auth.isLogin,adminController.unblockUser)
 
 // ---- category ----
 
-adminRoute.get("/category",categoryController.loadCategory)
+adminRoute.get("/category",auth.isLogin,categoryController.loadCategory)
 
 adminRoute.post("/addCategory",categoryController.addCategory)
 
@@ -71,18 +74,18 @@ adminRoute.post("/editCategory",categoryController.saveCategory)
 
 // ---- product ----
 
-adminRoute.get("/products",productController.loadProducts)
+adminRoute.get("/products",auth.isLogin,productController.loadProducts)
 
-adminRoute.get("/newProduct",productController.newProduct)
+adminRoute.get("/newProduct",auth.isLogin,productController.newProduct)
 adminRoute.post("/newProduct",upload.array('image',5),productController.addProduct)
 
 adminRoute.get("/blockProduct/:productId",productController.blockProduct)
 
-adminRoute.get("/editProduct/:productId",productController.editProduct)
+adminRoute.get("/editProduct/:productId",auth.isLogin,productController.editProduct)
 adminRoute.post("/editProduct/:productId",productController.updateProduct)
 
 adminRoute.get("*", (req, res) => {
-    res.redirect('/admin')
+    res.status(404).send("Route not found");
 })
 
 module.exports = adminRoute

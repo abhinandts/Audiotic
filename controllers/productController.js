@@ -18,7 +18,7 @@ const loadProducts = async (req, res) => {
 const newProduct = async (req, res) => {
     try {
         const categoryData = await Category.find({ is_active: true }, { name: 1 })
-        // console.log(categoryData)
+        console.log(categoryData)
 
         res.render('newProduct', { title: "Add product", header: false, sidebar: false, footer: false, categoryData })
 
@@ -91,9 +91,9 @@ const updateProduct = async (req, res) => {
     try {
 
         const { productName, productSpecifications, mrp, price, category } = req.body;
-        const catId = await Category.findOne({name:category}) 
+        const catId = await Category.findOne({ name: category })
         console.log(catId)
-        await Product.findByIdAndUpdate(req.params.productId, { productName, productSpecifications, mrp, price, category:catId })
+        await Product.findByIdAndUpdate(req.params.productId, { productName, productSpecifications, mrp, price, category: catId })
 
         res.redirect('/admin/products')
 

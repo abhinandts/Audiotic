@@ -1,8 +1,8 @@
+require('dotenv').config()
+
 const express = require("express")
 const ejsLayouts = require('express-ejs-layouts')
 const session = require('express-session')
-
-const config = require('../config/config')
 
 const user_route = express()
 
@@ -29,7 +29,7 @@ const userController = require('../controllers/userController')
 
 //session
 user_route.use(session({
-    secret: config.sessionSecret,
+    secret: process.env.sessionSecret,
     resave: false,
     saveUninitialized: false
 }))
@@ -58,6 +58,5 @@ user_route.get('/product',userController.productByCategory)
 
 
 module.exports = user_route
-
 
 // user_route.use('/images',express.static(__dirname+'/public/productImages'))
