@@ -1,62 +1,82 @@
 require('dotenv').config()
 
 const express = require("express")
-const ejsLayouts = require('express-ejs-layouts')
-const session = require('express-session')
 
-const user_route = express()
+const userSession = require('express-session')
+const MongoDBSession = require('connect-mongodb-session')(userSession)
+const mongoose = require("mongoose")
 
-user_route.use(ejsLayouts)
-user_route.set('layout', '../user/layouts/fullWidth')
+const userRoute = express()
 
-user_route.use(express.static('public/user'))
+mongoose
+    .connect(process.env.mongoURI)
+    .then((res) => {
+        console.log("user MongoDB connected");
+    })
+    .catch((err) => console.error(err));
 
-user_route.use('/admin', express.static('public/admin'));
+const userStore = new MongoDBSession({
+    uri: process.env.mongoURI,
+    collection: "userSessions",
+})
 
-user_route.use('/css', express.static(__dirname + '/public/user/css'))
-user_route.use('/fonts', express.static(__dirname + '/public/user/fonts'))
-user_route.use('/imgs', express.static(__dirname + '/public/user/imgs'))
-user_route.use('/js', express.static(__dirname + '/public/user/js'))
-user_route.use('/sass', express.static(__dirname + '/public/user/sass'))
-
-user_route.set('views', './views/user')
-
-const bodyParser = require('body-parser')
-user_route.use(bodyParser.json())
-user_route.use(bodyParser.urlencoded({ extended: true })) 
-
-const userController = require('../controllers/userController')
-
-//session
-user_route.use(session({
-    secret: process.env.sessionSecret,
+userRoute.use(userSession({
+    secret: 'mySessionSecretForUser',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: userStore
 }))
 
-user_route.get("/register", userController.loadRegister)
-user_route.post('/register', userController.insertUser)
+// Template engine setup
+const ejsLayouts = require('express-ejs-layouts')
+userRoute.set('views', './views/user')
+userRoute.use(ejsLayouts)
+userRoute.set('layout', '../user/layouts/fullWidth')
 
-user_route.get('/verify_otp', userController.verifyOtp)
-user_route.post('/verify_otp', userController.compareOtp)
-
-user_route.get('/resendOtp',userController.resendOtp)
-
-user_route.get('/login',userController.loadLogin)
-user_route.post('/login',userController.verifyLogin)
-
-user_route.get('/home',userController.loadHome)
-
-user_route.get('/productPage',userController.loadProduct)
-
-user_route.get('/allProducts',userController.allProducts)
-
-user_route.get('/product',userController.productByCategory)
+// Middleware for static assets
+userRoute.use(express.static('public/user'))
+userRoute.use('/admin', express.static('public/admin'));
 
 
+userRoute.use('/css', express.static(__dirname + '/public/user/css'))
+userRoute.use('/fonts', express.static(__dirname + '/public/user/fonts'))
+userRoute.use('/imgs', express.static(__dirname + '/public/user/imgs'))
+userRoute.use('/js', express.static(__dirname + '/public/user/js'))
+userRoute.use('/sass', express.static(__dirname + '/public/user/sass'))
+
+// Body parsing middleware
+const bodyParser = require('body-parser')
+userRoute.use(bodyParser.json())
+userRoute.use(bodyParser.urlencoded({ extended: true }))
+
+// Authentication middleware
+const check = require('../middlewares/userAuth')
+
+// ---- controllers ----
+const userController = require('../controllers/userController')
 
 
+// ---- routes ----
+userRoute.get("/register",check.isLoggedOut,userController.loadRegister)
+userRoute.post('/register', userController.insertUser)
 
-module.exports = user_route
+userRoute.get('/verify_otp',check.isLoggedOut, userController.verifyOtp)
+userRoute.post('/verify_otp', userController.compareOtp)
 
-// user_route.use('/images',express.static(__dirname+'/public/productImages'))
+userRoute.get('/resendOtp', userController.resendOtp)
+
+userRoute.get('/login',check.isLoggedOut, userController.loadLogin)
+userRoute.post('/login', userController.verifyLogin)
+
+userRoute.get('/logout',userController.logout)
+
+userRoute.get('/home', check.isLoggedIn,check.checkUserBlocked,userController.loadHome)
+
+userRoute.get('/productPage', check.isLoggedIn,check.checkUserBlocked,userController.loadProduct)
+
+userRoute.get('/allProducts', check.isLoggedIn,check.checkUserBlocked,userController.allProducts)
+
+userRoute.get('/product', check.isLoggedIn,check.checkUserBlocked,userController.productByCategory)
+
+
+module.exports = userRoute

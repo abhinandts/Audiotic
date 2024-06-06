@@ -16,7 +16,7 @@ const sendVerifyMail = async (name, email, otp) => {
         requireTLS: true,
         auth: {
             user: process.env.userEmail,
-            pass: process.env.userPassword
+            pass: 'vbzm mdaz pjgy czsb'
         }
     })
 

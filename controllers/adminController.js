@@ -28,7 +28,8 @@ const verifyLogin = async (req, res) => {
 
         if (adminData) {
             if (data.password === adminData.password) {
-                req.session.adminId = adminData.email
+                req.session.adminId = adminData._id
+                console.log("admin session stored")
                 res.redirect('/admin/dashboard')
             } else {
                 res.render('login', { message: 'Password is incorrect' })
@@ -94,8 +95,8 @@ const unblockUser = async (req, res) => {
 
 const logOut = async (req,res) => {
     try {
-        console.log(req.session.adminId)
         req.session.destroy()
+        console.log("admin session destroyed")
         console.log(req.session)
         res.redirect('/admin/login')
 
@@ -112,6 +113,4 @@ module.exports = {
     blockUser,
     unblockUser,
     logOut
-    // products,
-    // newProduct,
 }

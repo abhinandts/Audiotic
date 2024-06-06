@@ -14,6 +14,12 @@
                                     Your personal data will be used to support your experience throughout this
                                     website, to manage access to your account, and for other purposes described in
                                     our privacy policy.
+
+                                
+                                        <h4 style="color: crimson;">
+                                            <%= message %>
+                                        </h4>
+                                        
                                 </p>
                                 <form method="post" id="form" action="/register">
                                     <div class="form-group">
@@ -28,17 +34,17 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="text" id="mNumber" placeholder="Mobile number" name="mobile"
-                                            required onkeyup="validateNumber()">
+                                            required onkeyup="validateNumber()" >
                                         <span id="mNumberErr" style="color: crimson;"></span>
 
                                     </div>
                                     <div class="form-group">
                                         <input required="" type="password" name="password" id="password" name="password"
-                                            placeholder="Password" onkeyup="checkPasswords()">
+                                            placeholder="Password" onkeyup="checkPasswords()" value="Hello123">
                                     </div>
                                     <div class="form-group">
                                         <input required="" type="password" name="confirmPassword" id="confirmPassword"
-                                            placeholder="Confirm Password" onkeyup="checkPasswords();">
+                                            placeholder="Confirm Password" onkeyup="checkPasswords();" value="Hello123">
                                         <span id="passwordErr" style="color: crimson;"></span>
                                     </div>
                                     <div class="p">

@@ -3,16 +3,18 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 
 const mongoose = require('mongoose')
-const session = require('express-session')
+const bcrypt = require('bcrypt')
 
 const otpService = require('../utils/otp')
-
 
 // ---- /register ----------------
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('registration', { breadcrumb: 'Register', header: false, footer: false, smallHeader: true })
+        console.log(req.session)
+        let message = req.session.errorMessage
+        delete req.session.errorMessage
+        res.render('registration', { message, breadcrumb: 'Register', header: false, footer: false, smallHeader: true })
     }
     catch (error) {
         console.log(error.message)
@@ -25,12 +27,21 @@ const insertUser = async (req, res) => {
 
         const otp = otpService.generateOtp()
         console.log(`Otp generated from ${otp}`)
-
         const { name, email, mobile, password } = req.body
-        const data = {
-            name, email, mobile, password, otp
+        let existingEmail = await User.findOne({ email })
+        if (existingEmail) {
+            req.session.errorMessage = 'You are already registered user.'
+            return res.redirect('/register')
         }
-        console.log(data)
+        let existingUserName = await User.findOne({ name })
+        if (existingUserName) {
+            req.session.errorMessage = 'This username is taken'
+            return res.redirect('/register')
+        }
+        const hashedPswd = await bcrypt.hash(password, 12)
+        const data = {
+            name, email, mobile, hashedPswd, otp
+        }
         req.session.Data = data
 
         if (data) {
@@ -47,7 +58,6 @@ const insertUser = async (req, res) => {
         } else {
             res.render('register', { breadcrumb: 'Verify OTP', header: false, smallHeader: true, footer: false })
         }
-
     } catch (error) {
         console.log(error.message)
     }
@@ -67,16 +77,11 @@ const verifyOtp = async (req, res) => {
 const compareOtp = async (req, res) => {
     try {
         const otpValue = req.body.otp
-
         const sessionOtp = req.session.Data.otp
-
         if (sessionOtp == otpValue) {
-
             const userData = await req.session.Data
             const user = new User(userData)
-
             await user.save()
-
             res.redirect('/home')
         } else {
             res.render('otp_page', { message: true, breadcrumb: 'OTP Page', header: false, smallHeader: true, footer: false })
@@ -105,7 +110,6 @@ const resendOtp = async (req, res) => {
             }
         }
         res.render('otp_page', { message: true, breadcrumb: 'OTP Page', header: false, smallHeader: true, footer: false })
-
     } catch (error) {
         console.log(error.message)
     }
@@ -116,7 +120,11 @@ const resendOtp = async (req, res) => {
 
 const loadLogin = async (req, res) => {
     try {
-        res.render('login', { breadcrumb: "Log in", header: false, smallHeader: true, footer: false })
+        if (req.session.userId) {
+            res.redirect('/home')
+        } else {
+            res.render('login', { breadcrumb: "Log in", header: false, smallHeader: true, footer: false })
+        }
     } catch (error) {
         console.log(error.message)
     }
@@ -125,10 +133,8 @@ const loadLogin = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const { email, password } = req.body
-        const data = { email, password, }
 
         const userData = await User.findOne({ email: email })
-        console.log(userData)
 
         if (!userData) {
             console.log("no user found")
@@ -138,12 +144,31 @@ const verifyLogin = async (req, res) => {
             res.render('login', { breadcrumb: "Log in", header: false, smallHeader: true, footer: false, message: 'You are blocked. please contact our customer service.', })
         }
         else {
-            if (data.password === userData.password) {
-                res.redirect('/home', { breadcrumb: "", header: false, smallHeader: true, footer: false })
+            const isMatch = await bcrypt.compare(password, userData.hashedPswd)
+
+            if (isMatch) {
+                const products = await Product.find({ is_active: true }).populate('category', 'name')
+                req.session.userId = userData.id
+                console.log(req.session)
+                res.redirect('/home')
+                // res.render('home', { title: "Home", products, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
             } else {
                 res.render('login', { message: 'Password is not matching', breadcrumb: "Log in", header: false, smallHeader: true, footer: false })
             }
         }
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// ---- /logout --------------
+
+const logout = async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) throw err
+            res.redirect('/login')
+        })
     } catch (error) {
         console.log(error.message)
     }
@@ -154,7 +179,7 @@ const verifyLogin = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.find({is_active:true}).populate('category','name')
+        const products = await Product.find({ is_active: true }).populate('category', 'name')
 
         res.render('home', { title: "Home", products, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
     } catch (error) {
@@ -167,11 +192,11 @@ const loadHome = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.query.productId).populate('category','name')
+        const product = await Product.findById(req.query.productId).populate('category', 'name')
 
-        const relatedProducts = await Product.find({ category: product.category._id,_id:{$ne:product._id} })
+        const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: product._id } })
 
-        res.render('productPage', {product,relatedProducts, breadcrumb: product.productName, header: true,smallHeader:false, footer: true })
+        res.render('productPage', { product, relatedProducts, breadcrumb: product.productName, header: true, smallHeader: false, footer: true })
     } catch (error) {
         console.log(error.message)
     }
@@ -179,11 +204,11 @@ const loadProduct = async (req, res) => {
 
 // ---- /allProducts -------------
 
-const allProducts = async (req,res)=>{
+const allProducts = async (req, res) => {
     try {
-        const products = await Product.find({is_active:true}).populate('category','name')
-        const categories = await Category.find({},{name:1})
-        res.render('allProducts',{products,categories,breadcrumb:"All Products",header:true,smallHeader:false,footer:true})
+        const products = await Product.find({ is_active: true }).populate('category', 'name')
+        const categories = await Category.find({}, { name: 1 })
+        res.render('allProducts', { products, categories, breadcrumb: "All Products", header: true, smallHeader: false, footer: true })
     } catch (error) {
         console.log(error)
     }
@@ -191,18 +216,16 @@ const allProducts = async (req,res)=>{
 
 // ---- /product ---------------
 
-const productByCategory = async (req,res)=>{
+const productByCategory = async (req, res) => {
     try {
-        const products = await Product.find({category:req.query.categoryId,is_active:true})
-        const categories = await Category.find({},{name:1})
-        
-        res.render('productsByCategory',{products,categories,breadcrumb:"All Products",header:true,smallHeader:false,footer:true})
+        const products = await Product.find({ category: req.query.categoryId, is_active: true })
+        const categories = await Category.find({}, { name: 1 })
+
+        res.render('productsByCategory', { products, categories, breadcrumb: "All Products", header: true, smallHeader: false, footer: true })
     } catch (error) {
         console.log(error)
     }
 }
-
-
 
 module.exports = {
     loadRegister,
@@ -215,6 +238,6 @@ module.exports = {
     loadProduct,
     resendOtp,
     allProducts,
-    productByCategory
-
+    productByCategory,
+    logout
 }
