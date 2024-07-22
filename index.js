@@ -11,8 +11,6 @@ app.use(nocache());
 const cors = require('cors');
 app.use(cors());
 
-
-
 // ---- for users ----
 const userRoute = require('./routes/userRoute')
 app.use('/', userRoute)
