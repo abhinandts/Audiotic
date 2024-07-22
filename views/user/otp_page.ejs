@@ -4,55 +4,50 @@
         <section class="pt-100 pb-100">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-10 m-auto">
-                        <div class="row">
-                            <div class="col-lg-1"></div>
-                            <div class="col-lg-6">
-                                <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
-                                    <div class="padding_eight_all bg-white">
-                                        <div class="heading_s1">
-                                            <h3 class="mb-30">Verify your OTP</h3>
-                                        </div>
-                                        <p class="mb-50 font-sm">
-                                            <% if(message){ %>
-                                                    Please enter valid OTP
-                                            <% }else{ %>
-                                                    The Mobile API Gateway generates time-sensitive One-Time Passwords
-                                                    to
-                                                    support two-factor authentication.The OTP is a securely
-                                                    generated numeric or alphanumeric string of characters that
-                                                    authenticates a user
-                                                    for a single transaction.
-                                            <% } %>
-                                        </p>
-                                        <form method="post" action="/verify_otp">
+                    <div class="col-lg-5 m-auto">
 
-                                            <div class="form-group">
-                                                <input type="text" required="" name="otp" placeholder="Enter your OTP">
-                                            </div>
-                                                <div class="form-group text-center">
-                                                    <button type="submit" class="btn btn-fill-out btn-block hover-up"
-                                                        name="login">Submit OTP</button>
-                                                </div>
-                                        </form>
-                                        <div class="divider-text-center mt-15 mb-15">
-                                            <span> or</span>
-                                        </div>
-                                        <ul class="btn-login list_none text-center mb-15">
-                                            <li>
-                                                <div> You can request for new OTP in <span id="timmer">now<span> </div>
-                                            </li>
-                                            <li>
-                                                <!-- <button type="submit" formaction="/register" formmethod="post" id="resend" class="btn btn-lg  hover-up" disabled>Resend
-                                                OTP</button> -->
-                                                <a href="/resendOtp" style="color: rgb(12, 105, 43);" id="resend"> </a>
-                                            </li>
-                                            <!-- <li><a href="#" disabled class="btn btn-google hover-up">Login With Google</a></li> -->
-                                        </ul>
-                                    </div>
+                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1">
+                                    <h3 class="mb-30">Verify your OTP</h3>
                                 </div>
+                                <p class="mb-50 font-sm">
+                                    <% if(message){ %>
+                                        <H4 style="color: crimson;">Please enter valid OTP</H4>
+                                        <% }else{ %>
+                                            The Mobile API Gateway generates time-sensitive One-Time Passwords
+                                            to
+                                            support two-factor authentication.The OTP is a securely
+                                            generated numeric or alphanumeric string of characters that
+                                            authenticates a user
+                                            for a single transaction.
+                                            <% } %>
+                                </p>
+                                <form id="otpForm">
+
+                                    <div class="form-group">
+                                        <input type="text" required="" id="otpInput" name="otp"
+                                            placeholder="Enter your OTP">
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="button" class="btn btn-fill-out btn-block hover-up"
+                                            onclick="verifyOtp()" name="login">Submit OTP</button>
+                                    </div>
+                                </form>
+                                <div class="divider-text-center mt-15 mb-15">
+                                    <span> or</span>
+                                </div>
+                                <ul class="btn-login list_none text-center mb-15">
+                                    <li>
+                                        <div> You can request for new OTP in <span id="timmer">now<span> </div>
+                                    </li>
+                                    <li>
+                                        <button onclick="resendOtp()" id="resend" disabled>Resend OTP</button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -61,8 +56,11 @@
 
 <script>
     let timmerSpan = document.getElementById('timmer')
+    const resendButton = document.getElementById('resend')
+
     let interval;
     function startTimer() {
+        resendButton.disabled = true;
         console.log("timmer started")
         let counter = 10
         timmerSpan.innerHTML = counter;
@@ -73,10 +71,44 @@
 
             if (counter <= 0) {
                 clearInterval(interval)
-                document.getElementById('resend').innerHTML = "Resend OTP"
+                resendButton.disabled = false;
             }
         }, 1000)
     }
+
+    async function verifyOtp() {
+        const otp = document.getElementById("otpInput").value;
+        const response = await fetch('/verifyOtp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ otp })
+        })
+        const result = await response.json()
+        if (result.success) {
+            window.location.href = result.redirectUrl;
+        } else {
+            document.querySelector('.mb-50').innerHTML = `<H4 style="color: crimson;">${result.message}</H4>`;
+        }
+    }
+
+    async function resendOtp() {
+        const response = await fetch('/api/resendOtp', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const result = await response.json()
+        if (result.success) {
+            document.querySelector('.mb-50').innerHTML = `<H4 >${result.message}</H4>`
+            startTimer()
+        } else {
+            document.querySelector('.mb-50').innerHTML = `<H4 style="color: crimson;">${result.message}</H4>`;
+        }
+    }
+
 
 
 

@@ -1,0 +1,206 @@
+<!-- evara-frontend/shop-checkout.html -->
+
+<style>
+    .selectable-address {
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .selectable-address.selected {
+        background-color: #e6f7f2;
+        border: 2px solid #0ac06e;
+    }
+</style>
+
+<section class="mt-50 mb-50">
+    <div class="container">
+
+        <!-- <div class="row">
+            <div class="col-12">
+                <div class="divider mt-50 mb-50"></div>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-md-5">
+                <div class="mb-25 ">
+                    <h4>Choose an Address</h4>
+                </div>
+                <div class="row ">
+
+                    <div class="col-md-12 mb-3">
+                        <button type="button" class="btn btn-fill-out submit" name="submit" value="Submit"
+                            id="openDialogButton">Add Address</button>
+                    </div>
+
+                    <dialog id="addAddressDialog"
+                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                        <form id="addAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
+                            <label for="addressName">Address name</label>
+                            <input type="text" id="addressName" name="addressName"
+                                placeholder="Enter a name for address" required data-validate="notEmpty"
+                                data-error="Address name is required">
+
+                            <label for="street">Street</label>
+                            <input type="text" id="street" name="street" placeholder="Enter street" required
+                                data-validate="notEmpty" data-error="Street is required">
+
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" placeholder="Enter city" required
+                                data-validate="notEmpty" data-error="City is required">
+
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="Enter state" required
+                                data-validate="notEmpty" data-error="State is required">
+
+                            <label for="pinCode">Pin Code</label>
+                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required
+                                data-validate="pincode" data-error="Pin code must be 6 digits">
+
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="Enter country" required
+                                data-validate="notEmpty" data-error="Country is required">
+
+                            <button formmethod="dialog" id="cancelDialogButton" type="button"
+                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                            <button type="submit"
+                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                        </form>
+                    </dialog>
+
+                    <div id="addressList" class="row">
+
+                        <!-- address will be dynamically added here -->
+                        <!-- <div class="col-lg-6 mb-2 ">
+                        </div> -->
+
+                    </div>
+
+                    <dialog id="editAddressDialog"
+                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                        <form id="editAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
+                            <label for="addressName">Address name</label>
+                            <input type="text" id="addressName" name="addressName"
+                                placeholder="Enter a name for address" required data-validate="notEmpty"
+                                data-error="Address name is required">
+
+                            <label for="street">Street</label>
+                            <input type="text" id="street" name="street" placeholder="Enter street" required
+                                data-validate="notEmpty" data-error="Street is required">
+
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" placeholder="Enter city" required
+                                data-validate="notEmpty" data-error="City is required">
+
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" placeholder="Enter state" required
+                                data-validate="notEmpty" data-error="State is required">
+
+                            <label for="pinCode">Pin Code</label>
+                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required
+                                data-validate="pincode" data-error="Pin code must be 6 digits">
+
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" placeholder="Enter country" required
+                                data-validate="notEmpty" data-error="Country is required">
+
+                            <input type="hidden" id="addressId" name="addressId">
+
+                            <button formmethod="dialog" id="cancelEditDialogButton" type="button"
+                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+
+                            <button type="submit"
+                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                        </form>
+                    </dialog>
+
+                </div>
+
+            </div>
+            <div class="col-md-7">
+                <div class="order_review">
+                    <div class="mb-20">
+                        <h4>Your Orders</h4>
+                    </div>
+                    <div class="table-responsive order_table text-center">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Product</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <% cart.cartProducts.forEach(element=> {%>
+                                    <tr>
+                                        <td class="image product-thumbnail"><img
+                                                src="/admin/productImages/<%= element.product.image[0]  %>" alt="#">
+                                        </td>
+                                        <td>
+                                            <h5><a href="shop-product-full.html">
+                                                    <%= element.product.productName %>
+                                                </a></h5>
+                                            <span class="product-qty">x <%= element.quantity %> </span>
+                                        </td>
+                                        <td>₹<%= element.subtotal %>.00/-</td>
+                                    </tr>
+
+                                    <% }); %>
+
+                                        <tr>
+                                            <th>SubTotal</th>
+                                            <td class="product-subtotal" colspan="2">₹<%= cart.cartSubtotal %>.00/-</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Shipping</th>
+                                            <td colspan="2"><em>₹<%= cart.shipping %>.00/-</em></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total</th>
+                                            <td colspan="2" class="product-subtotal"><span
+                                                    class="font-xl text-brand fw-900">₹<%= cart.cartTotal %>.00/-</span>
+                                            </td>
+                                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                    <div class="payment_method">
+                        <div class="mb-25">
+                            <h5>Payment</h5>
+                        </div>
+                        <div class="payment_option">
+
+                            <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment_option"
+                                    id="exampleRadios4" checked="">
+                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse"
+                                    data-target="#checkPayment" aria-controls="checkPayment">Cash on Delivery</label>
+                                <div class="form-group collapse in" id="checkPayment">
+                                    <p class="text-muted mt-5">Please send your cheque to Store Name, Store
+                                        Street, Store Town, Store State / County, Store Postcode. </p>
+                                </div>
+                            </div>
+                            <!-- <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment_option"
+                                    id="exampleRadios5" checked="">
+                                <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse"
+                                    data-target="#paypal" aria-controls="paypal">Paypal</label>
+                                <div class="form-group collapse in" id="paypal">
+                                    <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card
+                                        if you don't have a PayPal account.</p>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    <button class="btn btn-fill-out btn-block mt-30" id="placeOrder" >Place Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+
+<script src="/scripts/myAccountAddress.js"></script>
+
+<script src="/scripts/checkoutPage.js" ></script>

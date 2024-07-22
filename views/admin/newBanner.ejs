@@ -1,0 +1,195 @@
+<style>
+    #cropper-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        z-index: 1000; /* Ensure the modal appears above other elements */
+        overflow: auto; /* Enable scrolling if content overflows */
+        padding: 20px; /* Add padding for better appearance */
+    }
+
+    .modal-content {
+        background-color: #fff; /* Background color of the modal content */
+        max-width: 80%; /* Adjust the maximum width of the modal content */
+        max-height: 80%; /* Adjust the maximum height of the modal content */
+        border-radius: 10px; /* Add border radius for rounded corners */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        padding: 20px; /* Add padding for better appearance */
+        margin: auto; /* Center the modal horizontally */
+        overflow: hidden; /* Ensure no content overflows the modal */
+    }
+
+    .img-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70%; /* Adjust height of the image container */
+        overflow: hidden; /* Hide overflow of the image */
+    }
+
+    .img-container img {
+        max-width: 100%; /* Ensure image fits within container */
+        max-height: 100%; /* Ensure image fits within container */
+        object-fit: contain; /* Maintain aspect ratio of the image */
+    }
+
+    .btn {
+        margin: 10px;
+    }
+</style>
+
+
+<section class="content-main">
+    <form id="productForm" action="/admin/newBanner" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Banner</h2>
+                    <div>
+                        <a href="/admin/banners" class="btn btn-light rounded font-sm mr-5 text-body">Discard</a>
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">save </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Details</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Heading 4</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="heading4"
+                                id="">
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Heading 2</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="heading2"
+                                id="">
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Heading 1</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="heading1"
+                                id="">
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">P tag</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="paragraph"
+                                id="">
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Route</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="route" id="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Product Images</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload" id="input-upload">
+                            <img src="/admin/imgs/theme/upload.svg" alt="" id="upload-icon">
+                            <input class="form-control" type="file" name="image" id="image" multiple required>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Banner Image</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload" id="input-upload">
+                            <img src="/admin/imgs/theme/upload.svg" alt="" id="upload-icon">
+                            <input class="form-control" type="file" name="image" id="imageInput" required>
+                        </div>
+                        <!-- <button type="button" id="cropButton" class="btn btn-primary">Crop Image</button> -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="cropper-modal">
+                <div class="modal-content">
+                    <div class="img-container">
+                        <img id="image" src="">
+                    </div>
+                    <button type="button" id="saveCropButton" class="btn btn-success">Save Crop</button>
+                    <button type="button" id="cancelCropButton" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</section>
+
+
+
+
+<script src="https://unpkg.com/cropperjs@latest/dist/cropper.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.getElementById('imageInput');
+        const cropperModal = document.getElementById('cropper-modal');
+        const saveCropButton = document.getElementById('saveCropButton');
+        const cancelCropButton = document.getElementById('cancelCropButton');
+        const image = document.getElementById('image');
+        let cropper;
+
+        imageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const originalFileName = file.name.split('.').slice(0, -1).join('.'); // Extract file name without extension
+            const fileType = file.type.split('/')[1]; // Extract the file type, e.g., 'jpeg', 'png'
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                image.src = e.target.result;
+                cropperModal.style.display = 'flex';
+                cropper = new Cropper(image, {
+                    aspectRatio: 16 / 9,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+
+        saveCropButton.addEventListener('click', function () {
+            const canvas = cropper.getCroppedCanvas({
+                width: 800, // Specify the size you need
+                height: 450
+            });
+
+            canvas.toBlob(function (blob) {
+                const fileType = blob.type.split('/')[1]; // Extract file type from blob, e.g., 'jpeg', 'png'
+                const timestamp = new Date().getTime(); // Create a unique timestamp
+                const newFileName = `cropped_${timestamp}.${fileType}`; // Generate a new file name
+
+                // Create a new file object and add it to the file input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(new File([blob], newFileName));
+                imageInput.files = dataTransfer.files;
+
+                // Hide the modal and destroy the cropper instance
+                cropperModal.style.display = 'none';
+                cropper.destroy();
+            }, imageInput.files[0].type); // Ensure the file type matches the original image input type
+        });
+
+        cancelCropButton.addEventListener('click', function () {
+            cropperModal.style.display = 'none';
+            cropper.destroy();
+        });
+    });
+
+</script>

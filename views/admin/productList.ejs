@@ -2,14 +2,14 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Products List</h2>
-            <p>Create ,  Edit ,  and  Block Products
+            <p>✏️ Add ,  📝 Edit , and  🚮 Delete Products
 
             </p>
         </div>
         <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
             <a href="#" class="btn btn-light rounded  font-md">Import</a> -->
-            <a href="/admin/newProduct" class="btn btn-primary btn-sm rounded">Create new Product</a>
+            <a href="/admin/newProduct" class="btn btn-primary btn-sm rounded">➕ Add new Product</a>
         </div>
     </div>
     <div class="card mb-4">
@@ -52,7 +52,7 @@
                         <div class="col col-check flex-grow-0">
                             <div class="form-check">➤</div>
                         </div>
-                        <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                        <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
                             <a class="itemside" href="#">
                                 <div class="left">
                                 </div>
@@ -74,7 +74,7 @@
                             </div>
                             <%} else{ %>
                                 <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-danger">Blocked</span>
+                                    <span class="badge rounded-pill alert-danger">Deleted</span>
                                 </div>
                                 <% } %>
 
@@ -83,21 +83,21 @@
                                             <%= x.category.name %>
                                         </span>
                                     </div>
-                                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                                    <div class="col-lg-3 col-sm-3 col-5 col-action text-end">
                                         <a href="/admin/editProduct/<%- x._id %>"
                                             class="btn btn-sm font-sm rounded btn-brand">
-                                            <i class="material-icons md-edit"></i> Edit
+                                            📝 Edit
                                         </a>
 
                                         <% if(x.is_active){ %>
                                             <a href="/admin/blockProduct/<%- x._id %>"
                                                 class="btn btn-sm font-sm btn-light rounded">
-                                                <i class="material-icons md-delete_forever"></i> Block
+                                               🚮 &nbsp;&nbsp;Delete
                                             </a>
                                             <% }else{ %>
                                                 <a href="/admin/blockProduct/<%- x._id %>"
                                                     class="btn btn-sm font-sm btn-light rounded">
-                                                    Unblock
+                                                    🔃Restore
                                                 </a>
                                                 <% } %>
                                     </div>

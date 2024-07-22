@@ -21,7 +21,7 @@ const sendVerifyMail = async (name, email, otp) => {
     })
 
     const mailOptions = {
-        from: 'abhinandts116@gmail.com',
+        from: 'abhinandts28@gmail.com',
         to: email,
         subject: 'Verification mail',
         html: '<p> Hi' + name + ',' + otp + ' is your OTP </p>'

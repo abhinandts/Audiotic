@@ -1,10 +1,11 @@
 <section class="content-main">
-    <form method="post" action="/admin/editProduct/<%=product._id %>" >
+    <form method="post" action="/admin/editProduct/<%=product._id %>">
 
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
-                    <h2 class="content-title">Edit <%= product.productName %></h2>
+                    <h2 class="content-title">Edit <%= product.productName %>
+                    </h2>
 
                     <div>
                         <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body ">Discard</a>
@@ -35,15 +36,31 @@
                                     <label class="form-label">Maximum Retail Price</label>
                                     <div class="row gx-2">
                                         <input placeholder="₹" type="text" name="mrp" class="form-control" required
-                                            value="<%= product.mrp %>">
+                                            value="<%= product.mrp %>" id="mrp">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="mb-2">
+                                    <label class="form-label">Discount (%)</label>
+                                    <div class="row gx-2">
+                                        <input value="<%= product.discount %>" type="number" name="discount"
+                                            id="discount" class="form-control" min="0" max="100">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" name="price" class="form-control" required
-                                        value="<%= product.price %>">
+                                    <input placeholder="₹" type="text" name="price" id="price" class="form-control"
+                                        required value="<%=product.price  %>">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Stock</label>
+                                    <input value="<%= product.stock %>" type="number" id="stock" name="stock"
+                                        class="form-control" min="0">
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -68,20 +85,6 @@
                 </div>
             </div>
 
-            <div class="col-lg-3">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4>Media</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-upload">
-                            <img src="/admin/imgs/theme/upload.svg" alt="">
-                            <input class="form-control" type="file" name="image" multiple>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
 
         </div>
 
@@ -91,8 +94,8 @@
 
             <% product.image.forEach(image=>{ %>
 
-                <div class="col-lg-3">
-                    <div class="card mb-4">
+                <div class="col-lg-2">
+                    <div class="card mb-2">
                         <div class="card-header">
                             <h4>
                                 <%= image %>
@@ -111,5 +114,78 @@
 
                 <% }) %>
         </div> -->
+
+        <!-- <div style="display: flex;">
+            <% product.image.forEach(image=> { %>
+                <div class="col-lg-2">
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            <h4>
+                                <%= image %>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <img src="/admin/productImages/<%= image %>" alt="no image">
+                                <a href="/admin/editProduct/deleteImage/<%= image %>/<%=product._id %>"
+                                    class="btn btn-outline-danger">Delete</a>
+                                <a href="/admin/editProduct/replaceImage/<%= image %>/<%=product._id %>"
+                                    class="btn btn-outline-primary">Replace</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+        </div> -->
+
+        
+        
+
     </form>
+
+    <div class="row">
+        <% product.image.forEach(image => { %>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-6">
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h4><%= image %></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <img src="/admin/productImages/<%= image %>" alt="no image" class="img-fluid ">
+                            <div class="row no-gutters">
+                                <div class="col-6">
+                                    <a href="/admin/editProduct/deleteImage/<%= image %>/<%= product._id %>"
+                                        class="btn btn-outline-danger">Delete</a>
+                                </div>
+                                <div class="col-6">
+                                    <!-- <a href="/admin/editProduct/replaceImage/<%= image %>/<%= product._id %>"
+                                        class="btn btn-outline-secondary ">Replace</a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <script>
+        function calculatePrice() {
+            const mrp = parseFloat(document.getElementById('mrp').value)
+            const discount = parseFloat(document.getElementById('discount').value)
+            let price = document.getElementById('price')
+
+            if (!isNaN(mrp) && !isNaN(discount)) {
+                const discountedPrice = mrp - (mrp * (discount / 100))
+                price.value = discountedPrice.toFixed()
+            } else {
+                price.value = ''
+            }
+        }
+
+        document.getElementById('mrp').addEventListener('input', calculatePrice)
+        document.getElementById('discount').addEventListener('input', calculatePrice)
+    </script>
+
 </section>

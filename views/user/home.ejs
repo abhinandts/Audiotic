@@ -1,28 +1,45 @@
 <main class="main">
     <section class="home-slider position-relative pt-50">
         <div class="hero-slider-1 dot-style-1 dot-style-1-position-1">
-            <div class="single-hero-slider single-animation-wrap">
-                <div class="container">
-                    <div class="row align-items-center slider-animated-1">
-                        <div class="col-lg-5 col-md-6">
-                            <div class="hero-slider-content-2">
-                                <h4 class="animated">Trade-in offer</h4>
-                                <h2 class="animated fw-900">Supper value deals</h2>
-                                <h1 class="animated fw-900 text-brand">On all products</h1>
-                                <p class="animated">Save more with coupons & up to 70% off</p>
-                                <a class="animated btn btn-brush btn-brush-3" href="shop-product-right.html"> Shop Now
-                                </a>
+
+            <% banners.forEach(element=> { %>
+
+
+                <div class="single-hero-slider single-animation-wrap">
+                    <div class="container">
+                        <div class="row align-items-center slider-animated-1">
+                            <div class="col-lg-5 col-md-6">
+                                <div class="hero-slider-content-2">
+                                    <h4 class="animated">
+                                        <%= element.heading4 %>
+                                    </h4>
+                                    <h2 class="animated fw-900">
+                                        <%= element.heading2 %>
+                                    </h2>
+                                    <h1 class="animated fw-900 text-brand">
+                                        <%= element.heading1 %>
+                                    </h1>
+                                    <p class="animated">
+                                        <%= element.paragraph %>
+                                    </p>
+                                    <a class="animated btn btn-brush btn-brush-3"
+                                        href="/productPage?productId=<%= element.route %>"> Shop
+                                        Now
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-7 col-md-6">
-                            <div class="single-slider-img single-slider-img-1">
-                                <img class="animated slider-1-1" src="/imgs/slider/Aslider.webp" alt="">
+                            <div class="col-lg-7 col-md-6">
+                                <div class="single-slider-img single-slider-img-1">
+                                    <img class="animated slider-1-1" src="/admin/bannerImages/<%- element.image[0] %>"
+                                        alt="no img">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="single-hero-slider single-animation-wrap">
+
+                <% }); %>
+                    <!-- <div class="single-hero-slider single-animation-wrap">
                 <div class="container">
                     <div class="row align-items-center slider-animated-1">
                         <div class="col-lg-5 col-md-6">
@@ -63,7 +80,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="slider-arrow hero-slider-1-arrow"></div>
     </section>
@@ -148,29 +165,23 @@
 
             <div class="tab-content wow fadeIn animated" id="myTabContent">
                 <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                    <div class="row product-grid-4">
+                    
+                    <div class="row  product-grid-4" id="productList">
 
 
                         <% products.forEach((x)=>{ %>
 
                             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                 <div class="product-cart-wrap mb-30">
+
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="/productPage?productId=<%- x._id  %>">
-                                                <img class="default-img" src="/admin/productImages/<%=x.image[1]  %>"
+                                                <img class="default-img" src="/admin/productImages/<%=x.image[0]  %>"
                                                     alt="img error">
                                             </a>
                                         </div>
-                                        <div class="product-action-1">
-                                            <!-- <a aria-label="Quick view" class="action-btn hover-up"
-                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
-                                                    class="fi-rs-eye"></i></a>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn hover-up"
-                                                href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
-                                        </div>
+                                        
                                         <div class="product-badges product-badges-position product-badges-mrg">
                                             <!-- <span class="new">New</span> -->
                                         </div>
@@ -181,14 +192,12 @@
                                                 <%= x.category.name %>
                                             </a>
                                         </div>
-                                        <!-- <h2><a href="shop-product-right.html"><%= x.productName  %></a></h2> -->
                                         <h2><a href="/productPage?productId=<%- x._id  %>">
                                                 <%= x.productName %>
                                             </a></h2>
-
                                         <div>
                                             <span>
-                                                <!-- <span>50%</span> -->
+                                                <span><%=x.discount %>% discount</span>
                                             </span>
                                         </div>
                                         <div class="product-price">
@@ -196,15 +205,16 @@
                                             <span class="old-price">₹<%= x.mrp %></span>
                                         </div>
                                         <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            <a aria-label="Add To Cart"
+                                                class="action-btn addToCartButton hover-up" data-id="<%= x._id %>"><i
+                                                    class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
                             <% }) %>
-
 
                     </div>
                     <!--End product-grid-4-->
@@ -2235,6 +2245,7 @@
                 <div class="col-lg-3 col-md-6">
                     <h4 class="section-title style-1 mb-30 wow fadeIn animated">Hot Releases</h4>
                     <div class="product-list-small wow fadeIn animated">
+                        
                         <article class="row align-items-center">
                             <figure class="col-md-4 mb-0">
                                 <a href="shop-product-right.html"><img src="/imgs/shop/thumbnail-9.jpg" alt=""></a>
@@ -2249,6 +2260,7 @@
                                 </div>
                             </div>
                         </article>
+
                         <article class="row align-items-center">
                             <figure class="col-md-4 mb-0">
                                 <a href="shop-product-right.html"><img src="/imgs/shop/thumbnail-1.jpg" alt=""></a>
@@ -2263,6 +2275,7 @@
                                 </div>
                             </div>
                         </article>
+
                         <article class="row align-items-center">
                             <figure class="col-md-4 mb-0">
                                 <a href="shop-product-right.html"><img src="/imgs/shop/thumbnail-2.jpg" alt=""></a>
@@ -2277,9 +2290,14 @@
                                 </div>
                             </div>
                         </article>
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+<!---- Add To Cart. ---->
+<script src="/scripts/home.js"></script>
+<script src="/scripts/header.js"></script>

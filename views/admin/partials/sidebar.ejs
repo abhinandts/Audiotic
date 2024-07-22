@@ -10,48 +10,52 @@
     </div>
     <nav>
         <ul class="menu-aside">
-            
+
             <!-- <li class="menu-item active">
                 <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
                     <span class="text">Dashboard</span>
                 </a>
             </li> -->
 
-            <li class="menu-item active">
-                <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-person"></i>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/users" id="usersButton"> <i class="icon material-icons md-person"></i>
                     <span class="text">Users</span>
                 </a>
-                
+
             </li>
 
-            <li class="menu-item active">
-                <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/products" id="productsButton"> <i
+                        class="icon material-icons md-shopping_bag"></i>
                     <span class="text">Products</span>
                 </a>
-                
+
             </li>
 
-            <li class="menu-item active">
-                <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-category"></i>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/category" id="categoryButton"> <i
+                        class="icon material-icons md-category"></i>
                     <span class="text">Product Category</span>
                 </a>
-                
+
             </li>
-
-<!-- --------------------------------------------------------------------------------------------------------------------->
-
-            <!-- <li class="menu-item has-submenu">
-                <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/orders" id="ordersButton" > <i class="icon material-icons md-shopping_cart"></i>
                     <span class="text">Orders</span>
                 </a>
-                <div class="submenu">
-                    <a href="page-orders-1.html">Order list 1</a>
-                    <a href="page-orders-2.html">Order list 2</a>
-                    <a href="page-orders-detail.html">Order detail</a>
-                    <a href="page-orders-tracking.html">Order tracking</a>
-                    <a href="page-invoice.html">Invoice</a>
-                </div>
             </li>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/banners" id="bannersButton"> <i
+                        class="icon material-icons md-collections"></i>
+                    <span class="text"> Banners </span>
+                </a>
+            </li>
+
+
+
+            <!-- --------------------------------------------------------------------------------------------------------------------->
+
+            <!--
             <li class="menu-item has-submenu">
                 <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                     <span class="text">Sellers</span>
@@ -117,7 +121,31 @@
                 </a>
             </li>
         </ul> -->
-        <br>
-        <br>
+            <br>
+            <br>
     </nav>
 </aside>
+
+
+<script>
+    // Get the current URL
+const currentUrl = window.location.href;
+
+// Get the link elements
+const usersButton = document.getElementById('usersButton')
+const productsButton = document.getElementById('productsButton')
+const categoryButton = document.getElementById('categoryButton');
+const bannersButton = document.getElementById('bannersButton');
+
+// Add the active class to the respective link based on the URL
+if (currentUrl.includes('/admin/users')) {
+    usersButton.parentNode.classList.add('active')
+} else if(currentUrl.includes('/admin/products')) {
+    productsButton.parentNode.classList.add('active')
+}
+else if (currentUrl.includes('/admin/category')) {
+    categoryButton.parentNode.classList.add('active');
+} else if (currentUrl.includes('/admin/banners')) {
+    bannersButton.parentNode.classList.add('active');
+}
+</script>

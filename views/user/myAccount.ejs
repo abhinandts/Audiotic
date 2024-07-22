@@ -1,0 +1,316 @@
+<!-- accountPage -->
+
+<section class="pt-150 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="dashboard-menu">
+                            <ul class="nav flex-column" role="tablist">
+                                <!-- <li class="nav-item">
+                                    <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard"
+                                        role="tab" aria-controls="dashboard" aria-selected="false"><i
+                                            class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+                                </li> -->
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="account-detail-tab" data-bs-toggle="tab"
+                                        href="#account-detail" role="tab" aria-controls="account-detail"
+                                        aria-selected="true"><i class="fi-rs-user mr-10"></i>Edit Account details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab"
+                                        aria-controls="orders" aria-selected="false"><i
+                                            class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders"
+                                        role="tab" aria-controls="track-orders" aria-selected="false"><i
+                                            class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab"
+                                        aria-controls="address" aria-selected="true"><i
+                                            class="fi-rs-marker mr-10"></i>My Address</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="tab-content dashboard-content">
+
+                            <!-- <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
+                                aria-labelledby="dashboard-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Hello <%#= user.name %>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>From your account dashboard. you can easily check &amp; view your <a
+                                                href="#">recent orders</a>, manage your <a href="#">shipping and
+                                                billing addresses</a> and <a href="#">edit your password and
+                                                account details.</a></p>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <div class="tab-pane fade active show" id="account-detail" role="tabpanel"
+                                aria-labelledby="account-detail-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Edit Account Details</h5>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <form method="post" name="enq">
+                                            <div class="row">
+                                                <div class="form-group col-md-10">
+                                                    <label>👤 User Name <span class="required"></span></label>
+                                                    <input required="" class="form-control square" id="name"
+                                                        name="dname" type="text" value="<%= user.name  %>">
+                                                    <small id="nameError" class="text-danger"
+                                                        style="display: none;">User Name already taken</small>
+                                                </div>
+                                                <div class="form-group col-md-10">
+                                                    <label>✉️ Email Address <span class="required"></span></label>
+                                                    <input required="" class="form-control square" name="email"
+                                                        type="email" value="<%= user.email  %> " readonly>
+                                                </div>
+                                                <div class="form-group col-md-10">
+                                                    <label>☎️ Contact number <span class="required"></span></label>
+                                                    <input required="" class="form-control square" id="mobile"
+                                                        name="dname" type="text" value="<%= user.mobile  %>">
+                                                    <small id="mobileError" class="text-danger"
+                                                        style="display: none;">User Name already taken</small>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <!-- <button type="button" class="btn btn-fill-out submit" name="submit"
+                                                        value="Submit" onclick="updateUser()">Save</button> -->
+                                                    <!-- <button type="button" class="btn btn-fill-out submit"
+                                                        onclick="AccountDetails.validateAndUpdateUser()">Save</button> -->
+                                                    <button type="button" class="btn btn-fill-out submit"
+                                                        onclick="validateAndUpdateUser()">Save</button>
+
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Your Orders</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive wholeBody">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Order ID</th>
+                                                        <th>Total</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tableBody">
+                                                    <tr>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Orders Tracking</h5>
+                                    </div>
+                                    <div class="card-body contact-from-area">
+                                        <p>To track your order, please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <form id="trackOrderForm" class="contact-form-style mt-30 mb-50">
+                                                    <div class="input-style mb-20">
+                                                        <label>Order ID</label>
+                                                        <input name="order-id" id="orderIdInput" placeholder="Found in your order confirmation email" type="text" class="square" />
+                                                    </div>
+                                                    <button class="submit submit-auto-width" type="submit">Track</button>
+                                                </form>
+                                                <div id="orderTrackingResult"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Order Details Modal -->
+                            <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="orderModalBody">
+                                            <!-- Order details will be inserted here -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-danger" id="cancelOrderBtn">Cancel Order</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cancel Order Modal -->
+                            <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea id="cancelReason" rows="4" class="form-control" placeholder="Please provide a reason for cancellation"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-danger" id="submitCancelBtn">Submit Cancellation</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+
+
+
+
+
+
+                            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                                <div class="row">
+
+                                    <div class="col-md-12 mb-3">
+                                        <button type="button" class="btn btn-fill-out submit" name="submit"
+                                            value="Submit" id="openDialogButton">Add Address</button>
+                                    </div>
+
+                                    <dialog id="addAddressDialog"
+                                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                                        <form id="addAddressForm"
+                                            style="display: flex; flex-direction: column; gap: 8px;">
+                                            <label for="addressName">Address name</label>
+                                            <input type="text" id="addressName" name="addressName"
+                                                placeholder="Enter a name for address" required data-validate="notEmpty"
+                                                data-error="Address name is required">
+
+                                            <label for="street">Street</label>
+                                            <input type="text" id="street" name="street" placeholder="Enter street"
+                                                required data-validate="notEmpty" data-error="Street is required">
+
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" name="city" placeholder="Enter city" required
+                                                data-validate="notEmpty" data-error="City is required">
+
+                                            <label for="state">State</label>
+                                            <input type="text" id="state" name="state" placeholder="Enter state"
+                                                required data-validate="notEmpty" data-error="State is required">
+
+                                            <label for="pinCode">Pin Code</label>
+                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code"
+                                                required data-validate="pincode" data-error="Pin code must be 6 digits">
+
+                                            <label for="country">Country</label>
+                                            <input type="text" id="country" name="country" placeholder="Enter country"
+                                                required data-validate="notEmpty" data-error="Country is required">
+
+                                            <button formmethod="dialog" id="cancelDialogButton" type="button"
+                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                                            <button type="submit"
+                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                                        </form>
+                                    </dialog>
+
+                                    <div id="addressList" class="row">
+
+                                        <!-- address will be dynamically added here -->
+
+                                    </div>
+
+                                    <dialog id="editAddressDialog"
+                                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                                        <form id="editAddressForm"
+                                            style="display: flex; flex-direction: column; gap: 8px;">
+                                            <label for="addressName">Address name</label>
+                                            <input type="text" id="addressName" name="addressName"
+                                                placeholder="Enter a name for address" required data-validate="notEmpty"
+                                                data-error="Address name is required">
+
+                                            <label for="street">Street</label>
+                                            <input type="text" id="street" name="street" placeholder="Enter street"
+                                                required data-validate="notEmpty" data-error="Street is required">
+
+                                            <label for="city">City</label>
+                                            <input type="text" id="city" name="city" placeholder="Enter city" required
+                                                data-validate="notEmpty" data-error="City is required">
+
+                                            <label for="state">State</label>
+                                            <input type="text" id="state" name="state" placeholder="Enter state"
+                                                required data-validate="notEmpty" data-error="State is required">
+
+                                            <label for="pinCode">Pin Code</label>
+                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code"
+                                                required data-validate="pincode" data-error="Pin code must be 6 digits">
+
+                                            <label for="country">Country</label>
+                                            <input type="text" id="country" name="country" placeholder="Enter country"
+                                                required data-validate="notEmpty" data-error="Country is required">
+
+                                            <input type="hidden" id="addressId" name="addressId">
+
+                                            <button formmethod="dialog" id="cancelEditDialogButton" type="button"
+                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+
+                                            <button type="submit"
+                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                                        </form>
+                                    </dialog>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!---- Edit account details ---->
+<script src="/scripts/myAccountDetails.js"></script>
+<!---- address ---->
+<script src="/scripts/myAccountAddress.js"></script>
+<!---- orders ---->
+<script src="/scripts/myAccountOrders.js"></script>
+<!---- track orders ---->
+<script src="/scripts/myAccountTrackOrder.js"></script>

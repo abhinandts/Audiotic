@@ -1,3 +1,21 @@
+<style>
+    .input-upload {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .input-upload img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        padding: 5px;
+        border-radius: 5px;
+    }
+</style>
+
 <section class="content-main">
     <form id="productForm" action="/admin/newProduct" method="post" enctype="multipart/form-data">
         <div class="row">
@@ -14,46 +32,75 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Details</h4>
-                    </div>d
+
+                    </div>
                     <div class="card-body">
-                        <div class="mb-4">
-                            <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" required placeholder="Type here" class="form-control" name="productName" id="productName">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Full Specification</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications" id="productSpecifications" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-4">
+                        <% if (error) { %>
+                            <h5 style="color: red;">
+                                <%= error %>
+                            </h5>
+                            <% } %>
                                 <div class="mb-4">
-                                    <label class="form-label">Maximum Retail Price</label>
-                                    <div class="row gx-2">
-                                        <input placeholder="₹" type="text" id="mrp" name="mrp" class="form-control" required>
+                                    <label for="product_name" class="form-label">Product Name</label>
+                                    <input type="text" required placeholder="Type here" class="form-control"
+                                        name="productName" id="productName" value="<%= productName %>">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" rows="4"
+                                        name="productSpecifications" id="productSpecifications"
+                                        required><%=productSpecifications%></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Maximum Retail Price</label>
+                                            <div class="row gx-2">
+                                                <input placeholder="₹" type="text" id="mrp" name="mrp"
+                                                    class="form-control" required value="<%= mrp %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="mb-2">
+                                            <label class="form-label">Discount (%)</label>
+                                            <div class="row gx-2">
+                                                <input placeholder="%" type="number" id="discount" name="discount"
+                                                    class="form-control" min="0" max="100" value="<%=discount %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Price</label>
+                                            <input placeholder="₹" type="text" id="price" name="price"
+                                                class="form-control" required value="<%= price %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Stock</label>
+                                            <input placeholder="100" type="number" id="stock" name="stock"
+                                                class="form-control" min="0" value=" <%= stock %> ">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="category" id="category" required>
+                                            <% categoryData.forEach(element=> { %>
+                                                <!-- <option value="<%#= element.name %>"> -->
+                                                    <option value="<%= element.name %>" <%= element.name === category ? 'selected' : '' %>><%= element.name %></option>
+
+                                                    <%= element.name %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" id="price" name="price" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" name="category" id="category" required>
-                                    <% categoryData.forEach(element => { %>
-                                        <option value="<%= element.name %>">
-                                            <%= element.name %>
-                                        </option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <!-- <div class="col-lg-3">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h4>Media</h4>
@@ -65,36 +112,101 @@
                         </div>
                     </div>
                 </div>
+            </div> -->
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Product Images</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload" id="input-upload">
+                            <img src="/admin/imgs/theme/upload.svg" alt="" id="upload-icon">
+                            <input class="form-control" type="file" name="image" id="image" multiple required>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
         </div>
     </form>
 
-    <script>
-        document.getElementById('productForm').addEventListener('submit', function (event) {
-            const productName = document.getElementById('productName').value;
-            const productSpecifications = document.getElementById('productSpecifications').value;
-            const mrp = document.getElementById('mrp').value;
-            const price = document.getElementById('price').value;
-            const category = document.getElementById('category').value;
-            const image = document.getElementById('image').files.length;
 
-            if (!productName || !productSpecifications || !mrp || !price || !category || image === 0) {
-                event.preventDefault();
-                alert('Please fill out all required fields.');
-            }
-
-            const priceValue = parseFloat(price.replace('₹', '').trim());
-            const mrpValue = parseFloat(mrp.replace('₹', '').trim());
-
-            if (isNaN(priceValue) || isNaN(mrpValue) || priceValue < 0 || mrpValue < 0) {
-                event.preventDefault();
-                alert('Please enter valid numeric values for Price and MRP.');
-            }
-
-            if (priceValue > mrpValue) {
-                event.preventDefault();
-                alert('Price cannot be greater than MRP.');
-            }
-        });
-    </script>
 </section>
+
+
+<script>
+    document.getElementById('productForm').addEventListener('submit', function (event) {
+        const productName = document.getElementById('productName').value;
+        const productSpecifications = document.getElementById('productSpecifications').value;
+        const mrp = document.getElementById('mrp').value;
+        const price = document.getElementById('price').value;
+        const category = document.getElementById('category').value;
+        const image = document.getElementById('image').files.length;
+
+        if (!productName || !productSpecifications || !mrp || !price || !category || image === 0) {
+            event.preventDefault();
+            alert('Please fill out all required fields.');
+        }
+
+        const priceValue = parseFloat(price.replace('₹', '').trim());
+        const mrpValue = parseFloat(mrp.replace('₹', '').trim());
+
+        if (isNaN(priceValue) || isNaN(mrpValue) || priceValue < 0 || mrpValue < 0) {
+            event.preventDefault();
+            alert('Please enter valid numeric values for Price and MRP.');
+        }
+
+        if (priceValue > mrpValue) {
+            event.preventDefault();
+            alert('Price cannot be greater than MRP.');
+        }
+    });
+
+
+    document.getElementById('image').addEventListener('change', function (event) {
+        const inputUploadContainer = document.getElementById('input-upload');
+        const uploadIcon = document.getElementById('upload-icon');
+
+        // Clear previous previews and hide the initial icon
+        inputUploadContainer.innerHTML = '';
+
+        const files = event.target.files;
+        if (files.length > 0) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    inputUploadContainer.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file);
+            });
+        } else {
+            // If no files are chosen, show the initial upload icon
+            inputUploadContainer.appendChild(uploadIcon);
+        }
+
+        // Append the input element back to the container
+        inputUploadContainer.appendChild(event.target);
+    });
+
+    // ---- discount ----
+
+    function calculatePrice() {
+        const mrp = parseFloat(document.getElementById('mrp').value)
+        const discount = parseFloat(document.getElementById('discount').value)
+        let price = document.getElementById('price')
+
+        if (!isNaN(mrp) && !isNaN(discount)) {
+            const discountedPrice = mrp - (mrp * (discount / 100))
+            price.value = discountedPrice.toFixed()
+        } else {
+            price.value = ''
+        }
+
+    }
+
+    document.getElementById('mrp').addEventListener('input', calculatePrice)
+    document.getElementById('discount').addEventListener('input', calculatePrice)
+</script>

@@ -1,90 +1,91 @@
-<section class="pt-100 pb-150">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<section class="pt-100 pb-150 ">
     <div class="container">
         <div class="row">
-            <div class="col-lg-10 m-auto">
-                <div class="row">
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg-6">
-                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
-                            <div class="padding_eight_all bg-white">
-                                <div class="heading_s1">
-                                    <h3 class="mb-30">Create an account</h3>
-                                </div>
-                                <p class="mb-50 font-sm">
-                                    Your personal data will be used to support your experience throughout this
-                                    website, to manage access to your account, and for other purposes described in
-                                    our privacy policy.
+            <div class="col-lg-5 m-auto">
 
-                                
-                                        <h4 style="color: crimson;">
-                                            <%= message %>
-                                        </h4>
-                                        
-                                </p>
-                                <form method="post" id="form" action="/register">
-                                    <div class="form-group">
-                                        <input type="text" id="userName" placeholder="Username" name="name" required
-                                            onkeyup="validateUserName()">
-                                        <span id="userNameErr" style="color: crimson;"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="email" id="email" placeholder="Email" name="email" required
-                                            onkeyup="validateEmail()">
-                                        <span id="emailErr" style="color: crimson;"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" id="mNumber" placeholder="Mobile number" name="mobile"
-                                            required onkeyup="validateNumber()" >
-                                        <span id="mNumberErr" style="color: crimson;"></span>
+                <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                    <div class="padding_eight_all bg-white">
+                        <div class="heading_s1">
+                            <h3 class="mb-30">Create an account</h3>
+                        </div>
+                        <p class="mb-50 font-sm">
+                            Your personal data will be used to support your experience throughout this
+                            website, to manage access to your account, and for other purposes described in
+                            our privacy policy.
 
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="password" name="password" id="password" name="password"
-                                            placeholder="Password" onkeyup="checkPasswords()" value="Hello123">
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="password" name="confirmPassword" id="confirmPassword"
-                                            placeholder="Confirm Password" onkeyup="checkPasswords();" value="Hello123">
-                                        <span id="passwordErr" style="color: crimson;"></span>
-                                    </div>
-                                    <div class="p">
-                                        <div class="">
-                                            <div class="">
-                                                <input class="form-check-input" type="checkbox" name="showPassword"
-                                                    id="showPassword" onclick="passwordVisibility();">
-                                                <label class="form-check-label" for="exampleCheckbox12"><span>Show
-                                                        Password</span></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-fill-out btn-block hover-up" id="register"
-                                            name="login">Submit &amp; Register</button>
-                                    </div>
-                                </form>
-                                <div class="divider-text-center mt-15 mb-15">
-                                    <span> or</span>
-                                </div>
-                                <ul class="btn-login list_none text-center mb-15">
+                        <h4 style="color: crimson;">
+                            <%= message %>
+                        </h4>
 
-                                    <li><a href="/auth/google" class="btn btn-google hover-up">Login With Google</a></li>
-                                </ul>
-                                <div class="text-muted text-center">Already have an account? <a href="/login">Sign in
-                                        now</a>
+                        </p>
+                        <form method="post" id="form" action="/register">
+                            <div class="form-group">
+                                <input type="text" id="userName" placeholder="Username" name="name" required
+                                    onkeyup="validateUserName()">
+                                <span id="userNameErr" style="color: crimson;"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" placeholder="Email" name="email" required
+                                    onkeyup="validateEmail()">
+                                <span id="emailErr" style="color: crimson;"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="mNumber" placeholder="Mobile number" name="mobile" required
+                                    onkeyup="validateNumber()">
+                                <span id="mNumberErr" style="color: crimson;"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <input required="" type="password" name="password" id="password" name="password"
+                                    placeholder="Password" onkeyup="checkPasswords()">
+                            </div>
+                            <div class="form-group">
+                                <input required="" type="password" name="confirmPassword" id="confirmPassword"
+                                    placeholder="Confirm Password" onkeyup="checkPasswords();">
+                                <!-- value="Hello123" -->
+                                <span id="passwordErr" style="color: crimson;"></span>
+                            </div>
+                            <div class="p">
+                                <div class="">
+                                    <div class="">
+                                        <input class="form-check-input" type="checkbox" name="showPassword"
+                                            id="showPassword" onclick="passwordVisibility();">
+                                        <label class="form-check-label" for="exampleCheckbox12"><span>Show
+                                                Password</span></label>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-fill-out btn-block hover-up" id="register"
+                                    name="login">Submit &amp; Register</button>
+                            </div>
+                        </form>
+                        <div class="divider-text-center mt-15 mb-15">
+                            <span> or</span>
+                        </div>
+                        <ul class="btn-login list_none text-center mb-15">
+
+
+                            <li>
+                                <div class="g-signin2" data-onsuccess="onSignIn()"></div>
+                            </li>
+                        </ul>
+                        <div class="text-muted text-center">Already have an account? <a href="/login">Sign in </a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </section>
 
 <script>
+
     let passwordInput = document.getElementById('password');
     let confirmPasswordInput = document.getElementById('confirmPassword');
-
 
     document.addEventListener('DOMContentLoaded', function () {
         let form = document.getElementById('form');
@@ -92,6 +93,9 @@
         let emailInput = document.getElementById('email');
         let numberInput = document.getElementById('mNumber');
         let submitButton = document.getElementById('register');
+
+        // Disable the submit button by default
+        submitButton.disabled = true;
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -105,6 +109,13 @@
             let isEmailValid = validateEmail();
             let isNumberValid = validateNumber();
             let arePasswordsValid = checkPasswords();
+
+            // Enable or disable the submit button based on validation results
+            if (isUsernameValid && isEmailValid && isNumberValid && arePasswordsValid) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
 
             return isUsernameValid && isEmailValid && isNumberValid && arePasswordsValid;
         }
@@ -198,11 +209,16 @@
             }
         }
 
-        usernameInput.addEventListener('input', validateInputs);
-        emailInput.addEventListener('input', validateInputs);
-        numberInput.addEventListener('input', validateInputs);
-        passwordInput.addEventListener('input', validateInputs);
-        confirmPasswordInput.addEventListener('input', validateInputs);
+        function updateSubmitButton() {
+            // Revalidate inputs and update submit button state
+            validateInputs();
+        }
+
+        usernameInput.addEventListener('input', updateSubmitButton);
+        emailInput.addEventListener('input', updateSubmitButton);
+        numberInput.addEventListener('input', updateSubmitButton);
+        passwordInput.addEventListener('input', updateSubmitButton);
+        confirmPasswordInput.addEventListener('input', updateSubmitButton);
     });
 
     function passwordVisibility() {
@@ -214,5 +230,4 @@
             confirmPasswordInput.type = "password";
         }
     }
-
 </script>

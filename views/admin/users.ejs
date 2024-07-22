@@ -32,65 +32,54 @@
                 </div>
             </div>
         </header> -->
-         <!-- card-header end// -->
+
 
         <!-- ------------------------------------------------------------------------------- -->
 
         <div class="card-body">
-
             <% userData.forEach(element=> { %>
-
                 <article class="itemlist">
-
                     <div class="row align-items-center">
                         <div class="col col-check flex-grow-0">
                             <div class="form-check">
                                 🢧
                             </div>
                         </div>
-
-                        <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                            <a class="itemside" href="#">
-                                <div class="left">
-                                    <!-- <img src="assets/imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item"> -->
-                                </div>
+                        <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
                                 <div class="info">
-                                    <h6 class="mb-0">
-                                        <%= element.name%>
-                                    </h6>
+                                    <h6 class="mb-0"><%= element.name %></h6>
                                 </div>
-                            </a>
                         </div>
-                        <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>
-                                <%= element.email %>
-                            </span> </div>
+                        <div class="col-lg-4 col-sm-3 col-5 col-price">
+                            <span><%= element.email %></span>
+                        </div>
                         <div class="col-lg-2 col-sm-2 col-4 col-status">
                             <% if(element.is_active){ %>
                                 <span class="badge rounded-pill alert-success">Active</span>
-                                <% }else{ %>
-                                    <span class="badge rounded-pill alert-danger">Blocked</span>
-                                <% } %>
+                            <% }else{ %>
+                                <span class="badge rounded-pill alert-danger">Blocked</span>
+                            <% } %>
                         </div>
-                        <div class="col-lg-1 col-sm-2 col-4 col-date">
-                            <!-- <span>02.11.2022</span> -->
-                        </div>
+                        <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
+                            <span>02.11.2022</span>
+                        </div> -->
                         <div class="col-lg-2 col-sm-2 col-4 col-action text-end ">
-                            <!-- <a href="#" class="btn btn-sm font-sm rounded btn-brand">
-                                <i class="material-icons md-edit"></i> view
-                            </a> -->
-                            <a href="/admin/blockUser/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                <i class="material-icons md-block"></i> Block
-                            </a>
-                            <a href="/admin/unblockUser/<%= element._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                <i class="material-icons md-verified_user"></i> Unblock
-                            </a>
+                            <% if(element.is_active){ %>
+                                <a href="/admin/blockUser/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                    <i class="material-icons md-block"></i> Block
+                                </a>
+                            <% }else{ %>
+                                <a href="/admin/blockUser/<%= element._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                    <i class="material-icons md-verified_user"></i> Unblock
+                                </a>
+                            <% } %>
                         </div>
                     </div> <!-- row .// -->
                 </article> <!-- itemlist  .// -->
+            <% }); %>
+        </div>
 
-                <% }); %>
 
-        </div> <!-- card-body end// -->
     </div> <!-- card end// -->
     <div class="pagination-area mt-30 mb-50">
         <!-- <nav aria-label="Page navigation example">

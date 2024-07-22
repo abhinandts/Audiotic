@@ -21,12 +21,16 @@ const productSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
+    discount: {
+        type: Number,
+    },
     image: {
         type: Array,
         require: true
-    }, category: {
+    },
+    category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Category',
+        ref: 'Category',
         required: true
     },
     is_active: {
@@ -35,11 +39,3 @@ const productSchema = new mongoose.Schema({
     }
 })
 module.exports = mongoose.model('Product', productSchema)
-
-
-
-
-// category:{
-//     ref:'Category',
-//     require:true
-// }

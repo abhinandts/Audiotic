@@ -1,7 +1,15 @@
 require('dotenv').config()
 const mongoose = require("mongoose")
 const express = require("express")
+const nocache = require("nocache")
 const app = express()
+
+  
+app.use(nocache());
+
+
+const cors = require('cors');
+app.use(cors());
 
 
 

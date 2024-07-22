@@ -25,19 +25,6 @@ const isLoggedOut = (req, res, next) => {
     }
 }
 
-// const checkUserBlocked = async (req, res, next) => {
-//     let value = req.session.userId
-
-
-//     const blocked = await User.findById(value)
-
-//     if (!blocked.is_active) {
-//         next()
-//     } else {
-//         res.render('login', { breadcrumb: "Log in", header: false, smallHeader: true, footer: false, message: 'You are blocked. please contact our customer service.', })
-//     }
-// }
-
 const checkUserBlocked = async (req, res, next) => {
     const userId = req.session.userId;
 

@@ -1,6 +1,10 @@
 const User = require('../models/userModel')
 const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
+const Banner = require('../models/bannerModel')
+const Address = require('../models/addressModel')
+const Cart = require('../models/cartModel')
+
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -78,21 +82,24 @@ const compareOtp = async (req, res) => {
     try {
         const otpValue = req.body.otp
         const sessionOtp = req.session.Data.otp
+
         if (sessionOtp == otpValue) {
             const userData = await req.session.Data
             const user = new User(userData)
             await user.save()
-            res.redirect('/home')
+
+            req.session.Data = null;
+
+            res.json({ success: true, redirectUrl: '/login' })
+
         } else {
-            res.render('otp_page', { message: true, breadcrumb: 'OTP Page', header: false, smallHeader: true, footer: false })
+            res.json({ success: false, message: 'Invalid OTP' })
         }
     } catch (error) {
         console.log(error.message)
+        res.json({ success: false, message: "Server error" })
     }
 }
-
-
-// ---- /resend OTP ---------
 
 const resendOtp = async (req, res) => {
     try {
@@ -108,13 +115,90 @@ const resendOtp = async (req, res) => {
             else {
                 console.log("email not sent");
             }
+            res.json({ success: true, message: 'Mail Resended' })
+        } else {
+            res.json({ success: false, message: 'Mail not sent' })
         }
-        res.render('otp_page', { message: true, breadcrumb: 'OTP Page', header: false, smallHeader: true, footer: false })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: "Server error" })
+    }
+}
+
+// --- forgotPassword ----
+const loadForgotPassword = async (req, res) => {
+    try {
+        res.render('forgotPassword', { breadcrumb: "Forgot Password", header: false, smallHeader: true, footer: false })
     } catch (error) {
         console.log(error.message)
     }
 }
+const checkEmail = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findOne({ email: email })
+        if (!user) {
+            res.json({ success: false, message: "No User found with this Email. Please register" })
+        } else {
+            req.session.user = user
+            const otp = otpService.generateOtp()
+            req.session.otp = otp
+            if (user) {
+                sendVerifyMailRes = otpService.sendVerifyMail(user.name, user.email, otp)
+                if (sendVerifyMailRes) {
+                    console.log("email sent")
+                }
+                else {
+                    console.log("email not sent");
+                }
+            }
+            res.json({ success: true, redirectUrl: '/changePassword' })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: "Server error" })
+    }
+}
 
+// ---- /changePassword ----
+const loadChangePassword = async (req, res) => {
+    try {
+        res.render('changePassword', { breadcrumb: "Change Password", header: false, smallHeader: true, footer: false })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+const changePassword = async (req, res) => {
+    try {
+        const otp = req.body.otp
+        const password = req.body.password
+        const hashedPswd = await bcrypt.hash(password, 12)
+        const sessionOtp = req.session.otp
+
+        if (otp == sessionOtp) {
+
+            const id = req.session.user._id
+            console.log(id)
+            const user = await User.findByIdAndUpdate(id, { $set: { hashedPswd: hashedPswd } })
+            if (user) {
+                console.log("password changed")
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.log("error destroying ", err);
+                        return res.status(500).json({ success: false, message: 'Error destrying session' })
+                    }
+                    return res.json({ success: true, redirectUrl: '/login' })
+                })
+            } else {
+                return res.json({ success: false, message: 'password not changed' })
+            }
+        } else {
+            return res.json({ success: false, message: "OTP not matching" })
+        }
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 // ---- /login -------------------------
 
@@ -180,8 +264,9 @@ const logout = async (req, res) => {
 const loadHome = async (req, res) => {
     try {
         const products = await Product.find({ is_active: true }).populate('category', 'name')
+        const banners = await Banner.find()
 
-        res.render('home', { title: "Home", products, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
+        res.render('home', { title: "Home", products, banners, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
     } catch (error) {
         console.log(error.message)
     }
@@ -192,8 +277,8 @@ const loadHome = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.query.productId).populate('category', 'name')
 
+        const product = await Product.findById(req.query.productId).populate('category', 'name')
         const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: product._id } })
 
         res.render('productPage', { product, relatedProducts, breadcrumb: product.productName, header: true, smallHeader: false, footer: true })
@@ -202,30 +287,91 @@ const loadProduct = async (req, res) => {
     }
 }
 
-// ---- /allProducts -------------
+// ---- /products ---------------
 
-const allProducts = async (req, res) => {
+const loadProducts = async (req, res) => {
     try {
-        const products = await Product.find({ is_active: true }).populate('category', 'name')
-        const categories = await Category.find({}, { name: 1 })
-        res.render('allProducts', { products, categories, breadcrumb: "All Products", header: true, smallHeader: false, footer: true })
+        let breadcrumb;
+        const categoryId = req.query.categoryId
+
+        let products
+        if (categoryId) {
+            products = await Product.find({ category: categoryId, is_active: true })
+            breadcrumb = await Category.find({ name: 1 })
+
+        } else {
+            products = await Product.find().populate('category', 'name')
+            breadcrumb = "All Products"
+        }
+
+        const categories = await Category.find({ is_active: true }, { name: 1 })
+
+        res.render('products', {products, categories, breadcrumb, header: true, smallHeader: false, footer: true })
+
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
     }
 }
 
-// ---- /product ---------------
-
-const productByCategory = async (req, res) => {
+const loadProfile = async (req, res) => {
     try {
-        const products = await Product.find({ category: req.query.categoryId, is_active: true })
-        const categories = await Category.find({}, { name: 1 })
+        const user = await User.findById(req.session.userId)
 
-        res.render('productsByCategory', { products, categories, breadcrumb: "All Products", header: true, smallHeader: false, footer: true })
+        res.render('myAccount', { user, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
     }
 }
+
+const updateAccountDetails = async (req, res) => {
+    try {
+        const { name, mobile } = req.body;
+        const userId = req.session.userId;
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { $set: { name: name, mobile: mobile } },
+            { new: true, useFindAndModify: false }
+        );
+
+        if (!user) {
+            return res.status(404).send('User not found.')
+        }
+
+        // Send success response
+        res.status(200).send('User data updated successfully.');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('An error occurred while updating the user.');
+    }
+};
+
+const checkNameExists = async (req, res) => {
+    try {
+        const { name } = req.body;
+        const userId = req.session.userId
+
+        // const user = await User.findOne({
+        //     name: { $regex: new RegExp('^${name}$', 'i') },
+        // });
+
+        const user = await User.findOne({
+            name: { $regex: new RegExp('^' + name + '$', 'i') },
+            _id: { $ne: userId } // Exclude the current user
+        });
+        console.log(user)
+
+        if (user) {
+            return res.status(200).json({ exists: true })
+        } else {
+            return res.status(200).json({ exists: false })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
 
 module.exports = {
     loadRegister,
@@ -237,7 +383,13 @@ module.exports = {
     loadHome,
     loadProduct,
     resendOtp,
-    allProducts,
-    productByCategory,
-    logout
+    logout,
+    loadProducts,
+    loadProfile,
+    updateAccountDetails,
+    checkNameExists,
+    loadForgotPassword,
+    checkEmail,
+    loadChangePassword,
+    changePassword
 }

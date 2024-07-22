@@ -1,3 +1,10 @@
+<style>
+    .red-input {
+    border: 2px solid red; /* Red border */
+    /* Alternatively, you can use background color or other styles */
+}
+</style>
+
 <section class="content-main">
     <div class="content-header">
         <div>
@@ -15,18 +22,25 @@
                     <form method="post" action="/admin/addCategory">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
-                            <input type="text" placeholder="Type here" class="form-control" name="name"
-                                id="product_name" required />
+                            <% if (error) { %>
+                                <h5 style="color: red;">
+                                    <%= error %>
+                                </h5>
+                            <% } %>
+                                    <input type="text" placeholder="Type here" class="form-control <%= error ?'red-input':''  %>" name="name"
+                                        id="product_name" required value="<%=name  %>" />
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" name="description" required></textarea>
+                            <textarea placeholder="Type here" class="form-control" name="description"
+                                required><%= description  %></textarea>
                         </div>
 
                         <div class="d-grid">
                             <button class="btn btn-primary">Create category</button>
                         </div>
+
                     </form>
                 </div>
                 <div class="col-md-9">
@@ -36,14 +50,14 @@
                                 <tr>
                                     <th class="text-center">
                                         <div class="form-check">
-                                                                                   </div>
+                                        </div>
                                     </th>
                                     <!-- <th>ID</th> -->
                                     <th>Name</th>
                                     <th>Description</th>
                                     <th>Status</th>
-                                    <th class="text-end">Block/Unblock</th>
-                                    <th class="text-end">Edit<i class="material-icons md-edit"></i></th>
+                                    <th class="text-end">Disable/Enable</th>
+                                    <th class="text-end">Edit✎ </th>
                                 </tr>
                             </thead>
 
@@ -53,7 +67,6 @@
                                     <tr>
                                         <td class="text-center">
                                             <div class="form-check">➤
-                                                <!-- <input class="form-check-input" type="checkbox" value="" /> -->
                                             </div>
                                         </td>
                                         <!-- <td>21</td> -->
@@ -76,9 +89,9 @@
                                             <a href="/admin/disable/<%- x._id %>"
                                                 class="btn btn-sm font-sm btn-light rounded">
                                                 <% if(x.is_active){ %>
-                                                    <i class="material-icons md-toggle_on"></i> Disable
+                                                    🔒 Disable
                                                     <% }else{ %>
-                                                        <i class="material-icons md-toggle_off"></i>Enable
+                                                        🔓</i>Enable
                                                         <% } %>
                                             </a>
                                         </td>
@@ -86,7 +99,7 @@
                                         <td class="text-end">
                                             <a href="/admin/editCategory/<%- x._id %>"
                                                 class="btn btn-sm font-sm btn-light rounded">
-                                                 Edit
+                                                Edit
                                             </a>
                                         </td>
                                     </tr>

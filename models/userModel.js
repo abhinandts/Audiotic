@@ -11,15 +11,24 @@ const userSchema = new mongoose.Schema({
     },
     hashedPswd:{
         type:String,
-        required:true
+        sparse:true
     },
     mobile:{
         type:String,
-        required:true
+        sparse: true
+    },
+    address:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Address',
     },
     is_active:{
         type:Boolean,
         default:true
+    },
+    googleId: {
+        type: String,
+        unique: true, // Ensure googleId is unique
+        sparse: true // Allows the field to be optional
     }
 })
 

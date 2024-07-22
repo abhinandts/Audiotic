@@ -1,0 +1,37 @@
+<!-- category grid -->
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Banners</h2>
+            <p>Create and Delete Banners</p>
+        </div>
+        <div>
+            <a href="/admin/newBanner" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
+
+                <% banners.forEach(element=>{ %>
+                
+                <div class="col">
+                    <div class="card card-product-grid">
+                        <a href="#" class="img-wrap"> <img src="/admin/bannerImages/<%=element.image[0]  %>" alt="Product"> </a>
+                        <div class="info-wrap">
+                            <!-- <a href="#" class="title text-truncate"><%#= element.paragraph  %></a>
+                            <a href="#" class="btn btn-sm font-sm rounded btn-brand">
+                                <i class="material-icons md-edit"></i> Edit
+                            </a> -->
+                            <a href="/admin/deleteBanner/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                </i> Delete 🚮
+                            </a>
+                        </div>
+                    </div> <!-- card-product  end// -->
+                </div> <!-- col.// -->
+                <%  }) %>
+            </div> <!-- row.// -->
+        </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+</section> <!-- content-main end// -->

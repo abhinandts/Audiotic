@@ -28,7 +28,7 @@ const verifyLogin = async (req, res) => {
 
         if (adminData) {
             if (data.password === adminData.password) {
-                req.session.adminId = adminData._id
+                req.session.admin = true
                 console.log("admin session stored")
                 res.redirect('/admin/dashboard')
             } else {
@@ -70,21 +70,17 @@ const blockUser = async (req, res) => {
     const userId = req.params.userId
     console.log(userId)
     try {
-        await User.findByIdAndUpdate(userId, { $set: { is_active: false } })
+        const user = await User.findById(userId)
 
-        res.redirect('/admin/users')
+        if (user.is_active) {
+            await User.findByIdAndUpdate(userId, { $set: { is_active: false } })
 
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+            res.redirect('/admin/users')
+        } else {
+            await User.findByIdAndUpdate(userId, { $set: { is_active: true } })
 
-const unblockUser = async (req, res) => {
-    const userId = req.params.userId
-    try {
-        await User.findByIdAndUpdate(userId, { $set: { is_active: true } })
-
-        res.redirect('/admin/users')
+            res.redirect('/admin/users')
+        }
 
     } catch (error) {
         console.log(error.message)
@@ -93,9 +89,9 @@ const unblockUser = async (req, res) => {
 
 // ---- /logOut ----
 
-const logOut = async (req,res) => {
+const logOut = async (req, res) => {
     try {
-        req.session.destroy()
+        req.session.admin = false
         console.log("admin session destroyed")
         console.log(req.session)
         res.redirect('/admin/login')
@@ -111,6 +107,5 @@ module.exports = {
     loadDashboard,
     loadUsers,
     blockUser,
-    unblockUser,
     logOut
 }
