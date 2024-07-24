@@ -30,15 +30,15 @@
     function validateForm(form) {
         const inputs = form.querySelectorAll('input[data-validate]');
         let isValid = true;
-        
+
         inputs.forEach(input => {
             const value = input.value.trim();
             const validationType = input.getAttribute('data-validate');
             const errorMessage = input.getAttribute('data-error');
-            
+
             let inputIsValid = true;
-            
-            switch(validationType) {
+
+            switch (validationType) {
                 case 'notEmpty':
                     inputIsValid = value !== '';
                     break;
@@ -46,7 +46,7 @@
                     inputIsValid = /^\d{6}$/.test(value);
                     break;
             }
-            
+
             if (!inputIsValid) {
                 isValid = false;
                 showInputError(input, errorMessage);
@@ -54,33 +54,33 @@
                 clearInputError(input);
             }
         });
-        
+
         return isValid;
     }
 
 
 
-function showInputError(input, message) {
-    clearInputError(input); // Clear any existing error first
-    
-    const errorElement = document.createElement('div');
-    errorElement.textContent = message;
-    errorElement.className = 'error-message';
-    errorElement.style.color = 'red';
-    errorElement.style.fontSize = '0.8em';
-    errorElement.style.marginTop = '4px';
-    
-    input.parentNode.insertBefore(errorElement, input.nextSibling);
-    input.style.borderColor = 'red';
-}
+    function showInputError(input, message) {
+        clearInputError(input); // Clear any existing error first
 
-function clearInputError(input) {
-    const errorElement = input.nextElementSibling;
-    if (errorElement && errorElement.classList.contains('error-message')) {
-        errorElement.remove();
+        const errorElement = document.createElement('div');
+        errorElement.textContent = message;
+        errorElement.className = 'error-message';
+        errorElement.style.color = 'red';
+        errorElement.style.fontSize = '0.8em';
+        errorElement.style.marginTop = '4px';
+
+        input.parentNode.insertBefore(errorElement, input.nextSibling);
+        input.style.borderColor = 'red';
     }
-    input.style.borderColor = '';
-}
+
+    function clearInputError(input) {
+        const errorElement = input.nextElementSibling;
+        if (errorElement && errorElement.classList.contains('error-message')) {
+            errorElement.remove();
+        }
+        input.style.borderColor = '';
+    }
 
 
     function handleAddressClick() {
@@ -273,14 +273,14 @@ function clearInputError(input) {
         dialog.showModal();
     }
 
-    function confirmDeleteAddress(addressId){
+    function confirmDeleteAddress(addressId) {
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you really want to delete this address?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor:'#0ac06e' ,
+            cancelButtonColor: '#0ac06e',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {

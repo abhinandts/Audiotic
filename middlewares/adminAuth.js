@@ -1,6 +1,5 @@
 const isLogin = async (req, res, next) => {
     try {
-        console.log("isLogin")
         if (req.session.admin) {
             next();
         } else {

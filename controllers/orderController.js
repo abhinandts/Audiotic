@@ -53,7 +53,7 @@ const placeOrder = async (req, res) => {
 
 const orderConfirmation = async (req, res) => {
     try {
-        const order = await Orders.find({ orderId: req.params.orderId })
+        const order = await Orders.findOne({ orderId: req.params.orderId })
         console.log(order)
         res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {

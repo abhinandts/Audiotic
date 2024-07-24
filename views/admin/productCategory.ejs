@@ -18,33 +18,35 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
+
                 <div class="col-md-3">
+                    
                     <form method="post" action="/admin/addCategory">
                         <div class="mb-4">
-                            <label for="product_name" class="form-label">Name</label>
+                            <label for="categoryName" class="form-label">Name</label>
                             <% if (error) { %>
-                                <h5 style="color: red;">
-                                    <%= error %>
-                                </h5>
+                            <h5 style="color: red;">
+                                <%= error %>
+                            </h5>
                             <% } %>
-                                    <input type="text" placeholder="Type here" class="form-control <%= error ?'red-input':''  %>" name="name"
-                                        id="product_name" required value="<%=name  %>" />
+                            <input type="text" placeholder="Type here" class="form-control <%= error ?'red-input':'' %>" name="name" id="product_name" required value="<%=name  %>" />
                         </div>
-
+                    
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" name="description"
-                                required><%= description  %></textarea>
+                            <textarea placeholder="Type here" class="form-control" name="description" required><%= description  %></textarea>
                         </div>
-
+                    
                         <div class="d-grid">
                             <button class="btn btn-primary">Create category</button>
                         </div>
-
                     </form>
+
                 </div>
+
                 <div class="col-md-9">
                     <div class="table-responsive">
+
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -86,15 +88,14 @@
                                             </div>
                                         </td>
                                         <td class="text-end">
-                                            <a href="/admin/disable/<%- x._id %>"
-                                                class="btn btn-sm font-sm btn-light rounded">
-                                                <% if(x.is_active){ %>
-                                                    🔒 Disable
-                                                    <% }else{ %>
-                                                        🔓</i>Enable
-                                                        <% } %>
+                                            <a href="/admin/disable/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                              <% if(x.is_active){ %>
+                                                🔒 Disable
+                                              <% }else{ %>
+                                                🔓</i>Enable
+                                              <% } %>
                                             </a>
-                                        </td>
+                                          </td>
 
                                         <td class="text-end">
                                             <a href="/admin/editCategory/<%- x._id %>"
@@ -108,8 +109,10 @@
 
                             </tbody>
                         </table>
+
                     </div>
                 </div> <!-- .col// -->
+
             </div> <!-- .row // -->
         </div> <!-- card body .// -->
     </div> <!-- card .// -->

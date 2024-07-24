@@ -28,21 +28,31 @@ const loadCategory = async (req, res) => {
 const addCategory = async (req, res) => {
     try {
         const { name, description } = req.body
+        const trimmedName = name.trim()
+        const trimmedDescription = description.trim()
 
-        const categoryExists = await Category.findOne({ name: name })
+        if (!name || name.trim().length === 0) {
+            let options = { error: "Category is invalid", name, description }
 
-        if (categoryExists) {
-            return res.render('productCategory', {
-                title: "Product Category", header: true, sidebar: true, footer: true,
-                categoryData: await Category.find({}),
-                error: "Category already exists",
-                name,
-                description,
-            })
+            return renderCategoryPage(res, options)
         }
 
+        if (!description || description.trim().length === 0) {
+            let options = { error: "Please provide Description", name, description }
 
-        const category = new Category({ name, description })
+            return renderCategoryPage(res, options)
+        }
+
+        const categoryExists = await Category.findOne({ name: trimmedName })
+
+        if (categoryExists) {
+            let options = { error: "Category already exit", name, description }
+
+            return renderCategoryPage(res, options)
+        }
+
+        const category = new Category({ name: trimmedName, description: trimmedDescription })
+
         await category.save()
 
         res.redirect('/admin/category')
@@ -52,6 +62,16 @@ const addCategory = async (req, res) => {
     }
 }
 
+const renderCategoryPage = async (res, options) => {
+
+    const categoryData = await Category.find({});
+
+    res.render('productCategory', {
+        title: "Product Category", header: true, sidebar: true, footer: true,
+        categoryData,
+        ...options
+    });
+};
 
 // ---- /disable ----------------------------------
 
@@ -60,15 +80,6 @@ const disableCategory = async (req, res) => {
         const id = req.params.categoryId
         const category = await Category.findById(id)
 
-
-        // if (category.is_active) {
-        //     category.is_active = !category.is_active
-        //     await category.save()
-        // } else {
-        //     category.is_active = true
-        //     await category.save()
-        // }
-
         if (category) {
             category.is_active = !category.is_active
             await category.save()
@@ -76,9 +87,7 @@ const disableCategory = async (req, res) => {
             await Product.updateMany(
                 { category: id }, {
                 is_active: category.is_active
-            }
-            )
-
+            })
         }
 
         res.redirect('/admin/category')
@@ -94,7 +103,7 @@ const editCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.categoryId)
 
-        res.render('editCategory', { title: "Edit Category", header: true, sidebar: true, footer: true, category })
+        res.render('editCategory', { error: "", title: "Edit Category", header: true, sidebar: true, footer: true, category })
 
     } catch (error) {
         console.log(error.message)
@@ -116,10 +125,12 @@ const saveCategory = async (req, res) => {
     }
 }
 
+
 module.exports = {
     loadCategory,
     addCategory,
     disableCategory,
     editCategory,
-    saveCategory
+    saveCategory,
+    // updateCategory
 }

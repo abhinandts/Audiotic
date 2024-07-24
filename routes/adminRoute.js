@@ -5,26 +5,36 @@ const adminSession = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(adminSession)
 const mongoose = require("mongoose")
 
+
+const Toastify = require('toastify-js'); // Import Toastify
+
+// // Import CSS (optional, for styling)
+// import "toastify-js/src/toastify.css";
+
 const adminRoute = express()
 
+// Database connection
 mongoose
   .connect(process.env.mongoURI)
-  .then((res) => {
-    console.log("admin mongodb connected");
-  })
+  .then((res) => console.log("admin mongodb connected"))
   .catch((err) => console.error(err));
 
+// Session store setup
 const adminStore = new MongoDBStore({
   uri: process.env.mongoURI,
   collection: "adminSessions",
 })
 
+// Middleware setup
+adminRoute.use(express.json());
 adminRoute.use(require('express-session')({
   secret: 'mySessionSecretForAdmin',
   store: adminStore,
   resave: false,
   saveUninitialized: false,
 }))
+
+
 
 // Template engine setup
 const ejsLayouts = require('express-ejs-layouts')
@@ -71,16 +81,30 @@ const upload = multer({ storage: storage })
 
 // ---- banner
 const bannerStorage = multer.diskStorage({
-  destination:function(req,file,cb){
-    cb(null,path.join(__dirname,'../public/admin/bannerImages'))
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/admin/bannerImages'))
   },
-  filename:function(req,file,cb){
+  filename: function (req, file, cb) {
     const name = file.originalname
-    cb(null,name)
+    cb(null, name)
   }
 })
 
-const uploadBanner = multer({storage:bannerStorage})
+const uploadBanner = multer({ storage: bannerStorage })
+
+
+// // Multer setup for file uploads
+// const productStorage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/admin/productImages')),
+//   filename: (req, file, cb) => cb(null, file.originalname)
+// });
+// const uploadProduct = multer({ storage: productStorage });
+
+// const bannerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/admin/bannerImages')),
+//   filename: (req, file, cb) => cb(null, file.originalname)
+// });
+// const uploadBanner = multer({ storage: bannerStorage });
 
 //----------------------
 
@@ -127,7 +151,7 @@ adminRoute.get("/blockProduct/:productId", productController.blockProduct)
 adminRoute.get("/editProduct/:productId", auth.isLogin, productController.editProduct)
 adminRoute.post("/editProduct/:productId", productController.updateProduct)
 
-adminRoute.get("/editProduct/deleteImage/:imageName/:productId",auth.isLogin,productController.deleteImage)
+adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, productController.deleteImage)
 
 // adminRoute.get("/replaceImage/:imageId",auth.isLogin,productController.replaceImage)
 
@@ -140,9 +164,9 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId",auth.isLogin,pro
 adminRoute.get("/banners", auth.isLogin, bannerController.loadBanners)
 
 adminRoute.get("/newBanner", auth.isLogin, bannerController.newBanner)
-adminRoute.post("/newBanner", auth.isLogin,uploadBanner.array('image',1), bannerController.addBanner)
+adminRoute.post("/newBanner", auth.isLogin, uploadBanner.array('image', 1), bannerController.addBanner)
 
-adminRoute.get("/deleteBanner/:bannerId",bannerController.deleteBanner)
+adminRoute.get("/deleteBanner/:bannerId", bannerController.deleteBanner)
 
 // Catch-all route for unmatched routes
 adminRoute.get("*", (req, res) => {
