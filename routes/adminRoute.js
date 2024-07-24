@@ -131,13 +131,12 @@ adminRoute.get("/blockUser/:userId", auth.isLogin, adminController.blockUser)
 // ---- category ----
 
 adminRoute.get("/category", auth.isLogin, categoryController.loadCategory)
-
 adminRoute.post("/addCategory", categoryController.addCategory)
 
 adminRoute.get("/disable/:categoryId", categoryController.disableCategory)
 
-adminRoute.get("/editCategory/:categoryId", categoryController.editCategory)
-adminRoute.post("/editCategory", categoryController.saveCategory)
+adminRoute.get("/editCategory/:categoryId", categoryController.loadEditCategory)
+adminRoute.post("/editCategory", categoryController.updateCategory)
 
 // ---- product ----
 

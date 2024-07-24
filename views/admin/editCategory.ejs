@@ -1,3 +1,11 @@
+<style>
+    .red-input {
+        border: 2px solid red;
+        /* Red border */
+        /* Alternatively, you can use background color or other styles */
+    }
+</style>
+
 <section class="content-main">
 
     <div class="content-header">
@@ -7,43 +15,62 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
+    <div style="display: flex; justify-content: center;">
 
-                <div class="col-md-4">
+        <div class="card col-md-4 mt-5">
+            <div class="card-body">
+                <div class="row">
 
-                    <form id="editCategoryForm" method="post" action="/admin/editCategory">
-                        <input id="categoryId" type="hidden" name="categoryId" value="<%= category.id %>">
+                    <div class="">
 
-                        <div class="mb-4">
+                        <form id="editCategoryForm" method="post" action="/admin/editCategory">
+                            <input id="categoryId" type="hidden" name="categoryId" value="<%= category.id %>">
 
-                            <label for="product_name" class="form-label">Category Name</label>
-                            <input id="categoryName" type="text" placeholder="Type here" class="form-control"
-                                name="name" value="<%= category.name %>" />
-                            <small id="nameError" class="text-danger" style="display: none;"> Please enter valid
-                                name</small>
+                            <div class="mb-4">
 
-                        </div>
+                                <label for="categoryName" class="form-label">Category Name</label>
 
-                        <div class="mb-4">
+                                <input id="categoryName" type="text" placeholder="Type here" required
+                                    class="form-control mb-2  <%= nameError ?'red-input':'' %> " name="name"
+                                    value="<%= category.name %>" />
+                                <% if (nameError) { %>
+                                    <h5 style="color: red;">
+                                        <%= nameError %>
+                                    </h5>
+                                    <% } %>
 
-                            <label class="form-label">Category Description</label>
-                            <textarea id="categoryDescription" placeholder="Type here" class="form-control"
-                                name="description"><%= category.description %></textarea>
-                            <small id="descriptionError" class="text-danger" style="display: none;"></small>
+                            </div>
 
-                        </div>
+                            <div class="mb-4">
 
-                        <div class="d-grid">
-                            <button class="btn btn-primary">Save</button>
-                        </div>
+                                <label class="form-label">Category Description</label>
+                                <textarea id="categoryDescription" placeholder="Type here" required
+                                    class="form-control mb-2 <%= descriptionError ?'red-input':'' %>"
+                                    name="description"><%= category.description %></textarea>
+                                <% if (descriptionError) { %>
+                                    <h5 style="color: red;">
+                                        <%= descriptionError %>
+                                    </h5>
+                                    <% } %>
 
-                    </form>
+                            </div>
 
-                </div>
+                            <div class="d-grid">
+                                <div style="display: flex; align-items: center; justify-content: space-evenly;  ">
+                                    <a href="/admin/category" class="btn btn-light"> Discard </a>
+                                    <button class="btn btn-primary">Save</button>
+                                </div>
 
-            </div> <!-- .row // -->
-        </div> <!-- card body .// -->
-    </div> <!-- card .// -->
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+
+    </div>
+
 </section>

@@ -11,7 +11,8 @@ const loadCategory = async (req, res) => {
         const categoryData = await Category.find()
 
         res.render('productCategory', {
-            error: req.query.error || false,
+            nameError: req.query.nameError || false,
+            descriptionError: req.query.descriptionError || false,
             title: "Product Category", header: true, sidebar: true, footer: true,
             categoryData,
             name: req.query.name || '',
@@ -32,22 +33,19 @@ const addCategory = async (req, res) => {
         const trimmedDescription = description.trim()
 
         if (!name || name.trim().length === 0) {
-            let options = { error: "Category is invalid", name, description }
-
+            let options = { nameError: "Category is invalid", descriptionError: "", name, description }
             return renderCategoryPage(res, options)
         }
 
         if (!description || description.trim().length === 0) {
-            let options = { error: "Please provide Description", name, description }
-
+            let options = { nameError: "", descriptionError: "Please provide Description", name, description }
             return renderCategoryPage(res, options)
         }
 
         const categoryExists = await Category.findOne({ name: trimmedName })
 
         if (categoryExists) {
-            let options = { error: "Category already exit", name, description }
-
+            let options = { nameError: "Category already exit", descriptionError: "", name, description }
             return renderCategoryPage(res, options)
         }
 
@@ -99,22 +97,41 @@ const disableCategory = async (req, res) => {
 
 // ---- /editCategory -----------------------------
 
-const editCategory = async (req, res) => {
+const loadEditCategory = async (req, res) => {
     try {
-        const category = await Category.findById(req.params.categoryId)
-
-        res.render('editCategory', { error: "", title: "Edit Category", header: true, sidebar: true, footer: true, category })
-
+        const categoryId = req.params.categoryId
+        const category = await Category.findById(categoryId)
+        let options = { nameError: "", descriptionError: "" }
+        return renderEditCategoryPage(res, options, categoryId)
     } catch (error) {
         console.log(error.message)
     }
 }
 
-// ---- /saveCategory -----------------------------
-
-const saveCategory = async (req, res) => {
+const updateCategory = async (req, res) => {
     try {
         const { categoryId, name, description } = req.body
+
+        const trimmedName = name.trim();
+        const trimmedDescription = description.trim()
+
+        let options
+
+        if (!trimmedName || trimmedName.length === 0) {
+            options = { nameError: "Please enter valid name", descriptionError: "" }
+            return renderEditCategoryPage(res, options, categoryId)
+        }
+        if (!trimmedDescription || trimmedDescription.length === 0) {
+            options = { nameError: "", descriptionError: "Please enter valid description" }
+            return renderEditCategoryPage(res, options, categoryId)
+        }
+
+        const categoryExists = await Category.findOne({ name: trimmedName, _id: { $ne: categoryId } })
+
+        if (categoryExists) {
+            options = { nameError: "Entered category is already in use", descriptionError: "" }
+            return renderEditCategoryPage(res, options, categoryId)
+        }
 
         await Category.findByIdAndUpdate(categoryId, { name, description })
 
@@ -125,12 +142,28 @@ const saveCategory = async (req, res) => {
     }
 }
 
+const renderEditCategoryPage = async function (res, options, categoryId) {
+    try {
+        const category = await Category.findOne({ _id: categoryId })
+
+        res.render('editCategory', {
+            title: "editCategory",
+            header: true,
+            footer: true,
+            sidebar: true,
+            category: category,
+            ...options
+        })
+
+    } catch (error) {
+        console.error(error.message)
+    }
+}
 
 module.exports = {
     loadCategory,
     addCategory,
     disableCategory,
-    editCategory,
-    saveCategory,
-    // updateCategory
+    loadEditCategory,
+    updateCategory
 }

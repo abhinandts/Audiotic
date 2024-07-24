@@ -1,6 +1,7 @@
 <style>
     .red-input {
-    border: 2px solid red; /* Red border */
+    border: 2px solid red;
+     /* Red border */
     /* Alternatively, you can use background color or other styles */
 }
 </style>
@@ -24,17 +25,22 @@
                     <form method="post" action="/admin/addCategory">
                         <div class="mb-4">
                             <label for="categoryName" class="form-label">Name</label>
-                            <% if (error) { %>
-                            <h5 style="color: red;">
-                                <%= error %>
-                            </h5>
+                            <input type="text" placeholder="Type here" class="form-control mb-2 <%= nameError ?'red-input':'' %>" name="name" id="product_name" required value="<%=name  %>" />
+                            <% if (nameError) { %>
+                                <h5 style="color: red;">
+                                    <%= nameError %>
+                                </h5>
                             <% } %>
-                            <input type="text" placeholder="Type here" class="form-control <%= error ?'red-input':'' %>" name="name" id="product_name" required value="<%=name  %>" />
                         </div>
                     
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" name="description" required><%= description  %></textarea>
+                            <textarea placeholder="Type here" class="form-control mb-2 <%=descriptionError? 'red-input':''  %>" name="description" required><%= description  %></textarea>
+                            <% if (descriptionError) { %>
+                                <h5 style="color: red;">
+                                    <%= descriptionError %>
+                                </h5>
+                            <% } %>
                         </div>
                     
                         <div class="d-grid">
@@ -50,16 +56,16 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th class="text-center">
-                                        <div class="form-check">
+                                    <th class="text-center col-md-1">
+                                        <div class="form-check ">
                                         </div>
                                     </th>
-                                    <!-- <th>ID</th> -->
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Disable/Enable</th>
-                                    <th class="text-end">Edit✎ </th>
+                                    <!-- <th class="">ID</th> -->
+                                    <th class="col-md-2">Name</th>
+                                    <th class="col-md-4">Category ID</th>
+                                    <th class="col-md-2">Status</th>
+                                    <th class="text-end col-md-1">Disable/Enable</th>
+                                    <th class="text-end col-md-2">Edit✎ </th>
                                 </tr>
                             </thead>
 
@@ -67,16 +73,15 @@
                                 <% categoryData.forEach((x)=>{ %>
 
                                     <tr>
-                                        <td class="text-center">
+                                        <td class="text-center ">
                                             <div class="form-check">➤
                                             </div>
                                         </td>
-                                        <!-- <td>21</td> -->
                                         <td><b>
                                                 <%= x.name %>
                                             </b></td>
                                         <td>
-                                            <%= x.description %>
+                                            <%= x._id %>
                                         </td>
                                         <td>
                                             <div class="col-lg-2 col-sm-2 col-4 col-status">
