@@ -83,8 +83,10 @@
                                     <div class="product-extra-link2">
                                         <button type="button" onclick="addToCart('<%= product._id  %>')"
                                             class="button button-add-to-cart">Add to cart</button>
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/wishlist"><i
-                                                class="fi-rs-heart"></i></a>
+                                        <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up" href="/wishlist"><i
+                                                class="fi-rs-heart"></i></a> -->
+                                        <button type="button" onclick="addToWishlist('<%= product._id  %>')"
+                                            class="button hover-up button-add-to-cart "><i class="fi-rs-heart"></i></button>
                                     </div>
                                 </div>
                                 <ul class="product-meta font-xs color-grey mt-25">
@@ -107,6 +109,9 @@
                             <!-- Detail Info -->
                         </div>
                     </div>
+
+                    <!-- Reviews -->
+
                     <div class="row">
                         <div class="col-lg-10 m-auto entry-main-content">
                             <!-- <h2 class="section-title style-1 mb-30">Description</h2>
@@ -489,4 +494,5 @@
 </section>
 
 <script src="/scripts/addToCart.js"></script>
+<script src="/scripts/addToWishlist.js"></script>
 <script src="/scripts/header.js"></script>

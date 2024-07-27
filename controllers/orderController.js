@@ -2,11 +2,24 @@ const User = require('../models/userModel')
 const Cart = require('../models/cartModel')
 const Address = require('../models/addressModel')
 const Orders = require('../models/ordersModel')
+const Product = require('../models/productModel')
 const { v4: uuidv4 } = require('uuid'); // 
 
 const placeOrder = async (req, res) => {
     try {
         const userId = req.session.userId
+
+        const cartQuantities = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'productName stock' })
+
+        for (let item of cartQuantities.cartProducts) {
+            if (item.quantity > item.product.stock) {
+                return res.status(400).json({
+                    message: `${item.product.productName} is only ${item.product.stock} left in stock, Requested : ${item.quantity}`
+                })
+            }
+        }
+
+
         const address = req.params
         const addressId = address.addressId
 
@@ -15,6 +28,7 @@ const placeOrder = async (req, res) => {
         const addresses = await Address.findOne({ user: userId })
         const selectedAddress = addresses.address.find(item => item._id.toString() == addressId)
 
+        const shipping = cart.cartTotal > 20000 ? 0 : 500;
         // Create a new order
         const order = new Orders({
             user: userId,
@@ -25,6 +39,7 @@ const placeOrder = async (req, res) => {
                 price: item.subtotal / item.quantity // Assuming subtotal is price * quantity
             })),
             orderTotal: cart.cartTotal,
+            shipping: shipping,
             status: "pending",
             address: {
                 addressName: selectedAddress.addressName,
@@ -38,8 +53,15 @@ const placeOrder = async (req, res) => {
         // Save the order
         await order.save()
 
+        for (let item of cart.cartProducts) {
+            await Product.findByIdAndUpdate(item.product, {
+                $inc: { stock: -item.quantity }
+            })
+        }
+
         // Clear the user's cart after placing the order
         await Cart.findOneAndUpdate({ user: userId }, { $set: { cartProducts: [], cartSubtotal: 0, cartTotal: 0 } })
+
 
         let orderId = order.orderId
 
@@ -53,9 +75,10 @@ const placeOrder = async (req, res) => {
 
 const orderConfirmation = async (req, res) => {
     try {
-        const order = await Orders.findOne({ orderId: req.params.orderId })
+        const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
         console.log(order)
-        res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
+        if (order.orderTotal > 2000)
+            res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {
         console.error(error)
     }
@@ -107,13 +130,13 @@ const trackOrder = async (req, res) => {
 
 
 // ---------------------------------------------------
-const loadOrders = async(req,res)=>{
+const loadOrders = async (req, res) => {
     try {
         console.log("orders")
-        
+
     } catch (error) {
-        console.error("Error ",error);
-        res.status(500).json({message:"Internal server error"});
+        console.error("Error ", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 

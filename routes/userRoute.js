@@ -37,7 +37,6 @@ userRoute.set('layout', '../user/layouts/fullWidth')
 userRoute.use(express.static('public/user'))
 userRoute.use('/admin', express.static('public/admin'));
 
-
 userRoute.use('/css', express.static(__dirname + '/public/user/css'))
 userRoute.use('/fonts', express.static(__dirname + '/public/user/fonts'))
 userRoute.use('/imgs', express.static(__dirname + '/public/user/imgs'))
@@ -53,11 +52,11 @@ userRoute.use(bodyParser.urlencoded({ extended: true }))
 // Authentication middleware
 const check = require('../middlewares/userAuth')
 
-
 // ---- controllers ----
 const userController = require('../controllers/userController')
 const addressController = require('../controllers/addressController')
 const cartController = require('../controllers/cartController')
+const wishlistController = require('../controllers/wishlistController')
 const orderController = require('../controllers/orderController')
 
 
@@ -112,6 +111,10 @@ userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartContr
 
 userRoute.get('/api/orders/placeOrder/:addressId',orderController.placeOrder)
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
+
+userRoute.get('/wishlist',wishlistController.loadWishlist)
+
+
 
 
 module.exports = userRoute

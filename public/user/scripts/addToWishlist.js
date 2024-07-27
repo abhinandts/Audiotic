@@ -1,7 +1,7 @@
-async function addToCart(productId) {
+async function addToWishlist(productId) {
     const result = await Swal.fire({
         title: 'Add to Cart',
-        text: "Are you sure you want to add this product to your cart?",
+        text: "Are you sure you want to add this product to your wishlist?",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#1bb21b',
@@ -9,9 +9,8 @@ async function addToCart(productId) {
         confirmButtonText: 'Yes, add it!'
     });
     if (result.isConfirmed) {
-
         try {
-            const response = await fetch('/api/addToCart', {
+            const response = await fetch('/api/addToWishlist', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -19,7 +18,6 @@ async function addToCart(productId) {
                 body: JSON.stringify({ productId })
             });
 
-            // Check if the response is OK (status code in the range 200-299)
             if (!response.ok) {
                 // Try to parse the response as JSON
                 let errorData;
@@ -48,12 +46,11 @@ async function addToCart(productId) {
                 position: "right",
                 backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
             }).showToast();
-            
         } catch (error) {
             console.error('Fetch error:', error);
 
             Toastify({
-                text: error.message || "Failed to add product to cart",
+                text: error.message || "Failed to add product to wishlist",
                 duration: 3000,
                 close: true,
                 gravity: "top",

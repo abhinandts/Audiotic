@@ -40,7 +40,8 @@
                 window.location.href = response.url;
             } else {
                 const errorData = await response.json()
-                throw new Error(errorData.messge || 'Failed to place order.')
+                // throw new Error(errorData.messge || 'Failed to place order.')
+                showToast(errorData.message,"error")
             }
         } catch (error) {
             console.error(error);

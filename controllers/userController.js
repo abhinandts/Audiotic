@@ -5,7 +5,6 @@ const Banner = require('../models/bannerModel')
 const Address = require('../models/addressModel')
 const Cart = require('../models/cartModel')
 
-
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
