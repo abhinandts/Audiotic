@@ -84,31 +84,42 @@ const orderConfirmation = async (req, res) => {
     }
 }
 
+
 const getOrders = async (req, res) => {
     try {
-        const allOrders = await Orders.findOne({ user: req.session.userId })
+        const allOrders = await Orders.find({ user: req.session.userId }).lean();
+        console.log(allOrders);
 
-        if (!allOrders) {
+        if (!allOrders || allOrders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
         }
 
         const orders = allOrders.map(order => {
             const date = new Date(order.orderDate);
             const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+            const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+            console.log(`${formattedDate} ${formattedTime}`);
 
             return {
-                date: formattedDate,
+                date: `${formattedDate} ${formattedTime}`,
                 orderId: order.orderId,
                 totalPrice: order.orderTotal,
                 status: order.status
             };
         });
+
         res.status(200).json(orders);
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: error })
+        console.error(error);
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
+
+
+
+
 
 const trackOrder = async (req, res) => {
     try {
