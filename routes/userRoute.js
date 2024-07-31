@@ -97,7 +97,7 @@ userRoute.delete('/api/myAccount/deleteAddress/:addressId', check.isLoggedIn, ch
 userRoute.get('/api/myAccount/editAddress/:addressId', check.isLoggedIn, check.checkUserBlocked, addressController.getEditAddress)
 userRoute.put('/api/myAccount/editAddress', check.isLoggedIn, check.checkUserBlocked, addressController.editAddress)
 userRoute.get('/api/myAccount/getOrders',orderController.getOrders)
-userRoute.get('/api/myAccount/trackOrders/:orderId',orderController.trackOrder)
+userRoute.post('/myAccount/trackOrder',orderController.trackOrder)
 
 userRoute.get('/cart', check.isLoggedIn, check.checkUserBlocked, cartController.loadCart)
 userRoute.post('/api/addToCart', check.isLoggedIn, check.checkUserBlocked, cartController.addToCart)

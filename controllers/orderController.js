@@ -117,22 +117,17 @@ const getOrders = async (req, res) => {
 };
 
 
-
-
-
-
 const trackOrder = async (req, res) => {
     try {
-        const order = await Orders.findOne({ orderId: req.params.orderId })
+        console.log(req.body.orderId)
+        const order = await Orders.findOne({ orderId: req.body.orderId })
+        console.log(order)
 
         if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+            return res.render('myAccount', { message: "Order not found" });
         }
 
-        // Optionally, you can populate the product details if needed
-        // await order.populate('products.product').execPopulate();
-
-        res.json(order);
+        res.render('trackOrder', { order, header: false, smallHeader: false, breadcrumb: "order confirmed", footer: false })
     } catch (error) {
         console.error("Error tracking order:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -141,20 +136,47 @@ const trackOrder = async (req, res) => {
 
 
 // ---------------------------------------------------
+
+
 const loadOrders = async (req, res) => {
     try {
-        console.log("orders")
-
+        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, orderDate: 1, status: 1 }).populate({ path: 'user', select: 'name email' })
+        orders.forEach(order => {
+            const date = new Date(order.orderDate);
+            const formattedDate = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            order.formattedDate = formattedDate
+        });
+        console.log(orders)
+        res.render('orders', { orders, title: "Orders List", sidebar: true, header: true, footer: true })
     } catch (error) {
         console.error("Error ", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
 
+const showOrder = async (req, res) => {
+    try {
+        const order = await Orders.findOne({ orderId: req.params.orderId }).populate({ path: 'user', select: 'name email mobile' }).populate({ path: 'products.product', select: 'productName price image' })
+        console.log(order.products)
+
+        res.render("showOrder", { order, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
+
+    } catch (error) {
+        console.error(error.message)
+    }
+}
+
+
+
 module.exports = {
     placeOrder,
     orderConfirmation,
     getOrders,
     trackOrder,
-    loadOrders
+    loadOrders,
+    showOrder
 }

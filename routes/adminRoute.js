@@ -114,6 +114,7 @@ const adminController = require('../controllers/adminController')
 const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
 const bannerController = require('../controllers/bannerController')
+const orderController = require('../controllers/orderController')
 // ---------------------------------------
 
 
@@ -156,7 +157,8 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, p
 
 // ---- orders ----
 
-// adminRoute.get("/orders",auth.isLogin,orderController.loadOrders)
+adminRoute.get("/orders",auth.isLogin,orderController.loadOrders)
+adminRoute.get('/showOrder/:orderId',orderController.showOrder)
 
 // ---- banners ----
 

@@ -106,6 +106,8 @@
                                 </div>
                             </div>
 
+
+
                             <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                                 <div class="card">
                                     <div class="card-header">
@@ -134,76 +136,39 @@
                             </div>
 
 
-                            <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                            <div class="tab-pane fade" id="track-orders" role="tabpanel"
+                                aria-labelledby="track-orders-tab">
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="mb-0">Orders Tracking</h5>
                                     </div>
                                     <div class="card-body contact-from-area">
-                                        <p>To track your order, please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
+                                        <p>To track your order, please enter your Order ID in the box below and press
+                                            the "Track" button. This was given to you on your receipt and in the
+                                            confirmation email you should have received.</p>
                                         <div class="row">
                                             <div class="col-lg-8">
-                                                <form id="trackOrderForm" class="contact-form-style mt-30 mb-50">
+
+                                                <form id="trackOrderForm" action="/myAccount/trackOrder" method="POST"
+                                                    class="contact-form-style mt-30 mb-50">
                                                     <div class="input-style mb-20">
                                                         <label>Order ID</label>
-                                                        <input name="order-id" id="orderIdInput" placeholder="Found in your order confirmation email" type="text" class="square" />
+
+                                                        <input name="orderId" id="orderIdInput" required="true"
+                                                            placeholder="Found in your order confirmation email"
+                                                            type="text" class="square" />
+                                                        <small id="orderIdError" class="text-danger"
+                                                            style="display: none;"></small>
                                                     </div>
-                                                    <button class="submit submit-auto-width" type="submit">Track</button>
+                                                    <button class="submit submit-auto-width"
+                                                        type="submit">Track</button>
                                                 </form>
-                                                <div id="orderTrackingResult"></div>
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Order Details Modal -->
-                            <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" id="orderModalBody">
-                                            <!-- Order details will be inserted here -->
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-danger" id="cancelOrderBtn">Cancel Order</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Cancel Order Modal -->
-                            <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea id="cancelReason" rows="4" class="form-control" placeholder="Please provide a reason for cancellation"></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-danger" id="submitCancelBtn">Submit Cancellation</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            
-
-
-
-
 
 
                             <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
@@ -312,5 +277,3 @@
 <script src="/scripts/myAccountAddress.js"></script>
 <!---- orders ---->
 <script src="/scripts/myAccountOrders.js"></script>
-<!---- track orders ---->
-<script src="/scripts/myAccountTrackOrder.js"></script>
