@@ -159,6 +159,7 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, p
 
 adminRoute.get("/orders",auth.isLogin,orderController.loadOrders)
 adminRoute.get('/showOrder/:orderId',orderController.showOrder)
+adminRoute.post('/api/orders/updateOrderStatus',orderController.updateStatus)
 
 // ---- banners ----
 

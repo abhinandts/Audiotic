@@ -40,7 +40,6 @@ const placeOrder = async (req, res) => {
             })),
             orderTotal: cart.cartTotal,
             shipping: shipping,
-            status: "pending",
             address: {
                 addressName: selectedAddress.addressName,
                 street: selectedAddress.street,
@@ -76,7 +75,6 @@ const placeOrder = async (req, res) => {
 const orderConfirmation = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
-        console.log(order)
         if (order.orderTotal > 2000)
             res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {
@@ -88,7 +86,6 @@ const orderConfirmation = async (req, res) => {
 const getOrders = async (req, res) => {
     try {
         const allOrders = await Orders.find({ user: req.session.userId }).lean();
-        console.log(allOrders);
 
         if (!allOrders || allOrders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
@@ -150,7 +147,6 @@ const loadOrders = async (req, res) => {
             });
             order.formattedDate = formattedDate
         });
-        console.log(orders)
         res.render('orders', { orders, title: "Orders List", sidebar: true, header: true, footer: true })
     } catch (error) {
         console.error("Error ", error);
@@ -161,15 +157,28 @@ const loadOrders = async (req, res) => {
 const showOrder = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate({ path: 'user', select: 'name email mobile' }).populate({ path: 'products.product', select: 'productName price image' })
-        console.log(order.products)
+        const orderStatuses = Orders.schema.path('status').enumValues;
 
-        res.render("showOrder", { order, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
+        res.render("showOrder", { order,orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
 
     } catch (error) {
         console.error(error.message)
     }
 }
 
+const updateStatus = async(req,res)=>{
+    try {
+        const id = req.body.orderId
+        const status = req.body.orderStatus
+
+        await Orders.findByIdAndUpdate(id,{status})
+        res.status(200).send({message:"Order status updated successfullyz"});
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500)
+    }
+}
 
 
 module.exports = {
@@ -178,5 +187,6 @@ module.exports = {
     getOrders,
     trackOrder,
     loadOrders,
-    showOrder
+    showOrder,
+    updateStatus
 }

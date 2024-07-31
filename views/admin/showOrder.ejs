@@ -10,20 +10,23 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                     <span>
-                        <i class="material-icons md-calendar_today"></i> <b><%= order.orderDate  %></b>
+                        <i class="material-icons md-calendar_today"></i> <b>
+                            <%= order.orderDate %>
+                        </b>
                     </span> <br>
-                    <small class="text-muted">Order ID: <%= order.orderId  %></small>
+                    <small class="text-muted">Order ID: <%= order.orderId %></small>
                 </div>
                 <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                        <option>Change status</option>
-                        <option>Awaiting payment</option>
-                        <option>Confirmed</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
+
+                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="orderStatusSelect">
+
+                        <% orderStatuses.forEach(function (status) { %>
+                            <option value="<%= status %>" <%=order.status===status ? 'selected' : '' %>><%= status%>
+                            </option>
+                            <% }); %>
+
                     </select>
-                    <a class="btn btn-primary" href="#">Save</a>
-                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
+                    <a class="btn btn-primary" id="saveBtn">Save</a>
                 </div>
             </div>
         </header> <!-- card-header end// -->
@@ -96,15 +99,20 @@
                                         <td>
                                             <a class="itemside" href="#">
                                                 <div class="left">
-                                                    <img src="/admin/productImages/<%= element.product.image[0] %>" width="40" height="40"
-                                                        class="img-xs" alt="Item">
+                                                    <img src="/admin/productImages/<%= element.product.image[0] %>"
+                                                        width="40" height="40" class="img-xs" alt="Item">
                                                 </div>
-                                                <div class="info"> <%= element.product.productName  %> </div>
+                                                <div class="info">
+                                                    <%= element.product.productName %>
+                                                </div>
                                             </a>
                                         </td>
-                                        <td> ₹<%= element.product.price  %> </td>
-                                        <td> <%= element.quantity  %> </td>
-                                        <td class="text-end"> ₹<%= element.price * element.quantity  %>.00 </td>
+                                        <td> ₹<%= element.product.price %>
+                                        </td>
+                                        <td>
+                                            <%= element.quantity %>
+                                        </td>
+                                        <td class="text-end"> ₹<%= element.price * element.quantity %>.00 </td>
                                     </tr>
 
                                     <% }); %>
@@ -114,15 +122,16 @@
                                                 <article class="float-end">
                                                     <dl class="dlist">
                                                         <dt>Subtotal:</dt>
-                                                        <dd>₹<%= order.orderTotal  %>.00/-</dd>
+                                                        <dd>₹<%= order.orderTotal %>.00/-</dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Shipping cost:</dt>
-                                                        <dd>₹<%= order.shipping  %>.00/-</dd>
+                                                        <dd>₹<%= order.shipping %>.00/-</dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Grand total:</dt>
-                                                        <dd> <b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/- </b> </dd>
+                                                        <dd> <b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/-
+                                                            </b> </dd>
                                                     </dl>
                                                     <!-- <dl class="dlist">
                                                         <dt class="text-muted">Status:</dt>
@@ -157,3 +166,41 @@
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
 </section>
+
+<script>
+    (function () {
+        let saveButton, orderStatus;
+
+        function initializeElements() {
+            saveButton = document.getElementById('saveBtn')
+            orderStatusSelect = document.getElementById('orderStatusSelect')
+        }
+        function initializeEventListeners() {
+            saveButton.addEventListener('click', changeStatus)
+
+        }
+        async function changeStatus() {
+            const orderStatus = orderStatusSelect.value;
+            const orderId = '<%= order._id  %>';
+
+            try {
+                const response = await fetch('/admin/api/orders/updateOrderStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId, orderStatus })
+                })
+            } catch (error) {
+                console.error(error)
+                alert(error)
+            }
+        }
+
+        function init() {
+            initializeElements();
+            initializeEventListeners();
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    })()
+</script>
