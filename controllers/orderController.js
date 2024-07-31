@@ -61,7 +61,6 @@ const placeOrder = async (req, res) => {
         // Clear the user's cart after placing the order
         await Cart.findOneAndUpdate({ user: userId }, { $set: { cartProducts: [], cartSubtotal: 0, cartTotal: 0 } })
 
-
         let orderId = order.orderId
 
         res.redirect(`/orders/orderConfirmation/${orderId}`);
@@ -117,14 +116,16 @@ const getOrders = async (req, res) => {
 const trackOrder = async (req, res) => {
     try {
         console.log(req.body.orderId)
-        const order = await Orders.findOne({ orderId: req.body.orderId })
+        const order = await Orders.findOne({ orderId: req.body.orderId }).populate('products.product')
+
         console.log(order)
 
         if (!order) {
             return res.render('myAccount', { message: "Order not found" });
         }
 
-        res.render('trackOrder', { order, header: false, smallHeader: false, breadcrumb: "order confirmed", footer: false })
+        res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
+
     } catch (error) {
         console.error("Error tracking order:", error);
         res.status(500).json({ message: "Internal server error" });
@@ -159,27 +160,26 @@ const showOrder = async (req, res) => {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate({ path: 'user', select: 'name email mobile' }).populate({ path: 'products.product', select: 'productName price image' })
         const orderStatuses = Orders.schema.path('status').enumValues;
 
-        res.render("showOrder", { order,orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
+        res.render("showOrder", { order, orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
 
     } catch (error) {
         console.error(error.message)
     }
 }
 
-const updateStatus = async(req,res)=>{
+const updateStatus = async (req, res) => {
     try {
         const id = req.body.orderId
         const status = req.body.orderStatus
 
-        await Orders.findByIdAndUpdate(id,{status})
-        res.status(200).send({message:"Order status updated successfullyz"});
-        
+        await Orders.findByIdAndUpdate(id, { status })
+        res.status(200).send({ message: "Order status updated successfullyz" });
+
     } catch (error) {
         console.log(error)
         res.status(500)
     }
 }
-
 
 module.exports = {
     placeOrder,
