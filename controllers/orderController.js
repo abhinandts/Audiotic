@@ -115,10 +115,8 @@ const getOrders = async (req, res) => {
 
 const trackOrder = async (req, res) => {
     try {
-        console.log(req.body.orderId)
-        const order = await Orders.findOne({ orderId: req.body.orderId }).populate('products.product')
-
-        console.log(order)
+        const id = req.body.orderId.trim()
+        const order = await Orders.findOne({ orderId: id }).populate('products.product')
 
         if (!order) {
             return res.render('myAccount', { message: "Order not found" });
@@ -173,11 +171,44 @@ const updateStatus = async (req, res) => {
         const status = req.body.orderStatus
 
         await Orders.findByIdAndUpdate(id, { status })
-        res.status(200).send({ message: "Order status updated successfullyz" });
+        res.status(200).send({ message: "Order status successfully updated." });
 
     } catch (error) {
         console.log(error)
         res.status(500)
+    }
+}
+
+// const cancelOrder = async (req, res) => {
+//     try {
+//         const id = req.body.orderId
+//         const reason = req.body.reason
+
+//         await Orders.findByIdAndUpdate(id, { reason })
+
+//         return res.status(200)
+
+//     } catch (error) {
+//         console.error(error)
+//         return res.status(500)
+//     }
+// }
+
+const cancelOrder = async (req, res) => {
+    try {
+        const id = req.body.orderId
+        const reason = req.body.reason
+
+        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, status: 'Cancelled' }, { new: true })
+
+        if (updatedOrder) {
+            return res.status(200).json({ success: true, message: 'Order cancelled successfully' })
+        } else {
+            return res.status(404).json({ success: false, message: 'Order not found' })
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ success: false, message: 'An error occurred while cancelling the order' })
     }
 }
 
@@ -188,5 +219,6 @@ module.exports = {
     trackOrder,
     loadOrders,
     showOrder,
-    updateStatus
+    updateStatus,
+    cancelOrder
 }

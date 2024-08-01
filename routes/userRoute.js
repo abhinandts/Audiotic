@@ -111,10 +111,8 @@ userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartContr
 
 userRoute.get('/api/orders/placeOrder/:addressId',orderController.placeOrder)
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
+userRoute.post('/api/order/cancelOrder',orderController.cancelOrder)
 
 userRoute.get('/wishlist',wishlistController.loadWishlist)
-
-
-
 
 module.exports = userRoute

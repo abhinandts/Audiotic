@@ -55,6 +55,11 @@ const orderSchema = new mongoose.Schema(
         address: {
             type: Object,
             required: false
+        },
+        reason: {
+            type: String,
+            required: false,
+            default: ""
         }
     }
 )
