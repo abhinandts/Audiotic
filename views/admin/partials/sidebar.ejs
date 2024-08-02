@@ -40,7 +40,8 @@
 
             </li>
             <li class="menu-item ">
-                <a class="menu-link" href="/admin/orders" id="ordersButton" > <i class="icon material-icons md-shopping_cart"></i>
+                <a class="menu-link" href="/admin/orders" id="ordersButton"> <i
+                        class="icon material-icons md-shopping_cart"></i>
                     <span class="text">Orders</span>
                 </a>
             </li>
@@ -48,6 +49,12 @@
                 <a class="menu-link" href="/admin/banners" id="bannersButton"> <i
                         class="icon material-icons md-collections"></i>
                     <span class="text"> Banners </span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/coupons" id="couponsButton"> <i
+                        class="icon material-icons md-local_play"></i>
+                    <span class="text"> Coupons </span>
                 </a>
             </li>
 
@@ -115,11 +122,7 @@
                     <a href="page-settings-2.html">Setting sample 2</a>
                 </div>
             </li>
-            <li class="menu-item">
-                <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
-                    <span class="text"> Starter page </span>
-                </a>
-            </li>
+
         </ul> -->
             <br>
             <br>
@@ -129,23 +132,29 @@
 
 <script>
     // Get the current URL
-const currentUrl = window.location.href;
+    const currentUrl = window.location.href;
 
-// Get the link elements
-const usersButton = document.getElementById('usersButton')
-const productsButton = document.getElementById('productsButton')
-const categoryButton = document.getElementById('categoryButton');
-const bannersButton = document.getElementById('bannersButton');
+    // Get the link elements
+    const usersButton = document.getElementById('usersButton')
+    const productsButton = document.getElementById('productsButton')
+    const categoryButton = document.getElementById('categoryButton');
+    const ordersButton = document.getElementById('ordersButton')
+    const bannersButton = document.getElementById('bannersButton');
+    const couponsButton = document.getElementById('couponsButton')
 
-// Add the active class to the respective link based on the URL
-if (currentUrl.includes('/admin/users')) {
-    usersButton.parentNode.classList.add('active')
-} else if(currentUrl.includes('/admin/products')) {
-    productsButton.parentNode.classList.add('active')
-}
-else if (currentUrl.includes('/admin/category')) {
-    categoryButton.parentNode.classList.add('active');
-} else if (currentUrl.includes('/admin/banners')) {
-    bannersButton.parentNode.classList.add('active');
-}
+    // Add the active class to the respective link based on the URL
+    if (currentUrl.includes('/admin/users')) {
+        usersButton.parentNode.classList.add('active')
+    } else if (currentUrl.includes('/admin/products')) {
+        productsButton.parentNode.classList.add('active')
+    }
+    else if (currentUrl.includes('/admin/category')) {
+        categoryButton.parentNode.classList.add('active');
+    } else if (currentUrl.includes('/admin/banners')) {
+        bannersButton.parentNode.classList.add('active');
+    } else if (currentUrl.includes('/admin/orders')) {
+        ordersButton.parentNode.classList.add('active')
+    } else if (currentUrl.includes('/admin/coupons')) {
+        couponsButton.parentNode.classList.add('active')
+    }
 </script>

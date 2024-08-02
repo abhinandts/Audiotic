@@ -5,7 +5,6 @@ const adminSession = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(adminSession)
 const mongoose = require("mongoose")
 
-
 const Toastify = require('toastify-js'); // Import Toastify
 
 // // Import CSS (optional, for styling)
@@ -35,7 +34,6 @@ adminRoute.use(require('express-session')({
 }))
 
 
-
 // Template engine setup
 const ejsLayouts = require('express-ejs-layouts')
 adminRoute.set('views', './views/admin')
@@ -50,6 +48,7 @@ adminRoute.use('/fonts', express.static(__dirname + '/public/admin/fonts'))
 adminRoute.use('/imgs', express.static(__dirname + '/public/admin/imgs'))
 adminRoute.use('/js', express.static(__dirname + '/public/admin/js'))
 adminRoute.use('/sass', express.static(__dirname + '/public/admin/sass'))
+adminRoute.use('/scripts',express.static(__dirname + '/public/admin/scripts'))
 
 // Body parsing middleware
 const bodyParser = require('body-parser')
@@ -115,6 +114,7 @@ const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
 const bannerController = require('../controllers/bannerController')
 const orderController = require('../controllers/orderController')
+const couponController = require('../controllers/couponController')
 // ---------------------------------------
 
 
@@ -157,9 +157,15 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, p
 
 // ---- orders ----
 
-adminRoute.get("/orders",auth.isLogin,orderController.loadOrders)
-adminRoute.get('/showOrder/:orderId',orderController.showOrder)
-adminRoute.post('/api/orders/updateOrderStatus',orderController.updateStatus)
+adminRoute.get("/orders", auth.isLogin, orderController.loadOrders)
+adminRoute.get('/showOrder/:orderId', orderController.showOrder)
+adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
+
+// ---- coupons ----
+
+adminRoute.get("/coupons", couponController.loadCouponPage)
+adminRoute.post("/api/coupons/createCoupon",couponController.createCoupon)
+adminRoute.post("/api/coupons/checkCouponName",couponController.checkCouponName)
 
 // ---- banners ----
 

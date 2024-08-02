@@ -1,0 +1,97 @@
+<style>
+    .red-input {
+        border: 2px solid red;
+        /* Red border */
+        /* Alternatively, you can use background color or other styles */
+    }
+</style>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+
+            <h2 class="content-title card-title">Coupons </h2>
+            <p>Add, edit or delete a Coupons</p>
+
+        </div>
+        <div>
+            <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <!-- <form> -->
+                        <div class="mb-4">
+
+                            <label for="couponName" class="form-label">Coupon Name</label>
+                            <input type="text" placeholder="Type here" class="form-control mb-2 <%= couponNameError ?'red-input':'' %>" name="couponName" id="couponName" required value="<%=couponName  %>" />
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label for="couponValue" class="form-label">Coupon value</label>
+                            <input type="number" placeholder="Type here" class="form-control mb-2 <%= couponValueError ?'red-input':'' %>" name="couponValue" id="couponValue" required value="<%=couponValue  %>" />
+                            <% if (couponValueError) { %>
+                                <h5 style="color: red;"><%= couponValueError %></h5>
+                                <% } %>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label for="minimumAmount" class="form-label">Minimum order amount</label>
+                            <input type="number" placeholder="Type here" class="form-control mb-2 <%= minimumAmountError ?'red-input':'' %>" name="minimumAmount" id="minimumAmount" required value="<%=minimumAmount  %>" />
+                            <% if (minimumAmountError) { %>
+                                <h5 style="color: red;">
+                                    <%= minimumAmountError %>
+                                </h5>
+                                <% } %>
+
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="createBtn" class="btn btn-primary">Create Coupon</button>
+                        </div>
+                    <!-- </form> -->
+
+                </div>
+
+                <div class="col-md-9">
+                    <div class="table-responsive">
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center col-md-1">
+                                        <div class="form-check ">
+                                        </div>
+                                    </th>
+                                    <!-- <th class="">ID</th> -->
+                                    <th class="col-md-3">Coupon Name</th>
+                                    <th class="col-md-3">Coupon Value</th>
+                                    <th class="col-md-3">Status</th>
+                                    <th class="text-end col-md-3">Disable/Enable</th>
+                                    <!-- <th class="text-end col-md-2">Edit✎ </th> -->
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div> <!-- .col// -->
+
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section>
+
+<script src="/admin/scripts/couponsPage.js"></script>
