@@ -58,8 +58,6 @@
         return isValid;
     }
 
-
-
     function showInputError(input, message) {
         clearInputError(input); // Clear any existing error first
 

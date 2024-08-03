@@ -13,6 +13,33 @@
 
     function initializeEventListeners() {
         createBtn.addEventListener('click', validateForm);
+        couponList.addEventListener('click',handleCouponClick);
+    }
+
+    function handleCouponClick(event){
+        if(event.target.classList.contains('disableButton')){
+            const couponId = event.target.getAttribute('data-id');
+            disableCoupon(couponId)
+        }
+    }
+
+    async function disableCoupon(couponId){
+        try {
+            const response = await fetch('/admin/api/coupons/disableCoupon',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({couponId})
+
+            });
+            if(response.ok){
+                await fetchAndLoadCoupons();
+            }else{
+                const errorData = await response.json()
+                console.log(errorData)
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
 
 
@@ -145,9 +172,9 @@
                                             </div>
                                         </td>
                                         <td class="text-end">
-                                            <a href="/admin/disable/${coupon._id}" class="btn btn-sm font-sm btn-light rounded">
+                                            <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}">
                                                 ${coupon.is_active ? '🔒 Disable' : '🔓Enable'}
-                                            </a>
+                                            </button>
                                           </td>
                                 `;
         return couponItem;

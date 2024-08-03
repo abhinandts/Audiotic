@@ -52,9 +52,29 @@ const loadCoupons = async (req, res) => {
     }
 }
 
+const disableCoupon = async (req, res) => {
+    try {
+        const { couponId } = req.body
+        const coupon = await Coupon.findById(req.body.couponId);
+
+        if (!coupon) {
+            return res.status(404).json({ message: 'coupon not found' })
+        }
+        coupon.is_active = !coupon.is_active
+
+        await coupon.save();
+
+        res.status(200).json({message:'Coupon status updated'})
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 module.exports = {
     loadCouponPage,
     createCoupon,
     // checkCouponName,
-    loadCoupons
+    loadCoupons,
+    disableCoupon
 }
