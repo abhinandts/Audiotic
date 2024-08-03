@@ -1,45 +1,20 @@
 (function () {
     "use strict";
 
-    let couponNameInput, couponValueInput, minimumAmountInput, createBtn;
+    let couponNameInput, couponValueInput, minimumAmountInput, createBtn, couponList;
 
     function initializeElements() {
         couponNameInput = document.getElementById('couponName');
         couponValueInput = document.getElementById('couponValue');
         minimumAmountInput = document.getElementById('minimumAmount');
         createBtn = document.getElementById('createBtn');
+        couponList = document.getElementById('couponList')
     }
 
     function initializeEventListeners() {
         createBtn.addEventListener('click', validateForm);
-        couponNameInput.addEventListener('input', checkCouponName)
     }
 
-    async function checkCouponName() {
-        let couponName = couponNameInput.value.trim()
-        if (!validateCouponName(couponName)) return;
-
-        try {
-            const response = await fetch('/admin/api/coupons/checkCouponName', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ couponName })
-            })
-            if (!response.ok) {
-                const error = await response.json();
-                showError(couponNameInput, error.message || "Coupon name check failed")
-                return false;
-            } else {
-                hideError(couponNameInput)
-            }
-        } catch (error) {
-            console.error(error);
-            showError(couponNameInput, "An error occurred while checking the coupon name");
-            return false;
-        }
-    }
 
     async function validateForm() {
 
@@ -65,10 +40,11 @@
                 const error = await response.json();
                 console.error('Error creating coupon:', error);
                 // Handle error (e.g., show error message to the user)
-                showError(createBtn, error.message || "Failed to create coupon");
+                showError(couponNameInput, error.message || "Failed to create coupon");
             } else {
                 const result = await response.json();
                 console.log('Coupon created successfully:', result);
+                fetchAndLoadCoupons()
                 // You can also display a success message or redirect the user
             }
 
@@ -89,7 +65,7 @@
     }
 
     function validateCouponValue(value) {
-        if (!/^\d+$/.test(value)) {
+        if (!/^\d+$/.test(value)|| parseInt(minimumAmount) <= 0) {
             showError(couponValueInput, "Please enter a valid positive integer for coupon value");
             return false;
         }
@@ -125,9 +101,62 @@
         }
     }
 
+    async function fetchAndLoadCoupons() {
+        try {
+            const response = await fetch("/admin/api/coupons/fetchCoupons");
+            if (!response.ok) {
+                throw new Error('Failed to fetch coupons');
+            }
+            const coupons = await response.json();
+            updateCouponTable(coupons)
+
+        } catch (error) {
+            console.error("client side error:", error)
+        }
+    }
+    function updateCouponTable(coupons) {
+
+        couponList.innerHTML = "";
+        coupons.forEach(coupon => {
+            const couponItem = createCouponItem(coupon);
+            couponList.appendChild(couponItem)
+
+        });
+    }
+    function createCouponItem(coupon) {
+        const couponItem = document.createElement('tr');
+        couponItem.innerHTML = `
+                                        <td class="text-center ">
+                                            <div class="form-check">➤
+                                            </div>
+                                        </td>
+                                        <td><b>
+                                                ${coupon.couponName}  
+                                            </b></td>
+                                        <td>
+                                            ₹${coupon.couponValue}.00/-
+                                        </td>
+                                        <td>
+                                            ₹${coupon.minimumAmount}.00/-
+                                        </td>
+                                        <td>
+                                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                                    <span class="badge rounded-pill ${coupon.is_active ? 'alert-success' : 'alert-danger'}">${coupon.is_active ? 'Active' : 'Disabled'}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="/admin/disable/${coupon._id}" class="btn btn-sm font-sm btn-light rounded">
+                                                ${coupon.is_active ? '🔒 Disable' : '🔓Enable'}
+                                            </a>
+                                          </td>
+                                `;
+        return couponItem;
+    }
+
     function init() {
         initializeElements();
         initializeEventListeners();
+        fetchAndLoadCoupons()
     }
 
     document.addEventListener('DOMContentLoaded', init);
