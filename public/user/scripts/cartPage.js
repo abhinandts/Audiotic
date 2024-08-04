@@ -1,5 +1,9 @@
 (function () {
-    let cartTable, wholeBody,cartSubtotalSpan,shippingCharge,totalSpan;
+    let coupons = [];
+    let cartTable, wholeBody, cartSubtotalSpan, shippingCharge, totalSpan;
+    let selectedCoupon = null;
+    let currentCart = null;
+
 
     function initializeElements() {
         cartTable = document.getElementById('cartTableBody');
@@ -14,26 +18,60 @@
         cartTable.addEventListener("click", handleCartBodyClick);
     }
 
-    async function fetchAndUpdateCart() {
+    function displayCoupons(fetchedCoupons) {
+        coupons = fetchedCoupons;
+        const couponList = document.querySelector('.couponList')
+        couponList.innerHTML = "";
+        coupons.forEach(coupon => {
+            const couponElement = document.createElement('div');
+            couponElement.className = 'couponItem ';
+            couponElement.innerHTML = `
+                        <input type="radio" id="${coupon._id}" class="col-md-2" name="coupon" value="${coupon._id}">
+                        <label for="${coupon._id}" class="col-md-10">
+                            ${coupon.couponName} - ₹${coupon.couponValue} off on orders above ₹${coupon.minimumAmount}
+                        </label>
+            `;
+            couponList.appendChild(couponElement);
+        });
 
-        try {
-            const response = await fetch('/api/cart/getProducts');
-            if (!response.ok) {
-                throw new Error('Failed to fetch products')
-            }
-            const cart = await response.json()
+        couponList.addEventListener('change', handleCouponSelection);
+    }
 
-            if (!cart || cart.cartProducts.length === 0 ) {
-                showEmptyPage()
-            }else {
-                updateCart(cart.cartProducts)
-                updateCartTotals(cart)
-            }
-        }
-        catch (error) {
-            console.error("Error fetching cart product", error)
+    function handleCouponSelection(event) {
+        if (event.target.type === 'radio') {
+            selectedCoupon = coupons.find(coupon => coupon._id === event.target.value);
+            updateCartTotals(currentCart)
         }
     }
+
+    async function fetchAndUpdateCart() {
+        try {
+            const [cartResponse, couponsResponse] = await Promise.all([
+                fetch('/api/cart/getProducts'),
+                fetch('/api/coupons/getCoupons')
+            ]);
+    
+            if (!cartResponse.ok || !couponsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+    
+            currentCart = await cartResponse.json();
+            const coupons = await couponsResponse.json();
+    
+            if (!currentCart || !currentCart.cartProducts || currentCart.cartProducts.length === 0) {
+                showEmptyPage();
+            } else {
+                updateCart(currentCart.cartProducts);
+                updateCartTotals(currentCart);
+                displayCoupons(coupons);
+            }
+        } catch (error) {
+            console.error("Error fetching data", error);
+            showToast("Error fetching cart data", "error");
+        }
+    }
+
+    
     function showEmptyPage() {
         wholeBody.innerHTML = "";
         wholeBody.innerHTML = `
@@ -99,10 +137,23 @@
                                  `;
         return productRow;
     }
-    function updateCartTotals(cart){
+    function updateCartTotals(cart) {
         cartSubtotalSpan.textContent = `₹ ${cart.cartSubtotal.toFixed(2)}/-`;
-        shippingCharge.textContent =  `₹ ${cart.shipping.toFixed(2)}/-`;
-        totalSpan.textContent = `₹ ${cart.cartTotal.toFixed(2)}/-`;
+        shippingCharge.textContent = `₹ ${cart.shipping.toFixed(2)}/-`;
+        // totalSpan.textContent = `₹ ${cart.cartTotal.toFixed(2)}/-`;
+
+        let couponDiscount = 0;
+        if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount) {
+            couponDiscount = selectedCoupon.couponValue;
+        }
+
+        const couponDiscountSpan = document.getElementById('couponDiscount')
+        if (couponDiscountSpan) {
+            couponDiscountSpan.textContent = `₹ ${couponDiscount.toFixed(2)}/-`;
+        }
+
+        const total = cart.cartSubtotal + cart.shipping - couponDiscount;
+        totalSpan.textContent = `₹ ${total.toFixed(2)}/-`;
     }
 
     function handleCartBodyClick(event) {
@@ -200,7 +251,7 @@
             const result = await response.json();
 
             if (!response.ok) {
-                showToast(result.message,result.type||'error')
+                showToast(result.message, result.type || 'error')
                 return;
             }
 
@@ -221,7 +272,9 @@
                 cartTotalSpan.textContent = `₹ ${result.updatedItem.cartTotal.toFixed(2)}/-`;
             }
 
-            showToast(result.message,result.type || 'success');
+            showToast(result.message, result.type || 'success');
+            await fetchAndUpdateCart();
+
         } catch (error) {
             console.error(error);
             showToast('Failed to update quantity', error);

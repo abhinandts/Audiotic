@@ -58,6 +58,7 @@ const addressController = require('../controllers/addressController')
 const cartController = require('../controllers/cartController')
 const wishlistController = require('../controllers/wishlistController')
 const orderController = require('../controllers/orderController')
+const couponController = require('../controllers/couponController')
 
 
 // ---- routes ----
@@ -112,6 +113,8 @@ userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartContr
 userRoute.get('/api/orders/placeOrder/:addressId',orderController.placeOrder)
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
 userRoute.post('/api/order/cancelOrder',orderController.cancelOrder)
+
+userRoute.get('/api/coupons/getCoupons',couponController.getCoupons)
 
 userRoute.get('/wishlist',wishlistController.loadWishlist)
 

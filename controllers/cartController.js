@@ -1,10 +1,12 @@
 const User = require('../models/userModel')
 const Product = require('../models/productModel')
 const Cart = require('../models/cartModel')
+const Coupon = require('../models/couponModel')
 
 const loadCart = async (req, res) => {
     try {
-        res.render('cartPage', { header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
+        const coupons = await Coupon.find()
+        res.render('cartPage', {coupons, header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
     } catch (error) {
         console.log(error.message)
     }

@@ -71,10 +71,20 @@ const disableCoupon = async (req, res) => {
     }
 }
 
+const getCoupons = async (req,res)=>{
+    try {
+        const coupons = await Coupon.find({is_active:true});
+        res.json(coupons)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({message:'Error fetching coupons'})
+    }
+}
+
 module.exports = {
     loadCouponPage,
     createCoupon,
-    // checkCouponName,
     loadCoupons,
-    disableCoupon
+    disableCoupon,
+    getCoupons
 }
