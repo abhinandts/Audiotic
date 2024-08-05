@@ -60,7 +60,23 @@ const addProduct = async (req, res) => {
     }
 }
 
+const getProducts = async (req, res) => {
+    try {
+        const wishlist = await Wishlist.findOne({user:req.session.userId}).populate('products.product')
+        
+        if(wishlist){
+            return res.status(200).json(wishlist)
+        }else{
+            return res.status(200).json(wishlist)
+        }
+    } catch (error) {
+        console.error(error.message)
+        return res.status(500).json({error:"Server error"})
+    }
+}
+
 module.exports = {
     loadWishlist,
-    addProduct
+    addProduct,
+    getProducts
 }

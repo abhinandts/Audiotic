@@ -118,5 +118,6 @@ userRoute.get('/api/coupons/getCoupons',couponController.getCoupons)
 
 userRoute.get('/wishlist',wishlistController.loadWishlist)
 userRoute.post('/api/wishlist/addProduct',wishlistController.addProduct)
+userRoute.get('/api/wishlist/getProducts',wishlistController.getProducts)
 
 module.exports = userRoute
