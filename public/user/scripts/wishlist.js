@@ -1,5 +1,7 @@
 // const { default: Swal } = require("sweetalert2");
 
+// const { addToCart } = require("../../../controllers/cartController");
+
 (function () {
 
     let wishlistTable, wishlistProducts, wholeBody;
@@ -17,6 +19,9 @@
         if (event.target.closest('.deleteProduct')) {
             const productId = event.target.closest('.deleteProduct').getAttribute('dataProductId');
             deleteProduct(productId);
+        }else if(event.target.closest('.add-to-cart-btn')){
+            const productId = event.target.closest('.add-to-cart-btn').getAttribute('data-product-id');
+            addToCart(productId)
         }
     }
     async function deleteProduct(productId){
@@ -105,7 +110,7 @@
                                     <span class="text-success font-weight-bold">In stock</span>
                                 </td>
                                 <td class="text-right" data-title="Cart">
-                                    <button class="btn btn-sm ">
+                                    <button class="btn btn-sm add-to-cart-btn " data-product-id="${element.product._id}" >
                                        Add to Cart
                                     </button>
                                 </td>

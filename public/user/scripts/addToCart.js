@@ -1,4 +1,4 @@
-async function addToCart(productId) {
+window.addToCart = async function (productId) {
     const result = await Swal.fire({
         title: 'Add to Cart',
         text: "Are you sure you want to add this product to your cart?",
