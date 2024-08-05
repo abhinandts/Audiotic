@@ -3,42 +3,124 @@ const Cart = require('../models/cartModel')
 const Address = require('../models/addressModel')
 const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
+const Coupon = require('../models/couponModel')
 const { v4: uuidv4 } = require('uuid'); // 
 
+// const placeOrder = async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         const couponId = req.body.couponId;
+//         const addressId = req.body.addressId;
+
+//         const cartQuantities = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'productName stock' })
+
+//         for (let item of cartQuantities.cartProducts) {
+//             if (item.quantity > item.product.stock) {
+//                 return res.status(400).json({
+//                     message: `${item.product.productName} is only ${item.product.stock} left in stock, Requested : ${item.quantity}`
+//                 })
+//             }
+//         }
+
+//         const cart = await Cart.findOne({ user: userId })
+
+//         const addresses = await Address.findOne({ user: userId })
+//         const selectedAddress = addresses.address.find(item => item._id.toString() == addressId)
+
+//         const shipping = cart.cartTotal > 20000 ? 0 : 500;
+//         // Create a new order
+//         const order = new Orders({
+//             user: userId,
+//             orderId: uuidv4(), // Generate a unique order ID
+//             products: cart.cartProducts.map(item => ({
+//                 product: item.product,
+//                 quantity: item.quantity,
+//                 price: item.subtotal / item.quantity // Assuming subtotal is price * quantity
+//             })),
+//             orderTotal: cart.cartTotal,
+//             shipping: shipping,
+//             address: {
+//                 addressName: selectedAddress.addressName,
+//                 street: selectedAddress.street,
+//                 city: selectedAddress.city,
+//                 state: selectedAddress.state,
+//                 pinCode: selectedAddress.pinCode,
+//                 country: selectedAddress.country
+//             }
+//         })
+//         // Save the order
+//         await order.save()
+
+//         for (let item of cart.cartProducts) {
+//             await Product.findByIdAndUpdate(item.product, {
+//                 $inc: { stock: -item.quantity }
+//             })
+//         }
+
+//         // Clear the user's cart after placing the order
+//         await Cart.findOneAndUpdate({ user: userId }, { $set: { cartProducts: [], cartSubtotal: 0, cartTotal: 0 } })
+
+//         let orderId = order.orderId
+
+//         res.redirect(`/orders/orderConfirmation/${orderId}`);
+
+//     } catch (error) {
+//         console.error(error)
+//         return res.status(500).json({ message: "An error occurred while placing the order" })
+//     }
+// }
+
+
+// ----------------------------------------------------------------
 const placeOrder = async (req, res) => {
     try {
-        const userId = req.session.userId
+        const userId = req.session.userId;
+        const couponId = req.body.couponId;
+        const addressId = req.body.addressId;
 
-        const cartQuantities = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'productName stock' })
+        // Fetch cart and validate stock
+        const cart = await Cart.findOne({ user: userId }).populate({ 
+            path: 'cartProducts.product', 
+            select: 'productName stock price' 
+        });
 
-        for (let item of cartQuantities.cartProducts) {
+        for (let item of cart.cartProducts) {
             if (item.quantity > item.product.stock) {
                 return res.status(400).json({
                     message: `${item.product.productName} is only ${item.product.stock} left in stock, Requested : ${item.quantity}`
-                })
+                });
             }
         }
 
+        // Fetch and validate coupon
+        let couponDiscount = 0;
+        let appliedCoupon = null;
+        if (couponId) {
+            appliedCoupon = await Coupon.findById(couponId);
+            if (appliedCoupon && cart.cartTotal >= appliedCoupon.minimumAmount) {
+                couponDiscount = Math.min(appliedCoupon.couponValue, cart.cartTotal);
+            }
+        }
 
-        const address = req.params
-        const addressId = address.addressId
-
-        const cart = await Cart.findOne({ user: userId })
-
-        const addresses = await Address.findOne({ user: userId })
-        const selectedAddress = addresses.address.find(item => item._id.toString() == addressId)
+        const addresses = await Address.findOne({ user: userId });
+        const selectedAddress = addresses.address.find(item => item._id.toString() == addressId);
 
         const shipping = cart.cartTotal > 20000 ? 0 : 500;
+        console.log(cart.cartTotal)
+        console.log("couponDiscount",couponDiscount)
+        const orderTotalAfterDiscount = cart.cartTotal - couponDiscount ;
+        console.log("order Total after discount",orderTotalAfterDiscount)
+
         // Create a new order
         const order = new Orders({
             user: userId,
-            orderId: uuidv4(), // Generate a unique order ID
+            orderId: uuidv4(),
             products: cart.cartProducts.map(item => ({
-                product: item.product,
+                product: item.product._id,
                 quantity: item.quantity,
-                price: item.subtotal / item.quantity // Assuming subtotal is price * quantity
+                price: item.product.price
             })),
-            orderTotal: cart.cartTotal,
+            orderTotal: orderTotalAfterDiscount,
             shipping: shipping,
             address: {
                 addressName: selectedAddress.addressName,
@@ -47,29 +129,43 @@ const placeOrder = async (req, res) => {
                 state: selectedAddress.state,
                 pinCode: selectedAddress.pinCode,
                 country: selectedAddress.country
-            }
-        })
-        // Save the order
-        await order.save()
+            },
+            couponUsed: appliedCoupon ? appliedCoupon._id : null,
+            couponDiscount: couponDiscount
+        });
 
+        // Save the order
+        await order.save();
+
+        // Update product stock
         for (let item of cart.cartProducts) {
-            await Product.findByIdAndUpdate(item.product, {
+            await Product.findByIdAndUpdate(item.product._id, {
                 $inc: { stock: -item.quantity }
-            })
+            });
         }
 
-        // Clear the user's cart after placing the order
-        await Cart.findOneAndUpdate({ user: userId }, { $set: { cartProducts: [], cartSubtotal: 0, cartTotal: 0 } })
+        // Clear the user's cart
+        await Cart.findOneAndUpdate(
+            { user: userId }, 
+            { $set: { cartProducts: [], cartSubtotal: 0, cartTotal: 0 } }
+        );
 
-        let orderId = order.orderId
+        // Update coupon usage if a coupon was applied
+        if (appliedCoupon) {
+            await Coupon.findByIdAndUpdate(appliedCoupon._id, {
+                $push: { usedBy: userId },
+                $inc: { usageCount: 1 }
+            });
+        }
 
-        res.redirect(`/orders/orderConfirmation/${orderId}`);
+        res.redirect(`/orders/orderConfirmation/${order.orderId}`);
 
     } catch (error) {
-        console.error(error)
-        return res.status(500).json({ message: "An error occurred while placing the order" })
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred while placing the order" });
     }
-}
+};
+// --------------------------------------------------------------
 
 const orderConfirmation = async (req, res) => {
     try {

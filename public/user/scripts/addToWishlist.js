@@ -1,6 +1,6 @@
 async function addToWishlist(productId) {
     const result = await Swal.fire({
-        title: 'Add to Cart',
+        title: 'Add to Wishlist',
         text: "Are you sure you want to add this product to your wishlist?",
         icon: 'question',
         showCancelButton: true,
@@ -10,7 +10,7 @@ async function addToWishlist(productId) {
     });
     if (result.isConfirmed) {
         try {
-            const response = await fetch('/api/addToWishlist', {
+            const response = await fetch('/api/wishlist/addProduct', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ async function addToWishlist(productId) {
             const result = await response.json();
 
             Toastify({
-                text: result.message || "Product added to cart successfully!",
+                text: result.message || "Product added to Wishlist!",
                 duration: 3000,
                 close: true,
                 gravity: "top",

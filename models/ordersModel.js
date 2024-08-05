@@ -60,6 +60,13 @@ const orderSchema = new mongoose.Schema(
             type: String,
             required: false,
             default: ""
+        },
+        couponUsed:{
+            type:mongoose.Schema.Types.ObjectId,ref:'Coupon'
+        },
+        couponDiscount:{
+            type:Number,
+            default:0
         }
     }
 )

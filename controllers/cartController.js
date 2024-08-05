@@ -6,7 +6,7 @@ const Coupon = require('../models/couponModel')
 const loadCart = async (req, res) => {
     try {
         const coupons = await Coupon.find()
-        res.render('cartPage', {coupons, header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
+        res.render('cartPage', { coupons, header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
     } catch (error) {
         console.log(error.message)
     }
@@ -215,15 +215,39 @@ const updateQuantity = async (req, res) => {
 
 const loadCheckout = async (req, res) => {
     try {
+        const couponId = req.query.couponId;
+        // const coupon = await Coupon.findById(couponId)
         const userId = req.session.userId
+
         const cart = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'price stock productName image' })
-        res.render('checkoutPage', { cart, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
+        if (!cart) {
+            return res.status(404).render('error', { message: 'cart not found' });
+        }
+
+        let cartTotal = cart.cartProducts.reduce((total, item) => {
+            return total + (item.product.price * item.quantity);
+        }, 0);
+
+        let coupon = null;
+        let discountAmount = 0;
+
+        if (couponId) {
+            coupon = await Coupon.findById(couponId);
+
+            if (coupon && cartTotal >= coupon.minimumAmount) {
+                discountAmount = Math.min(coupon.couponValue, cartTotal);
+            } else {
+                coupon = null; // Reset coupon if it's invalid
+            }
+        }
+
+        const finalTotal = cartTotal - discountAmount;
+
+        res.render('checkoutPage', { cartTotal, discountAmount, finalTotal, coupon, cart, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
     } catch (error) {
         console.error(error);
     }
 }
-
-
 
 module.exports = {
     loadCart,

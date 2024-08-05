@@ -151,14 +151,22 @@
                                             <th>SubTotal</th>
                                             <td class="product-subtotal" colspan="2">₹<%= cart.cartSubtotal %>.00/-</td>
                                         </tr>
+                                        <% if(coupon){%>
+                                            <tr>
+                                                <th>Coupon Discount</th>
+                                                <td colspan="2">-₹<%= discountAmount %>.00/-</td>
+
+                                            </tr>
+                                            <% } %>  
                                         <tr>
                                             <th>Shipping</th>
                                             <td colspan="2"><em>₹<%= cart.shipping %>.00/-</em></td>
                                         </tr>
+                                        <tr></tr>
                                         <tr>
                                             <th>Total</th>
                                             <td colspan="2" class="product-subtotal"><span
-                                                    class="font-xl text-brand fw-900">₹<%= cart.cartTotal %>.00/-</span>
+                                                    class="font-xl text-brand fw-900">₹<%= finalTotal+cart.shipping %>.00/-</span>
                                             </td>
                                         </tr>
                             </tbody>

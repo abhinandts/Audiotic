@@ -2,10 +2,14 @@
 (function () {
 
     let selectedAddress, addressList, placeOrderButton;
+    let couponId;
 
     function initializeElements() {
         addressList = document.getElementById('addressList');
         placeOrderButton = document.getElementById('placeOrder');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        couponId = urlParams.get('couponId');
     }
 
     function initializeEventListeners() {
@@ -31,17 +35,22 @@
             return;
         }
         try {
-            const response = await fetch(`/api/orders/placeOrder/${addressId}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
+            const orderData = {
+                addressId:addressId,
+                couponId:couponId
+            };
+
+            const response = await fetch(`/api/orders/placeOrder`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:JSON.stringify(orderData)
             });
             if (response.ok) {
                 console.log("Order Placed")
                 window.location.href = response.url;
             } else {
                 const errorData = await response.json()
-                // throw new Error(errorData.messge || 'Failed to place order.')
-                showToast(errorData.message,"error")
+                showToast(errorData.message, "error")
             }
         } catch (error) {
             console.error(error);

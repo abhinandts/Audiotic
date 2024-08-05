@@ -110,12 +110,13 @@ userRoute.get('/api/cart/getCartCount',cartController.getCartCount)
 
 userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartController.loadCheckout)
 
-userRoute.get('/api/orders/placeOrder/:addressId',orderController.placeOrder)
+userRoute.post('/api/orders/placeOrder',orderController.placeOrder)
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
 userRoute.post('/api/order/cancelOrder',orderController.cancelOrder)
 
 userRoute.get('/api/coupons/getCoupons',couponController.getCoupons)
 
 userRoute.get('/wishlist',wishlistController.loadWishlist)
+userRoute.post('/api/wishlist/addProduct',wishlistController.addProduct)
 
 module.exports = userRoute

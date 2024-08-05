@@ -1,9 +1,8 @@
 (function () {
     let coupons = [];
-    let cartTable, wholeBody, cartSubtotalSpan, shippingCharge, totalSpan;
+    let cartTable, wholeBody, cartSubtotalSpan, shippingCharge, totalSpan,checkoutBtn;
     let selectedCoupon = null;
     let currentCart = null;
-
 
     function initializeElements() {
         cartTable = document.getElementById('cartTableBody');
@@ -11,11 +10,21 @@
         cartSubtotalSpan = document.getElementById('cartSubtotal');
         shippingCharge = document.getElementById('shippingCharge');
         totalSpan = document.getElementById('total');
-
+        checkoutBtn = document.getElementById('proceedToCheckout')
     }
 
     function initializeEventListeners() {
         cartTable.addEventListener("click", handleCartBodyClick);
+        checkoutBtn.addEventListener('click',proceedToCheckout)
+    }
+
+    async function proceedToCheckout(){
+        let checkoutUrl = '/cart/checkout';
+
+        if(selectedCoupon){
+            checkoutUrl +=`?couponId=${selectedCoupon._id}`;
+        }
+        window.location.href = checkoutUrl;
     }
 
     function displayCoupons(fetchedCoupons) {
