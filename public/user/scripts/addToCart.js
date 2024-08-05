@@ -48,6 +48,8 @@ window.addToCart = async function (productId) {
                 position: "right",
                 backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
             }).showToast();
+            fetchCartCount()
+            fetchWishlistCount()
             
         } catch (error) {
             console.error('Fetch error:', error);

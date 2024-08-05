@@ -12,7 +12,7 @@ const loadCart = async (req, res) => {
     }
 }
 
-const getCartCount = async (req, res) => {
+const getCount = async (req, res) => {
     try {
         const userId = req.session.userId;
         const cart = await Cart.findOne({ user: userId })
@@ -251,7 +251,7 @@ const loadCheckout = async (req, res) => {
 
 module.exports = {
     loadCart,
-    getCartCount,
+    getCount,
     getProducts,
     addToCart,
     removeFromCart,

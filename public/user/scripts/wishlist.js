@@ -55,6 +55,8 @@
 
                 await fetchAndUpdateWishlist();
                 showToast("Product is removed from your wishlist","success")
+                fetchCartCount()
+                fetchWishlistCount()
                 
             } catch (error) {
                 console.error(error);

@@ -105,8 +105,7 @@ userRoute.post('/api/addToCart', check.isLoggedIn, check.checkUserBlocked, cartC
 userRoute.get('/api/cart/getProducts',check.isLoggedIn, check.checkUserBlocked, cartController.getProducts)
 userRoute.post('/api/cart/updateQuantity',check.isLoggedIn, check.checkUserBlocked, cartController.updateQuantity)
 userRoute.post('/api/cart/removeProduct', check.isLoggedIn, check.checkUserBlocked, cartController.removeFromCart)
-
-userRoute.get('/api/cart/getCartCount',cartController.getCartCount)
+userRoute.get('/api/cart/getCount',cartController.getCount)
 
 userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartController.loadCheckout)
 
@@ -120,5 +119,6 @@ userRoute.get('/wishlist',wishlistController.loadWishlist)
 userRoute.post('/api/wishlist/addProduct',wishlistController.addProduct)
 userRoute.get('/api/wishlist/getProducts',wishlistController.getProducts)
 userRoute.post('/api/wishlist/removeProduct',wishlistController.removeProduct)
+userRoute.get('/api/wishlist/getCount',wishlistController.getCount)
 
 module.exports = userRoute
