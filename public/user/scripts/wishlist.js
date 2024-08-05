@@ -19,12 +19,12 @@
         if (event.target.closest('.deleteProduct')) {
             const productId = event.target.closest('.deleteProduct').getAttribute('dataProductId');
             deleteProduct(productId);
-        }else if(event.target.closest('.add-to-cart-btn')){
+        } else if (event.target.closest('.add-to-cart-btn')) {
             const productId = event.target.closest('.add-to-cart-btn').getAttribute('data-product-id');
             addToCart(productId)
         }
     }
-    async function deleteProduct(productId){
+    async function deleteProduct(productId) {
         event.preventDefault();
 
         const result = await Swal.fire({
@@ -36,31 +36,31 @@
             cancelButtonColor: '#0ac06e',
             confirmButtonText: 'Yes, delete it!'
         });
-        
-        if(result.isConfirmed){
+
+        if (result.isConfirmed) {
             try {
-                const response = await fetch('/api/wishlist/removeProduct',{
-                    method:'post',
-                    headers:{
-                        'Content-Type':'application/json'
+                const response = await fetch('/api/wishlist/removeProduct', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ productId })
                 });
 
-                if(!response.ok){
-                    throw new Error("Failed to remove product");                    
+                if (!response.ok) {
+                    throw new Error("Failed to remove product");
                 }
                 const data = await response.json()
-                console.log("Product deleted",data);
+                console.log("Product deleted", data);
 
                 await fetchAndUpdateWishlist();
-                showToast("Product is removed from your wishlist","success")
+                showToast("Product is removed from your wishlist", "success")
                 fetchCartCount()
                 fetchWishlistCount()
-                
+
             } catch (error) {
                 console.error(error);
-                showToast("Failed to remove product","error")
+                showToast("Failed to remove product", "error")
             }
         }
     }
@@ -99,20 +99,30 @@
     function createProductRow(element) {
         const productRow = document.createElement('tr');
         productRow.className = 'productRow';
+
+        let stockStatus, buttonState;
+        if (element.product.stock > 0) {
+            stockStatus = '<span class="text-success font-weight-bold">In stock</span>';
+            buttonState = '';
+        } else {
+            stockStatus = '<span class="text-danger font-weight-bold">Out of stock</span>';
+            buttonState = 'disabled';
+        }
+
         productRow.innerHTML = `
                                 <td class="image"><img src="/admin/productImages/${element.product.image[0]}" alt="#"></td>
                                 <td class="product-des">
-                                    <h5 class="product-name"><a href="#">${element.product.productName} </a></h5>
+                                    <h5 class="product-name"><a href="/productPage?productId=${element.product._id}">${element.product.productName} </a></h5>
                                      <p class="font-xs"></p>
                                 </td>
                                 <td class="price" data-title="Price">
                                     <span>₹ ${element.product.price}.00 </span>
                                 </td>
                                 <td class="text-center" data-title="Stock">
-                                    <span class="text-success font-weight-bold">In stock</span>
+                                    ${stockStatus}
                                 </td>
                                 <td class="text-right" data-title="Cart">
-                                    <button class="btn btn-sm add-to-cart-btn " data-product-id="${element.product._id}" >
+                                    <button class="btn btn-sm add-to-cart-btn ${buttonState} " data-product-id="${element.product._id}"  >
                                        Add to Cart
                                     </button>
                                 </td>

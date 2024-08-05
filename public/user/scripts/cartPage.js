@@ -107,7 +107,7 @@
                                     </td>
                                     <td class="product-des product-name">
                                         <h5 class="product-name">
-                                            <a href="shop-product-right.html">
+                                            <a href="/productPage?productId=${element.product._id}">
                                                 ${element.product.productName}
                                             </a>
                                         </h5>
