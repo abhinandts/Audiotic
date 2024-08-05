@@ -1,36 +1,87 @@
-(function (){
+// const { default: Swal } = require("sweetalert2");
 
-    let wishlistTable,wishlistProducts,wholeBody;
+(function () {
 
-    function initializeElements (){
+    let wishlistTable, wishlistProducts, wholeBody;
+
+    function initializeElements() {
         wishlistTable = document.getElementById('wishlistTableBody')
         wholeBody = document.getElementById('wholeBody')
     }
 
-    async function fetchAndUpdateWishlist(){
+    function initializeEventListeners() {
+        wishlistTable.addEventListener('click', handleWishlistTableClick)
+    }
+
+    function handleWishlistTableClick(event) {
+        if (event.target.closest('.deleteProduct')) {
+            const productId = event.target.closest('.deleteProduct').getAttribute('dataProductId');
+            deleteProduct(productId);
+        }
+    }
+    async function deleteProduct(productId){
+        event.preventDefault();
+
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to remove this product from the Wishlist?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#0ac06e',
+            confirmButtonText: 'Yes, delete it!'
+        });
+        
+        if(result.isConfirmed){
+            try {
+                const response = await fetch('/api/wishlist/removeProduct',{
+                    method:'post',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({ productId })
+                });
+
+                if(!response.ok){
+                    throw new Error("Failed to remove product");                    
+                }
+                const data = await response.json()
+                console.log("Product deleted",data);
+
+                await fetchAndUpdateWishlist();
+                showToast("Product is removed from your wishlist","success")
+                
+            } catch (error) {
+                console.error(error);
+                showToast("Failed to remove product","error")
+            }
+        }
+    }
+
+    async function fetchAndUpdateWishlist() {
         try {
             const response = await fetch('/api/wishlist/getProducts')
 
-            if(!response){
+            if (!response) {
                 throw new Error('Failed to fetch data');
             }
 
             wishlistProducts = await response.json()
             console.log(wishlistProducts)
 
-            if(!wishlistProducts || !wishlistProducts.products || wishlistProducts.products.length ==0){
+            if (!wishlistProducts || !wishlistProducts.products || wishlistProducts.products.length == 0) {
                 showEmptyPage();
-            }else{
+            } else {
                 updateWishlist(wishlistProducts.products)
             }
             updateWishlist(wishlistProducts.products)
 
         } catch (error) {
-            console.error("Error fetching data",error)
+            console.error("Error fetching data", error)
         }
     }
 
-    function updateWishlist(products){
+    function updateWishlist(products) {
         console.log(products)
         wishlistTable.innerHTML = "";
         products.forEach(element => {
@@ -38,7 +89,7 @@
             wishlistTable.appendChild(productItem)
         });
     }
-    function createProductRow(element){
+    function createProductRow(element) {
         const productRow = document.createElement('tr');
         productRow.className = 'productRow';
         productRow.innerHTML = `
@@ -58,14 +109,18 @@
                                        Add to Cart
                                     </button>
                                 </td>
-                                <td class="action" data-title="Remove"><a href="#"><i class="fi-rs-trash"></i></a></td>
+
+                                <td class="action" data-title="Remove">
+                                    <a href="#" class = "text-muted deleteProduct" dataProductId="${element.product._id}">
+                                        <i class="fi-rs-trash"></i>
+                                    </a>
+                                </td>
                             `;
-                            return productRow;
+        return productRow;
     }
 
-
-    function showEmptyPage (){
-        wholeBody.innerHTML ="";
+    function showEmptyPage() {
+        wholeBody.innerHTML = "";
         wholeBody.innerHTML = `
                                 <div class="text-center mb-200 mt-100">
                                     <h3>Your wishlist is empty</h3>
@@ -75,10 +130,34 @@
                             `
     }
 
-    function init(){
+    function showToast(message, type) {
+        let backgroundColor;
+        switch (type) {
+            case 'success':
+                backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
+                break;
+            case 'error':
+                backgroundColor = "linear-gradient(to right, #ff5f6d, #ffc371)";
+                break;
+            case 'warning':
+                backgroundColor = "linear-gradient(to right, #f39c12, #e67e22)";
+                break;
+            default:
+                backgroundColor = "linear-gradient(to right, #3498db, #2980b9)";
+        }
+        Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: type === 'success' ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
+        }).showToast();
+    }
+    function init() {
         initializeElements();
-        // initializeEventListeners();
+        initializeEventListeners();
         fetchAndUpdateWishlist();
     }
-    document.addEventListener("DOMContentLoaded",init)
-} )()
+    document.addEventListener("DOMContentLoaded", init)
+})()

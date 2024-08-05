@@ -62,21 +62,49 @@ const addProduct = async (req, res) => {
 
 const getProducts = async (req, res) => {
     try {
-        const wishlist = await Wishlist.findOne({user:req.session.userId}).populate('products.product')
-        
-        if(wishlist){
+        const wishlist = await Wishlist.findOne({ user: req.session.userId }).populate('products.product')
+
+        if (wishlist) {
             return res.status(200).json(wishlist)
-        }else{
+        } else {
             return res.status(200).json(wishlist)
         }
     } catch (error) {
         console.error(error.message)
-        return res.status(500).json({error:"Server error"})
+        return res.status(500).json({ error: "Server error" })
+    }
+}
+
+const removeProduct = async (req, res) => {
+    try {
+        const userId = req.session.userId
+        const productId = req.body.productId
+        const wishlist = await Wishlist.findOne({ user: userId })
+
+        if (!wishlist) {
+            return res.status(404).json({ message: "wishlist not found" })
+        }
+
+        const productIndex = wishlist.products.findIndex(element => element.product.toString() === productId);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        wishlist.products.splice(productIndex, 1)
+
+        await wishlist.save();
+
+        return res.status(200).json({ message: "Address deleted successfully" });
+        
+    } catch (error) {
+        console.error(error)
     }
 }
 
 module.exports = {
     loadWishlist,
     addProduct,
-    getProducts
+    getProducts,
+    removeProduct
 }

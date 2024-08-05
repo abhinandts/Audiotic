@@ -137,10 +137,10 @@
                                     </td>
 
                                      <td class="action" data-title="Remove">
-                <a href="#" class="text-muted delete-product" data-product-id="${element.product._id}">
-                    <i class="fi-rs-trash"></i>
-                </a>
-            </td>
+                                        <a href="#" class="text-muted delete-product" data-product-id="${element.product._id}">
+                                            <i class="fi-rs-trash"></i>
+                                        </a>
+                                    </td>
 
 
                                  `;
