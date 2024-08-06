@@ -33,6 +33,10 @@ const getCount = async (req, res) => {
 const getProducts = async (req, res) => {
     try {
         const cart = await Cart.findOne({ user: req.session.userId }).populate('cartProducts.product')
+
+        console.log(cart)
+
+
         if (cart) {
             return res.status(200).json(cart)
         } else {

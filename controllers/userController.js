@@ -262,7 +262,7 @@ const logout = async (req, res) => {
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.find({ is_active: true }).populate('category', 'name')
+        const products = await Product.find({ is_active: true, stock: { $gt: 0 } }).populate('category', 'name')
         const banners = await Banner.find()
 
         res.render('home', { title: "Home", products, banners, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
