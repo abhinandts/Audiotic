@@ -15,7 +15,7 @@
 
     function initializeEventListeners() {
         cartTable.addEventListener("click", handleCartBodyClick);
-        checkoutBtn.addEventListener('click',proceedToCheckout)
+        checkoutBtn.addEventListener('click',proceedToCheckout);
     }
 
     async function proceedToCheckout(){
@@ -70,7 +70,7 @@
             if (!currentCart || !currentCart.cartProducts || currentCart.cartProducts.length === 0) {
                 showEmptyPage();
             } else {
-                updateCart(currentCart.cartProducts);
+                updateCartTable(currentCart.cartProducts);
                 updateCartTotals(currentCart);
                 displayCoupons(coupons);
             }
@@ -80,7 +80,6 @@
         }
     }
 
-    
     function showEmptyPage() {
         wholeBody.innerHTML = "";
         wholeBody.innerHTML = `
@@ -91,7 +90,7 @@
                                 </div>
         `
     }
-    function updateCart(cartProducts) {
+    function updateCartTable(cartProducts) {
         cartTable.innerHTML = "";
         cartProducts.forEach(element => {
             const productItem = createProductRow(element)
@@ -146,10 +145,10 @@
                                  `;
         return productRow;
     }
+
     function updateCartTotals(cart) {
         cartSubtotalSpan.textContent = `₹ ${cart.cartSubtotal.toFixed(2)}/-`;
         shippingCharge.textContent = `₹ ${cart.shipping.toFixed(2)}/-`;
-        // totalSpan.textContent = `₹ ${cart.cartTotal.toFixed(2)}/-`;
 
         let couponDiscount = 0;
         if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount) {
@@ -229,10 +228,6 @@
 
         let row = button.closest('tr');
         let qtySpan = row.querySelector('.qty-val');
-        let subtotalSpan = row.querySelector('.subtotal');
-        let shippingCharge = document.getElementById('shippingCharge')
-        let cartTotalSpan = document.getElementById('total')
-        let totalSubtotal = document.getElementById('cartSubtotal')
 
         if (!qtySpan) {
             console.error('Quantity span not found');
@@ -264,22 +259,7 @@
                 return;
             }
 
-            qtySpan.textContent = result.updatedItem.quantity;
-
-            if (subtotalSpan) {
-                subtotalSpan.textContent = `₹ ${result.updatedItem.subtotal.toFixed(2)} /-`;
-            }
-            // Update the cart Subtotal
-            if (totalSubtotal) {
-                totalSubtotal.textContent = `₹ ${result.updatedItem.cartSubtotal.toFixed(2)}/-`;
-            }
-            if (shippingCharge) {
-                shippingCharge.textContent = `₹ ${result.updatedItem.shipping.toFixed(2)}/-`;
-            }
-            // Update the cart total
-            if (cartTotalSpan) {
-                cartTotalSpan.textContent = `₹ ${result.updatedItem.cartTotal.toFixed(2)}/-`;
-            }
+            qtySpan.textContent = result.quantity;
 
             showToast(result.message, result.type || 'success');
             await fetchAndUpdateCart();

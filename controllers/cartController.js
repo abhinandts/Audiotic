@@ -32,7 +32,7 @@ const getCount = async (req, res) => {
 
 const getProducts = async (req, res) => {
     try {
-        const cart = await Cart.findOne({ user: req.session.userId }).populate('cartProducts.product')
+        const cart = await Cart.findOne({ user: req.session.userId }).populate({ path: 'cartProducts.product', select: '_id productName mrp price stock discount image category is_active' })
 
         if (cart) {
 
@@ -47,14 +47,13 @@ const getProducts = async (req, res) => {
             })
             const shipping = cartSubtotal > 20000 ? 0 : 500;
             const cartTotal = cartSubtotal + shipping;
-            
+
             const cartData = {
                 cartProducts,
                 cartSubtotal,
                 shipping,
                 cartTotal
             }
-            console.log(cartData)
 
             return res.status(200).json(cartData)
         } else {
@@ -193,37 +192,11 @@ const updateQuantity = async (req, res) => {
                 cartItem.quantity -= 1;
             }
 
-            cartItem.subtotal = cartItem.product.price * cartItem.quantity;
-
-            await cart.save();
-
-            // Recalculate things of all items.
-            cart.cartSubtotal = cart.cartProducts.reduce((total, item) => {
-                return total + item.subtotal
-            }, 0);
-
-            // shipping charge
-            if (cart.cartSubtotal < 20000) {
-                cart.shipping = 500
-            } else {
-                cart.shipping = 0
-            }
-
-            //cartTotal
-            cart.cartTotal = cart.cartSubtotal + cart.shipping;
-
             await cart.save();
 
             return res.status(200).json({
                 message: "Product quantity updated",
-                updatedItem: {
-                    productId: cartItem.product._id,
-                    quantity: cartItem.quantity,
-                    subtotal: cartItem.subtotal,
-                    cartSubtotal: cart.cartSubtotal,
-                    shipping: cart.shipping,
-                    cartTotal: cart.cartTotal
-                },
+                quantity:cartItem.quantity
             });
 
         } else {
