@@ -35,7 +35,28 @@ const getProducts = async (req, res) => {
         const cart = await Cart.findOne({ user: req.session.userId }).populate('cartProducts.product')
 
         if (cart) {
-            return res.status(200).json(cart)
+
+            let cartSubtotal = 0;
+            const cartProducts = cart.cartProducts.map(item => {
+                const subtotal = item.product.price * item.quantity;
+                cartSubtotal += subtotal;
+                return {
+                    ...item.toObject(),
+                    subtotal
+                };
+            })
+            const shipping = cartSubtotal > 20000 ? 0 : 500;
+            const cartTotal = cartSubtotal + shipping;
+            
+            const cartData = {
+                cartProducts,
+                cartSubtotal,
+                shipping,
+                cartTotal
+            }
+            console.log(cartData)
+
+            return res.status(200).json(cartData)
         } else {
             return res.status(200).json(cart)
         }
