@@ -35,7 +35,7 @@
             const couponElement = document.createElement('div');
             couponElement.className = 'couponItem ';
             couponElement.innerHTML = `
-                        <input type="radio" id="${coupon._id}" class="col-md-2" name="coupon" value="${coupon._id}">
+                        <input type="checkbox" id="${coupon._id}" class="col-md-2" name="coupon" value="${coupon._id}">
                         <label for="${coupon._id}" class="col-md-10">
                             ${coupon.couponName} - ₹${coupon.couponValue} off on orders above ₹${coupon.minimumAmount}
                         </label>
@@ -46,10 +46,23 @@
         couponList.addEventListener('change', handleCouponSelection);
     }
 
+
     function handleCouponSelection(event) {
-        if (event.target.type === 'radio') {
-            selectedCoupon = coupons.find(coupon => coupon._id === event.target.value);
-            updateCartTotals(currentCart)
+        if (event.target.type === 'checkbox') {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="coupon"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox !== event.target) {
+                    checkbox.checked = false;
+                }
+            });
+    
+            if (event.target.checked) {
+                selectedCoupon = coupons.find(coupon => coupon._id === event.target.value);
+            } else {
+                selectedCoupon = null;
+            }
+    
+            updateCartTotals(currentCart);
         }
     }
 
@@ -141,7 +154,6 @@
                                         </a>
                                     </td>
 
-
                                  `;
         return productRow;
     }
@@ -222,7 +234,6 @@
             }
         }
     }
-
 
     async function updateQuantity(productId, increment, button) {
 
