@@ -196,7 +196,7 @@ const updateQuantity = async (req, res) => {
 
             return res.status(200).json({
                 message: "Product quantity updated",
-                quantity:cartItem.quantity
+                quantity: cartItem.quantity
             });
 
         } else {
@@ -211,7 +211,6 @@ const updateQuantity = async (req, res) => {
 const loadCheckout = async (req, res) => {
     try {
         const couponId = req.query.couponId;
-        // const coupon = await Coupon.findById(couponId)
         const userId = req.session.userId
 
         const cart = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'price stock productName image' })
@@ -219,26 +218,38 @@ const loadCheckout = async (req, res) => {
             return res.status(404).render('error', { message: 'cart not found' });
         }
 
-        let cartTotal = cart.cartProducts.reduce((total, item) => {
-            return total + (item.product.price * item.quantity);
-        }, 0);
+        let cartSubtotal = 0;
+        const cartProducts = cart.cartProducts.map(item => {
+            const subtotal = item.product.price * item.quantity;
+            cartSubtotal += subtotal;
+            return {
+                ...item.toObject(),
+                subtotal
+            };
+        })
 
-        let coupon = null;
-        let discountAmount = 0;
+        let couponValue = 0
 
         if (couponId) {
-            coupon = await Coupon.findById(couponId);
-
-            if (coupon && cartTotal >= coupon.minimumAmount) {
-                discountAmount = Math.min(coupon.couponValue, cartTotal);
-            } else {
-                coupon = null; // Reset coupon if it's invalid
-            }
+            const coupon = await Coupon.findById(couponId);
+            couponValue = coupon.couponValue;
+            console.log(couponValue)
+        } else {
+            console.log("no coupon", couponValue)
         }
 
-        const finalTotal = cartTotal - discountAmount;
+        const shipping = cartSubtotal - couponValue > 20000 ? 0 : 500;
+        const cartTotal = cartSubtotal - couponValue + shipping;
 
-        res.render('checkoutPage', { cartTotal, discountAmount, finalTotal, coupon, cart, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
+        const cartData = {
+            cartProducts,
+            cartSubtotal,
+            couponValue,
+            shipping,
+            cartTotal
+        }
+
+        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
     } catch (error) {
         console.error(error);
     }

@@ -79,9 +79,9 @@ const placeOrder = async (req, res) => {
         const addressId = req.body.addressId;
 
         // Fetch cart and validate stock
-        const cart = await Cart.findOne({ user: userId }).populate({ 
-            path: 'cartProducts.product', 
-            select: 'productName stock price' 
+        const cart = await Cart.findOne({ user: userId }).populate({
+            path: 'cartProducts.product',
+            select: 'productName stock price'
         });
 
         for (let item of cart.cartProducts) {
@@ -92,23 +92,35 @@ const placeOrder = async (req, res) => {
             }
         }
 
+        let cartSubtotal = 0;
+
+        const cartProducts = cart.cartProducts.map(item => {
+            const subtotal = item.product.price * item.quantity;
+            cartSubtotal += subtotal;
+            return {
+                ...item.toObject(),
+                subtotal
+            };
+        })
+
         // Fetch and validate coupon
         let couponDiscount = 0;
         let appliedCoupon = null;
         if (couponId) {
             appliedCoupon = await Coupon.findById(couponId);
-            if (appliedCoupon && cart.cartTotal >= appliedCoupon.minimumAmount) {
-                couponDiscount = Math.min(appliedCoupon.couponValue, cart.cartTotal);
+
+            if (appliedCoupon && cartSubtotal >= appliedCoupon.minimumAmount) {                
+
+                couponDiscount = Math.min(appliedCoupon.couponValue,cartSubtotal);
             }
         }
 
         const addresses = await Address.findOne({ user: userId });
         const selectedAddress = addresses.address.find(item => item._id.toString() == addressId);
 
-        const shipping = cart.cartTotal > 20000 ? 0 : 500;
-        console.log(cart.cartTotal)
-        console.log("couponDiscount",couponDiscount)
-        const orderTotalAfterDiscount = cart.cartTotal - couponDiscount ;
+        const shipping = cartSubtotal> 20000 ? 0 : 500;
+
+        const orderTotalAfterDiscount =cartSubtotal - couponDiscount;
         console.log("order Total after discount",orderTotalAfterDiscount)
 
         // Create a new order
@@ -170,6 +182,7 @@ const placeOrder = async (req, res) => {
 const orderConfirmation = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
+        console.log(order)
         if (order.orderTotal > 2000)
             res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {

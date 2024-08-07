@@ -36,14 +36,14 @@
         }
         try {
             const orderData = {
-                addressId:addressId,
-                couponId:couponId
+                addressId: addressId,
+                couponId: couponId
             };
 
             const response = await fetch(`/api/orders/placeOrder`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:JSON.stringify(orderData)
+                body: JSON.stringify(orderData)
             });
             if (response.ok) {
                 console.log("Order Placed")
@@ -63,32 +63,6 @@
         }
         addressCard.classList.add('selected');
         selectedAddress = addressCard;
-    }
-
-    function showToast(message, type) {
-        let backgroundColor;
-        switch (type) {
-            case 'success':
-                backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
-                break;
-            case 'error':
-                backgroundColor = "linear-gradient(to right, #3498db, #2980b9)";
-                break;
-            case 'warning':
-                backgroundColor = "linear-gradient(to right, #FFA500, #FFD700)";
-                break;
-            default:
-                backgroundColor = "linear-gradient(to right, #3498db, #2980b9)";
-                break;
-        }
-        Toastify({
-            text: message,
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            backgroundColor: type === 'success' ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
-        }).showToast();
     }
 
     function init() {
