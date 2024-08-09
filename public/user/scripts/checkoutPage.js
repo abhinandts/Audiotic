@@ -22,6 +22,13 @@
         });
         placeOrderButton.addEventListener('click', placeOrder)
     }
+    function selectAddress(addressCard) {
+        if (selectedAddress) {
+            selectedAddress.classList.remove('selected');
+        }
+        addressCard.classList.add('selected');
+        selectedAddress = addressCard;
+    }
 
     async function placeOrder() {
         if (!selectedAddress) {
@@ -34,20 +41,36 @@
             showToast("Selected address is invalid..", "warning");
             return;
         }
+
+        const selectedPaymentMethod = document.querySelector('input[name="payment_option"]:checked');
+        if (!selectedPaymentMethod) {
+            showToast("Please select a payment method", "error");
+            return;
+        }
+        const razorpay = selectedPaymentMethod.id === 'exampleRadios5' ? true : false;
+
         try {
             const orderData = {
                 addressId: addressId,
-                couponId: couponId
+                couponId: couponId,
+                razorpay: razorpay
             };
 
-            const response = await fetch(`/api/orders/placeOrder`, {
+            const response = await fetch(`/api/checkout/placeOrder`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
             if (response.ok) {
                 console.log("Order Placed")
-                window.location.href = response.url;
+
+                if (razorpay) {
+                    const razorpayOrder = await response.json();
+                    initializeRazorpay(razorpayOrder);
+
+                } else {
+                    window.location.href = response.url;
+                }
             } else {
                 const errorData = await response.json()
                 showToast(errorData.message, "error")
@@ -57,12 +80,61 @@
         }
     }
 
-    function selectAddress(addressCard) {
-        if (selectedAddress) {
-            selectedAddress.classList.remove('selected');
+    function initializeRazorpay(razorpayOrder) {
+        let orderDetails = razorpayOrder
+        const options = {
+            key: 'rzp_test_l5PYAz2fxdpeOD', // Replace with your Razorpay key ID
+            amount: razorpayOrder.amount,
+            currency: 'INR',
+            name: 'AUDIOTIC',
+            description: 'Payment for order',
+            order_id: razorpayOrder.id,
+            handler: function (response, order) {
+                // Handle payment success
+                console.log('Payment successful:', response);
+                // Perform any necessary actions, such as updating the order status on the server
+                verifyPayment(response, orderDetails)
+            },
+            prefill: {
+                name: 'Customer Name',
+                email: 'customer@example.com',
+                contact: '9999999999',
+            },
+            notes: {
+                address: 'Razorpay Corporate Office',
+            },
+            theme: {
+                color: '#3399cc',
+            },
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+
+    function verifyPayment(response, orderDetails) {
+
+        const paymentDetails = {
+            response, orderDetails
         }
-        addressCard.classList.add('selected');
-        selectedAddress = addressCard;
+        return fetch('/api/checkout/verifyPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paymentDetails)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    console.log('Payment verified successfull')
+                    window.location.href = `/orders/orderConfirmation/${orderDetails.receipt}`;
+                } else {
+                    console.log('Payment verification failed');
+                    showToast('Payment verification failed', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
     }
 
     function init() {

@@ -19,7 +19,7 @@
     }
 
     async function proceedToCheckout(){
-        let checkoutUrl = '/cart/checkout';
+        let checkoutUrl = '/checkout';
 
         if(selectedCoupon){
             checkoutUrl +=`?couponId=${selectedCoupon._id}`;

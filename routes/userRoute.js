@@ -60,6 +60,7 @@ const cartController = require('../controllers/cartController')
 const wishlistController = require('../controllers/wishlistController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const checkoutController = require('../controllers/checkoutController')
 
 
 // ---- routes ----
@@ -108,9 +109,10 @@ userRoute.post('/api/cart/updateQuantity',check.isLoggedIn, check.checkUserBlock
 userRoute.post('/api/cart/removeProduct', check.isLoggedIn, check.checkUserBlocked, cartController.removeFromCart)
 userRoute.get('/api/cart/getCount',cartController.getCount)
 
-userRoute.get('/cart/checkout',check.isLoggedIn,check.checkUserBlocked,cartController.loadCheckout)
+userRoute.get('/checkout',check.isLoggedIn,check.checkUserBlocked,checkoutController.loadCheckout)
+userRoute.post('/api/checkout/placeOrder',check.isLoggedIn,check.checkUserBlocked,checkoutController.placeOrder)
+userRoute.post('/api/checkout/verifyPayment',check.isLoggedIn,check.checkUserBlocked,checkoutController.verifyPayment)
 
-userRoute.post('/api/orders/placeOrder',orderController.placeOrder)
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
 userRoute.post('/api/order/cancelOrder',orderController.cancelOrder)
 
