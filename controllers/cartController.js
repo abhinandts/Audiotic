@@ -22,7 +22,6 @@ const getCount = async (req, res) => {
         if (cart && cart.cartProducts) {
             cartCount = cart.cartProducts.length
         }
-
         res.status(200).json(cartCount)
     } catch (error) {
         console.log(error.message)
@@ -208,53 +207,6 @@ const updateQuantity = async (req, res) => {
     }
 }
 
-const loadCheckout = async (req, res) => {
-    try {
-        const couponId = req.query.couponId;
-        const userId = req.session.userId
-
-        const cart = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'price stock productName image' })
-        if (!cart) {
-            return res.status(404).render('error', { message: 'cart not found' });
-        }
-
-        let cartSubtotal = 0;
-        const cartProducts = cart.cartProducts.map(item => {
-            const subtotal = item.product.price * item.quantity;
-            cartSubtotal += subtotal;
-            return {
-                ...item.toObject(),
-                subtotal
-            };
-        })
-
-        let couponValue = 0
-
-        if (couponId) {
-            const coupon = await Coupon.findById(couponId);
-            couponValue = coupon.couponValue;
-            console.log(couponValue)
-        } else {
-            console.log("no coupon", couponValue)
-        }
-
-        const shipping = cartSubtotal - couponValue > 20000 ? 0 : 500;
-        const cartTotal = cartSubtotal - couponValue + shipping;
-
-        const cartData = {
-            cartProducts,
-            cartSubtotal,
-            couponValue,
-            shipping,
-            cartTotal
-        }
-
-        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 module.exports = {
     loadCart,
     getCount,
@@ -262,5 +214,4 @@ module.exports = {
     addToCart,
     removeFromCart,
     updateQuantity,
-    loadCheckout,
 }

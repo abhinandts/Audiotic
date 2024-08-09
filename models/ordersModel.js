@@ -67,6 +67,15 @@ const orderSchema = new mongoose.Schema(
         couponDiscount:{
             type:Number,
             default:0
+        },
+        isRazorpay:{
+            type:Boolean,
+            required:true
+        },
+        payment:{
+            type:Boolean,
+            required:false,
+            default:false
         }
     }
 )
