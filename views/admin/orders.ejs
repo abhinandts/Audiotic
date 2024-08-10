@@ -39,10 +39,10 @@
                     <thead>
                         <tr>
                             <th scope="col">Date</th>
-                            <th scope="col">Name</th>
+                            <!-- <th scope="col">Name</th> -->
                             <th scope="col">Email</th>
                             <th>#ID</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Total</th>
                             <th scope="col" class="text-end"> Action </th>
                         </tr>
@@ -89,12 +89,13 @@
                                 </div> 
                             </td>
                         </tr> -->
+                        
 
                         <% orders.forEach(element=> {%>
                             <tr>
                                 <td><%= element.formattedDate  %></td>
 
-                                <td><b><%= element.user.name  %></b></td>
+                                <!-- <td><b><%= element.user.name  %></b></td> -->
                                 <td><%= element.user.email  %></td>
                                 <td><%= element.orderId  %></td>
                                 <td><span class="badge rounded-pill alert-success"><%= element.status  %></span></td>

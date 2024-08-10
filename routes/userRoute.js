@@ -115,6 +115,7 @@ userRoute.post('/api/checkout/verifyPayment',check.isLoggedIn,check.checkUserBlo
 
 userRoute.get('/orders/orderConfirmation/:orderId',orderController.orderConfirmation)
 userRoute.post('/api/order/cancelOrder',orderController.cancelOrder)
+userRoute.post('/api/order/returnOrder',orderController.returnOrder)
 
 userRoute.get('/api/coupons/getCoupons',couponController.getCoupons)
 

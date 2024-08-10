@@ -81,6 +81,7 @@ const loadOrders = async (req, res) => {
             });
             order.formattedDate = formattedDate
         });
+        console.log(orders)
         res.render('orders', { orders, title: "Orders List", sidebar: true, header: true, footer: true })
     } catch (error) {
         console.error("Error ", error);
@@ -120,20 +121,13 @@ const cancelOrder = async (req, res) => {
         const id = req.body.orderId
         const reason = req.body.reason
 
-        const order = await Orders.findById(id)
-        console.log(order)
-        // let walletId = '66b70657748596ff0ae362cf'
-        // const wallet = await Wallet.findById(walletId)
-
+        const order = await Orders.findById(id);
         const wallet = await Wallet.findOne({ user: userId })
-        console.log(wallet)
 
         if (wallet) {
             wallet.money = wallet.money + order.orderTotal
-
             wallet.save()
-        }
-        else {
+        } else {
             return res.status(404).json({ success: false, message: 'Wallet is not found' })
         }
 
@@ -150,6 +144,36 @@ const cancelOrder = async (req, res) => {
     }
 }
 
+const returnOrder = async (req, res) => {
+    try {
+        const userId = req.session.userId
+        const orderId = req.body.orderId
+        const reason = req.body.reason
+
+        const order = await Orders.findById(orderId);
+        const wallet = await Wallet.findOne({ user: userId })
+
+        if (wallet) {
+            wallet.money = wallet.money + order.orderTotal
+            wallet.save()
+        } else {
+            console.error(error)
+            return res.status(404).json({ success: false, message: 'Wallet is not found' })
+        }
+        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, status: 'Returned', refund: true }, { new: true })
+
+        if (updatedOrder) {
+            return res.status(200).json({ success: true, message: 'Order Returned successfull' })
+        } else {
+            return res.status(404).json({ success: false, message: 'An error occured while returning the order' })
+        }
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ success: false, message: "An error occured while returning the order" })
+    }
+}
+
 module.exports = {
     orderConfirmation,
     getOrders,
@@ -158,4 +182,5 @@ module.exports = {
     showOrder,
     updateStatus,
     cancelOrder,
+    returnOrder
 }

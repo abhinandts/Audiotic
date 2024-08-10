@@ -30,18 +30,18 @@
                                     <% } %>
                         </h5>
 
-                        <% if(order.isRazorpay && order.status =="Cancelled"){ %>
-                                                    <h5 class="mb-5">Refund :
-                            <% if(order.refund){ %>
-                                <span style="color: rgb(0, 231, 42);"> Complete </span>
-                                <%}else{ %>
-                                    <span style="color: rgb(255, 114, 5);">Refund pending</span>
-                                <% } %>
-                        </h5>
-                       <% } %>
+                        <% if(order.isRazorpay && order.status=="Cancelled" ){ %>
+                            <h5 class="mb-5">Refund :
+                                <% if(order.refund){ %>
+                                    <span style="color: rgb(0, 231, 42);"> Complete </span>
+                                    <%}else{ %>
+                                        <span style="color: rgb(255, 114, 5);">Refund pending</span>
+                                        <% } %>
+                            </h5>
+                            <% } %>
 
-                        <h6 style="padding-top: 10px; color: grey;">Order Id: <%= order.orderId %>
-                        </h6>
+                                <h6 style="padding-top: 10px; color: grey;">Order Id: <%= order.orderId %>
+                                </h6>
                     </div>
                     <div class="table-responsive order_table text-center">
                         <table class="table">
@@ -122,6 +122,10 @@
                             <button onclick="showCancellationDialog()" class="btn btn-secondary">Cancel Order</button>
                             <% } %>
 
+                                <% if(order.status==="Delivered" ){ %>
+                                    <button onclick="showReturnDialog()" class="btn btn-secondary">Return Order</button>
+                                    <%} %>
+
                     </div>
                 </div>
             </div>
@@ -192,6 +196,80 @@
                     Swal.fire({
                         title: 'Error',
                         text: 'There was a problem cancelling your order. Please try again.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'There was a problem communicating with the server. Please try again.',
+                    icon: 'error'
+                });
+            });
+    }
+
+    function showReturnDialog() {
+        Swal.fire({
+            title: "Tell us your reason for Returning the order",
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off"
+            },
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            showLoaderOnConfirm: true,
+            preConfirm: (input) => {
+                const trimmedInput = input.trim();
+
+                if (trimmedInput.length === 0) {
+                    Swal.showValidationMessage('This field cannot be empty');
+                    return false;
+                }
+
+                if (trimmedInput.length < 10) {
+                    Swal.showValidationMessage('Please enter at least 20 characters');
+                    return false;
+                }
+
+                return trimmedInput;
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                returnOrder(result.value)
+            }
+        });
+    }
+
+    function returnOrder(reason) {
+        fetch('/api/order/returnOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId: '<%= order._id %>', // Get the order ID from your EJS template
+                reason: reason
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Order Returned',
+                        text: 'Payment will shortly reflect on your wallet.',
+                        icon: 'success'
+                    }).then(() => {
+                        // Reload the page or redirect to update the UI
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There was a problem Returning your order. Please try again.',
                         icon: 'error'
                     });
                 }
