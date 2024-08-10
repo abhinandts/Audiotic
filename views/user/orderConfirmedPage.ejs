@@ -10,9 +10,36 @@
             <div class="col-md-6">
                 <div class="order_review">
                     <div class="mb-20">
-                        <h4>Order Status : <span style="color: rgb(0, 231, 42);"> <strong>
+                        <h4 class="mb-10">Order Status : <span style="color: rgb(2, 112, 22);"> <strong>
                                     <%= order.status %>
                                 </strong></span></h4>
+
+                        <h5 class="mb-5">Payment Mode : <span>
+                                <% if(order.isRazorpay){ %>
+                                    Razorpay
+                                    <%}else{ %>
+                                        Cash on Delivery
+                                        <% } %>
+                            </span></h5>
+
+                        <h5 class="mb-5">Payment :
+                            <% if(order.payment){ %>
+                                <span style="color: rgb(0, 231, 42);"> Paid </span>
+                                <%}else{ %>
+                                    <span style="color: rgb(255, 114, 5);">Payment pending</span>
+                                    <% } %>
+                        </h5>
+
+                        <% if(order.isRazorpay && order.status =="Cancelled"){ %>
+                                                    <h5 class="mb-5">Refund :
+                            <% if(order.refund){ %>
+                                <span style="color: rgb(0, 231, 42);"> Complete </span>
+                                <%}else{ %>
+                                    <span style="color: rgb(255, 114, 5);">Refund pending</span>
+                                <% } %>
+                        </h5>
+                       <% } %>
+
                         <h6 style="padding-top: 10px; color: grey;">Order Id: <%= order.orderId %>
                         </h6>
                     </div>
@@ -91,11 +118,9 @@
                         <a href="/myAccount" class="btn" style="cursor: pointer;">Show Orders</a>
 
 
-                        
-                        
-                        <% if(order.status === "Pending" || order.status === "Processing" || order.status === "Shipped"){ %>
+                        <% if(order.status==="Pending" || order.status==="Processing" || order.status==="Shipped" ){ %>
                             <button onclick="showCancellationDialog()" class="btn btn-secondary">Cancel Order</button>
-                        <% } %>
+                            <% } %>
 
                     </div>
                 </div>

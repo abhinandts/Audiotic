@@ -4,6 +4,7 @@ const Category = require('../models/categoryModel')
 const Banner = require('../models/bannerModel')
 const Address = require('../models/addressModel')
 const Cart = require('../models/cartModel')
+const Wallet = require('../models/walletModel')
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -85,12 +86,16 @@ const compareOtp = async (req, res) => {
         if (sessionOtp == otpValue) {
             const userData = await req.session.Data
             const user = new User(userData)
-            await user.save()
+            await user.save();
+
+            let wallet = new Wallet({
+                user:user._id
+            })
+            await wallet.save();
 
             req.session.Data = null;
 
             res.json({ success: true, redirectUrl: '/login' })
-
         } else {
             res.json({ success: false, message: 'Invalid OTP' })
         }
@@ -305,7 +310,7 @@ const loadProducts = async (req, res) => {
 
         const categories = await Category.find({ is_active: true }, { name: 1 })
 
-        res.render('products', {products, categories, breadcrumb, header: true, smallHeader: false, footer: true })
+        res.render('products', { products, categories, breadcrumb, header: true, smallHeader: false, footer: true })
 
     } catch (error) {
         console.log(error.message)
@@ -314,9 +319,11 @@ const loadProducts = async (req, res) => {
 
 const loadProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.session.userId)
+        const userId = req.session.userId
+        const user = await User.findById(userId)
+        const wallet = await Wallet.findOne({user:userId})
 
-        res.render('myAccount', { user, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
+        res.render('myAccount', { user,wallet, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
     } catch (error) {
         console.log(error.message)
     }

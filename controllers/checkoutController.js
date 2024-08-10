@@ -222,11 +222,7 @@ const verifyPayment = async (req, res) => {
             console.log("Payment verification failed");
             res.status(400).json({ staus: 'failed' })
         }
-
-
-
-
-        
+ 
     } catch (error) {
         console.error(error)
         res.status(500).json({ status: 'error', message: error.message });

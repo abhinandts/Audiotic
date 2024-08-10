@@ -4,7 +4,7 @@ const Address = require('../models/addressModel')
 const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
 const Coupon = require('../models/couponModel')
-
+const Wallet = require('../models/walletModel')
 
 
 const orderConfirmation = async (req, res) => {
@@ -43,7 +43,6 @@ const getOrders = async (req, res) => {
 
         res.status(200).json(orders);
 
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
@@ -68,9 +67,7 @@ const trackOrder = async (req, res) => {
     }
 }
 
-
-// ---------------------------------------------------
-
+// -------------------------------------------------->
 
 const loadOrders = async (req, res) => {
     try {
@@ -117,27 +114,30 @@ const updateStatus = async (req, res) => {
     }
 }
 
-// const cancelOrder = async (req, res) => {
-//     try {
-//         const id = req.body.orderId
-//         const reason = req.body.reason
-
-//         await Orders.findByIdAndUpdate(id, { reason })
-
-//         return res.status(200)
-
-//     } catch (error) {
-//         console.error(error)
-//         return res.status(500)
-//     }
-// }
-
 const cancelOrder = async (req, res) => {
     try {
+        const userId = req.session.userId
         const id = req.body.orderId
         const reason = req.body.reason
 
-        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, status: 'Cancelled' }, { new: true })
+        const order = await Orders.findById(id)
+        console.log(order)
+        // let walletId = '66b70657748596ff0ae362cf'
+        // const wallet = await Wallet.findById(walletId)
+
+        const wallet = await Wallet.findOne({ user: userId })
+        console.log(wallet)
+
+        if (wallet) {
+            wallet.money = wallet.money + order.orderTotal
+
+            wallet.save()
+        }
+        else {
+            return res.status(404).json({ success: false, message: 'Wallet is not found' })
+        }
+
+        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, status: 'Cancelled', refund: true }, { new: true })
 
         if (updatedOrder) {
             return res.status(200).json({ success: true, message: 'Order cancelled successfully' })

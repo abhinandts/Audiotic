@@ -61,21 +61,26 @@ const orderSchema = new mongoose.Schema(
             required: false,
             default: ""
         },
-        couponUsed:{
-            type:mongoose.Schema.Types.ObjectId,ref:'Coupon'
+        couponUsed: {
+            type: mongoose.Schema.Types.ObjectId, ref: 'Coupon'
         },
-        couponDiscount:{
-            type:Number,
-            default:0
+        couponDiscount: {
+            type: Number,
+            default: 0
         },
-        isRazorpay:{
-            type:Boolean,
-            required:true
+        isRazorpay: {
+            type: Boolean,
+            required: true
         },
-        payment:{
-            type:Boolean,
-            required:false,
-            default:false
+        payment: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        refund: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     }
 )

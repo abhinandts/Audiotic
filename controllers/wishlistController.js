@@ -96,20 +96,20 @@ const removeProduct = async (req, res) => {
         await wishlist.save();
 
         return res.status(200).json({ message: "Address deleted successfully" });
-        
+
     } catch (error) {
         console.error(error)
     }
 }
 
-const getCount = async (req,res)=>{
+const getCount = async (req, res) => {
     try {
         const userId = req.session.userId;
-        const wishlist = await Wishlist.findOne({user:userId})
+        const wishlist = await Wishlist.findOne({ user: userId })
 
         let wishlistCount = 0;
 
-        if(wishlist && wishlist.products){
+        if (wishlist && wishlist.products) {
             wishlistCount = wishlist.products.length
         }
         res.status(200).json(wishlistCount)
