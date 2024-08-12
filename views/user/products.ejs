@@ -12,104 +12,82 @@
                 </a>
                 <div class="shop-product-fillter-header">
                     <div class="row">
-
-
                         <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
                             <h5 class="mb-20">Categories</h5>
                             <ul class="categor-list">
-
                                 <% categories.forEach((category)=>{ %>
-                                    <li class="cat-item text-muted"><a href="/products?categoryId=<%-category._id %>">
-                                            <%=category.name %>
-                                        </a></li>
+                                <li class="cat-item text-muted">
+                                    <a href="/products?categoryId=<%-category._id %>">
+                                        <%=category.name %>
+                                    </a>
+                                </li>
                                 <% }) %>
-
                             </ul>
                         </div>
-
-                        <!-- <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
+            
+                        <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
                             <h5 class="mb-20">Manufacturers</h5>
                             <ul class="categor-list">
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Adidas</a>(125)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Armani</a>(68)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Burberry</a>(274)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Chanel</a>(152)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Prada</a>(302)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Bootstrap</a>(32)
-                                </li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Helixx</a>(312)
-                                </li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Adidas</a>(125)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Armani</a>(68)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Burberry</a>(274)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Chanel</a>(152)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Prada</a>(302)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Bootstrap</a>(32)</li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">Helixx</a>(312)</li>
                             </ul>
-                        </div> -->
-
-                        <!-- <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
+                        </div>
+            
+                        <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
                             <h5 class="mb-20">Price range</h5>
                             <ul class="categor-list">
                                 <li class="cat-item text-muted"><a href="shop-grid-right.html">All</a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$0.00 - $20.00
-                                    </a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$20.00 - $40.00
-                                    </a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$40.00 - $60.00
-                                    </a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$60.00 - $80.00
-                                    </a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$80.00 - $100.00
-                                    </a></li>
-                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$100.00 - $200.00
-                                    </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$0.00 - $20.00 </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$20.00 - $40.00 </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$40.00 - $60.00 </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$60.00 - $80.00 </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$80.00 - $100.00 </a></li>
+                                <li class="cat-item text-muted"><a href="shop-grid-right.html">$100.00 - $200.00 </a></li>
                             </ul>
-                        </div> -->
-
-                        
-                        <!-- <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
+                        </div>
+            
+                        <div class="col-lg-3 col-md-3 mb-lg-0 mb-md-5 mb-sm-5">
                             <h5 class="mb-20">By Review</h5>
                             <div class="product-rate-cover">
                                 <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width:100%">
-                                    </div>
+                                    <div class="product-rating" style="width: 100%;"></div>
                                 </div>
                                 <span class="font-small ml-5 text-muted"> (25)</span>
                             </div>
                             <div class="product-rate-cover">
                                 <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width:80%">
-                                    </div>
+                                    <div class="product-rating" style="width: 80%;"></div>
                                 </div>
                                 <span class="font-small ml-5 text-muted"> (25)</span>
                             </div>
                             <div class="product-rate-cover">
                                 <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width:60%">
-                                    </div>
+                                    <div class="product-rating" style="width: 60%;"></div>
                                 </div>
                                 <span class="font-small ml-5 text-muted"> (25)</span>
                             </div>
                             <div class="product-rate-cover">
                                 <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width:40%">
-                                    </div>
+                                    <div class="product-rating" style="width: 40%;"></div>
                                 </div>
                                 <span class="font-small ml-5 text-muted"> (25)</span>
                             </div>
                             <div class="product-rate-cover">
                                 <div class="product-rate d-inline-block">
-                                    <div class="product-rating" style="width:20%">
-                                    </div>
+                                    <div class="product-rating" style="width: 20%;"></div>
                                 </div>
                                 <span class="font-small ml-5 text-muted"> (25)</span>
                             </div>
-                        </div> -->
-
-
+                        </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-12">
                 <div class="shop-product-fillter">
                     <div class="totall-product">

@@ -17,11 +17,11 @@ const addProduct = async (req, res) => {
         const productId = req.body.productId
         const userId = req.session.userId
 
-        const user = User.findById(userId)
+        const user = await User.findById(userId)
         if (!user) {
             return res.status(400).json({ error: "User not found" })
         }
-        const product = Product.findById(productId)
+        const product = await Product.findById(productId)
         if (!product) {
             return res.status(400).json({ error: "Product not found" })
         }
@@ -38,15 +38,15 @@ const addProduct = async (req, res) => {
                 ]
             })
         } else {
-            if (wishlist.products.some(item => item.product.equals(productId))) {
-                return res.status(200).json({
-                    alreadyExists: true,
-                    message: "Product is already in the wishlist"
-                })
+
+            const productExistsInWishlist = wishlist.products.some(item =>
+                item.product && item.product.toString() === productId.toString()
+            )
+            if (productExistsInWishlist) {
+                return res.status(200).json({ alreadyExists: true, message: "Product is already in the wishlist" })
             }
-            wishlist.products.push({
-                product: productId,
-            })
+
+            wishlist.products.push({ product: productId });
         }
 
         await wishlist.save()
@@ -54,9 +54,10 @@ const addProduct = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Product added to Wishlist"
-        })
+        });
     } catch (error) {
         console.error(error)
+        return res.status(500).json({ error: "Server error" });
     }
 }
 
@@ -119,10 +120,26 @@ const getCount = async (req, res) => {
     }
 }
 
+const findProduct = async (req, res) => {
+    try {
+        const userId = req.session.userId
+        const productId = req.body.productId
+        console.log(req.body)
+        const productExist = await Wishlist.exists({ user: userId, "products.product": productId })
+
+        return res.status(200).json(productExist)
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500)
+    }
+}
+
 module.exports = {
     loadWishlist,
     addProduct,
     getProducts,
     removeProduct,
-    getCount
+    getCount,
+    findProduct
 }

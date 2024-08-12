@@ -10,6 +10,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
 const otpService = require('../utils/otp')
+const wishlistModel = require('../models/wishlistModel')
 
 // ---- /register ----------------
 
@@ -89,7 +90,7 @@ const compareOtp = async (req, res) => {
             await user.save();
 
             let wallet = new Wallet({
-                user:user._id
+                user: user._id
             })
             await wallet.save();
 
@@ -281,9 +282,9 @@ const loadHome = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
-
         const product = await Product.findById(req.query.productId).populate('category', 'name')
         const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: product._id } })
+        // const inWishlist = await wishlistModel.exists({ user: userId, "products.product": product._id })
 
         res.render('productPage', { product, relatedProducts, breadcrumb: product.productName, header: true, smallHeader: false, footer: true })
     } catch (error) {
@@ -321,9 +322,9 @@ const loadProfile = async (req, res) => {
     try {
         const userId = req.session.userId
         const user = await User.findById(userId)
-        const wallet = await Wallet.findOne({user:userId})
+        const wallet = await Wallet.findOne({ user: userId })
 
-        res.render('myAccount', { user,wallet, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
+        res.render('myAccount', { user, wallet, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
     } catch (error) {
         console.log(error.message)
     }

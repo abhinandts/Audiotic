@@ -72,7 +72,6 @@ userRoute.get('/verify_otp', check.isLoggedOut, userController.verifyOtp)
 userRoute.post('/verifyOtp', userController.compareOtp)
 userRoute.get('/api/resendOtp', userController.resendOtp)
 
-
 userRoute.get('/forgotPassword', check.isLoggedOut, userController.loadForgotPassword)
 userRoute.post('/api/checkUser', userController.checkEmail)
 
@@ -124,5 +123,6 @@ userRoute.post('/api/wishlist/addProduct',wishlistController.addProduct)
 userRoute.get('/api/wishlist/getProducts',wishlistController.getProducts)
 userRoute.post('/api/wishlist/removeProduct',wishlistController.removeProduct)
 userRoute.get('/api/wishlist/getCount',wishlistController.getCount)
+userRoute.post('/api/wishlist/isProductInWishlist',wishlistController.findProduct)
 
 module.exports = userRoute
