@@ -149,13 +149,13 @@
                     </div> <!-- table-responsive// -->
                     <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
                     <h4>Order Status : <span style="color: rgb(0, 231, 42);"> <strong>
-                        <%= order.status %>
-                    </strong></span></h4>
+                                <%= order.status %>
+                            </strong></span></h4>
                     <% if(order.reason.length>0){ %>
                         <h4>Cancelation reason : <span style="color: rgb(231, 0, 0);"> <strong>
-                            <%= order.reason %>
-                        </strong></span></h4>
-                    <% } %>
+                                    <%= order.reason %>
+                                </strong></span></h4>
+                        <% } %>
                 </div> <!-- col// -->
                 <div class="col-lg-1"></div>
                 <div class="col-lg-4">
@@ -200,6 +200,11 @@
                     },
                     body: JSON.stringify({ orderId, orderStatus })
                 })
+                const data = await response
+
+                if(data){
+                    window.location.reload();
+                }
             } catch (error) {
                 console.error(error)
                 alert(error)

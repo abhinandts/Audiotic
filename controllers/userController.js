@@ -5,6 +5,7 @@ const Banner = require('../models/bannerModel')
 const Address = require('../models/addressModel')
 const Cart = require('../models/cartModel')
 const Wallet = require('../models/walletModel')
+const Products = require('../models/productModel')
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -277,14 +278,12 @@ const loadHome = async (req, res) => {
     }
 }
 
-
 // ---- /productPage ----------------
 
 const loadProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.query.productId).populate('category', 'name')
         const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: product._id } })
-        // const inWishlist = await wishlistModel.exists({ user: userId, "products.product": product._id })
 
         res.render('productPage', { product, relatedProducts, breadcrumb: product.productName, header: true, smallHeader: false, footer: true })
     } catch (error) {
@@ -296,14 +295,12 @@ const loadProduct = async (req, res) => {
 
 const loadProducts = async (req, res) => {
     try {
-        let breadcrumb;
+        let breadcrumb, products;
         const categoryId = req.query.categoryId
 
-        let products
         if (categoryId) {
             products = await Product.find({ category: categoryId, is_active: true })
             breadcrumb = await Category.find({ name: 1 })
-
         } else {
             products = await Product.find().populate('category', 'name')
             breadcrumb = "All Products"
@@ -317,6 +314,37 @@ const loadProducts = async (req, res) => {
         console.log(error.message)
     }
 }
+const getCategories = async (req, res) => {
+    try {
+        const categories = await Category.find({ is_active: true }, { name: 1 })
+
+        if (categories && categories.length > 0) {
+            res.status(200).send(categories)
+        } else {
+            res.status(404).send('No categories found')
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal server Error')
+    }
+}
+const productsByCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId
+        const products = await Products.find({ category: categoryId }, { productSpecifications: 0 }).populate('category')
+        if (products.length === 0) {
+            res.status(404).send("No related Products found")
+        } else {
+            res.status(200).send(products)
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal server Error')
+    }
+}
+
+
+// ---------------------------------------------------------
 
 const loadProfile = async (req, res) => {
     try {
@@ -398,5 +426,7 @@ module.exports = {
     loadForgotPassword,
     checkEmail,
     loadChangePassword,
-    changePassword
+    changePassword,
+    getCategories,
+    productsByCategory
 }

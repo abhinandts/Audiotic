@@ -1,12 +1,12 @@
-
 (function () {
 
-    let selectedAddress, addressList, placeOrderButton;
+    let selectedAddress, addressList, placeOrderButton,cartTotalSpan;
     let couponId;
 
     function initializeElements() {
         addressList = document.getElementById('addressList');
         placeOrderButton = document.getElementById('placeOrder');
+        cartTotalSpan = document.getElementById('cartTotal');
 
         const urlParams = new URLSearchParams(window.location.search);
         couponId = urlParams.get('couponId');
@@ -22,6 +22,16 @@
         });
         placeOrderButton.addEventListener('click', placeOrder)
     }
+
+    function checkCartTotal (){
+        console.log(cartTotalSpan.value)
+        let cartTotal = cartTotalSpan.value
+        if(cartTotal>1000){
+            
+        }
+    }
+
+    
     function selectAddress(addressCard) {
         if (selectedAddress) {
             selectedAddress.classList.remove('selected');
@@ -140,6 +150,7 @@
     function init() {
         initializeElements();
         initializeEventListeners();
+        checkCartTotal()
     }
 
     document.addEventListener('DOMContentLoaded', init);

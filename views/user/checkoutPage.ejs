@@ -163,14 +163,15 @@
                                             <td colspan="2"><em>₹<%= cartData.shipping %>.00/-</em></td>
                                         </tr>
                                         <tr></tr>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td colspan="2" class="product-subtotal"><span
-                                                    class="font-xl text-brand fw-900">₹<%= cartData.cartTotal %>.00/-</span>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <th>Total</th>
+                                                <td colspan="2" class="product-subtotal"><span
+                                                        class="font-xl text-brand fw-900" >₹<%= cartData.cartTotal %>.00/-</span>
+                                                </td>
+                                            </tr>
                             </tbody>
                         </table>
+                        <input type="hidden" id="cartTotal" name="" value="<%= cartData.cartTotal %>">
                     </div>
                     <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                     <!-- <div class="payment_method">
@@ -205,8 +206,8 @@
                             <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="" />
                                 <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on delivery</label>
-
                             </div>
+                            
                             <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="" />
                                 <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="razorpay">Razorpay</label>
