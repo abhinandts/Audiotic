@@ -282,6 +282,11 @@ const loadHome = async (req, res) => {
 
 const loadProduct = async (req, res) => {
     try {
+        const { productId } = req.query;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).send("Invalid product ID");
+        }
         const product = await Product.findById(req.query.productId).populate('category', 'name')
         const relatedProducts = await Product.find({ category: product.category._id, _id: { $ne: product._id } })
 
@@ -343,6 +348,23 @@ const productsByCategory = async (req, res) => {
     }
 }
 
+const searchProducts = async (req, res) => {
+    try {
+        const searchTerm = req.query.q;
+        console.log(searchTerm)
+
+        const products = await Product.find({
+            productName: { $regex: searchTerm, $options: 'i' },  // Case-insensitive search
+            is_active: true  // Ensure only active products are returned
+        }).populate('category');
+
+        res.json(products);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({message:'Internal Server Error'})
+    }
+}
+
 
 // ---------------------------------------------------------
 
@@ -386,15 +408,10 @@ const checkNameExists = async (req, res) => {
         const { name } = req.body;
         const userId = req.session.userId
 
-        // const user = await User.findOne({
-        //     name: { $regex: new RegExp('^${name}$', 'i') },
-        // });
-
         const user = await User.findOne({
             name: { $regex: new RegExp('^' + name + '$', 'i') },
             _id: { $ne: userId } // Exclude the current user
         });
-        console.log(user)
 
         if (user) {
             return res.status(200).json({ exists: true })
@@ -428,5 +445,6 @@ module.exports = {
     loadChangePassword,
     changePassword,
     getCategories,
-    productsByCategory
+    productsByCategory,
+    searchProducts
 }

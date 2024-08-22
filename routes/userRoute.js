@@ -91,6 +91,7 @@ userRoute.get('/productPage', check.isLoggedIn, check.checkUserBlocked, userCont
 userRoute.get('/products', check.isLoggedIn, check.checkUserBlocked, userController.loadProducts)
 userRoute.get('/api/products/getCategories',userController.getCategories)
 userRoute.get('/api/products/getProductsByCategory/:categoryId',userController.productsByCategory)
+userRoute.get('/api/products/search',userController.searchProducts)
 
 userRoute.get('/myAccount', check.isLoggedIn, check.checkUserBlocked, userController.loadProfile)
 userRoute.post('/api/myAccount/updateAccountDetails', check.isLoggedIn, check.checkUserBlocked, userController.updateAccountDetails)
