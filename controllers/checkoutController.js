@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const Cart = require('../models/cartModel')
 const Coupon = require('../models/couponModel')
 const Address = require('../models/addressModel')
@@ -5,17 +8,23 @@ const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
 const crypto = require('crypto')
 
-// ------------------------------------------------
+// -----------------------------------
+
+// -----------------------------------
 
 const Razorpay = require('razorpay');
 
 const { v4: uuidv4 } = require('uuid');
 
 
+// const razorpayInstance = new Razorpay({
+//     key_id: 'rzp_test_l5PYAz2fxdpeOD',
+//     key_secret: 'l1TAq3R3gd5YtoUSXb1PoJYC'
+// })
 const razorpayInstance = new Razorpay({
-    key_id: 'rzp_test_l5PYAz2fxdpeOD',
-    key_secret: 'l1TAq3R3gd5YtoUSXb1PoJYC'
-})
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+});
 
 // -------------------------------------------------------
 
@@ -208,7 +217,7 @@ const verifyPayment = async (req, res) => {
         const { orderDetails, response } = req.body
         console.log(orderDetails)
 
-        const secret = 'l1TAq3R3gd5YtoUSXb1PoJYC';
+        const secret = process.env.RAZORPAY_KEY_SECRET;
         const shasum = crypto.createHmac('sha256', secret);
         shasum.update(orderDetails.id + "|" + response.razorpay_payment_id)
         const digest = shasum.digest('hex');

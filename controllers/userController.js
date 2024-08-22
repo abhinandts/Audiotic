@@ -373,6 +373,7 @@ const loadProfile = async (req, res) => {
         const userId = req.session.userId
         const user = await User.findById(userId)
         const wallet = await Wallet.findOne({ user: userId })
+        console.log(wallet)
 
         res.render('myAccount', { user, wallet, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
     } catch (error) {
