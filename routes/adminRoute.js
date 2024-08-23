@@ -166,7 +166,7 @@ adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
 adminRoute.get("/coupons", couponController.loadCouponPage)
 adminRoute.post("/api/coupons/createCoupon",couponController.createCoupon)
 adminRoute.get("/api/coupons/fetchCoupons",couponController.loadCoupons)
-adminRoute.post("/api/coupons/disableCoupon",couponController.disableCoupon)
+adminRoute.put("/api/coupons/disableCoupon",couponController.disableCoupon)
 
 // ---- banners ----
 

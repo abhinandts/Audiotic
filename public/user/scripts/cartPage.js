@@ -163,7 +163,7 @@
         shippingCharge.textContent = `₹ ${cart.shipping.toFixed(2)}/-`;
 
         let couponDiscount = 0;
-        if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount) {
+        if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount && cart.cartSubtotal > selectedCoupon.couponValue) {
             couponDiscount = selectedCoupon.couponValue;
         }
 

@@ -52,8 +52,12 @@ const loadCheckout = async (req, res) => {
 
         if (couponId) {
             const coupon = await Coupon.findById(couponId);
-            couponValue = coupon.couponValue;
+
+            if(cartSubtotal >= coupon.minimumAmount && cartSubtotal > coupon.couponValue){
+                couponValue = coupon.couponValue;
+            }
             console.log(couponValue)
+
         } else {
             console.log("no coupon", couponValue)
         }

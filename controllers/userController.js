@@ -351,8 +351,6 @@ const productsByCategory = async (req, res) => {
 const searchProducts = async (req, res) => {
     try {
         const searchTerm = req.query.q;
-        console.log(searchTerm)
-
         const products = await Product.find({
             productName: { $regex: searchTerm, $options: 'i' },  // Case-insensitive search
             is_active: true  // Ensure only active products are returned
@@ -364,7 +362,6 @@ const searchProducts = async (req, res) => {
         res.status(500).json({message:'Internal Server Error'})
     }
 }
-
 
 // ---------------------------------------------------------
 
@@ -424,7 +421,6 @@ const checkNameExists = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
-
 
 module.exports = {
     loadRegister,

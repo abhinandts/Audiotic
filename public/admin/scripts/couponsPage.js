@@ -13,27 +13,41 @@
 
     function initializeEventListeners() {
         createBtn.addEventListener('click', validateForm);
-        couponList.addEventListener('click',handleCouponClick);
+        couponList.addEventListener('click', handleCouponClick);
     }
 
-    function handleCouponClick(event){
-        if(event.target.classList.contains('disableButton')){
+    function handleCouponClick(event) {
+        if (event.target.classList.contains('disableButton')) {
             const couponId = event.target.getAttribute('data-id');
             disableCoupon(couponId)
+        } else if (event.target.classList.contains('couponDetails')) {
+            const couponId = event.target.getAttribute('data-id');
+            editCoupon(couponId)
         }
     }
 
-    async function disableCoupon(couponId){
+    async function editCoupon(couponId) {
         try {
-            const response = await fetch('/admin/api/coupons/disableCoupon',{
-                method:'POST',
+            const response = await fetch('/admin/api/coupons/editCoupon',{
+                method:'PATCH',
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({couponId})
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
+    async function disableCoupon(couponId) {
+        try {
+            const response = await fetch('/admin/api/coupons/disableCoupon', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ couponId })
             });
-            if(response.ok){
+            if (response.ok) {
                 await fetchAndLoadCoupons();
-            }else{
+            } else {
                 const errorData = await response.json()
                 console.log(errorData)
             }
@@ -52,7 +66,7 @@
         if (!validateCouponValue(couponValue)) return;
 
         let minimumAmount = minimumAmountInput.value.trim();
-        if (!validateAmount(minimumAmount)) return;
+        if (!validateAmount(minimumAmount, couponValue)) return;
 
         try {
             const response = await fetch('/admin/api/coupons/createCoupon', {
@@ -82,9 +96,15 @@
         }
     }
 
-    function validateAmount(minimumAmount) {
+    function validateAmount(minimumAmount, couponValue) {
         if (!/^\d+$/.test(minimumAmount) || parseInt(minimumAmount) <= 0) {
+
             showError(minimumAmountInput, "Please enter a valid positive integer for minimum amount");
+            return false;
+        }
+        if (minimumAmount <= couponValue) {
+            showError(minimumAmountInput, "Minimum amount should be greater than Coupon Value")
+            showError(couponValueInput, "")
             return false;
         }
         hideError(minimumAmountInput);
@@ -92,7 +112,7 @@
     }
 
     function validateCouponValue(value) {
-        if (!/^\d+$/.test(value)|| parseInt(minimumAmount) <= 0) {
+        if (!/^\d+$/.test(value) || parseInt(minimumAmount) <= 0) {
             showError(couponValueInput, "Please enter a valid positive integer for coupon value");
             return false;
         }
@@ -157,13 +177,13 @@
                                             <div class="form-check">➤
                                             </div>
                                         </td>
-                                        <td><b>
+                                        <td class = 'couponDetails' data-id="${coupon._id}"><b>
                                                 ${coupon.couponName}  
                                             </b></td>
-                                        <td>
+                                        <td class = 'couponDetails' data-id="${coupon._id}">
                                             ₹${coupon.couponValue}.00/-
                                         </td>
-                                        <td>
+                                        <td class = 'couponDetails' data-id="${coupon._id}">
                                             ₹${coupon.minimumAmount}.00/-
                                         </td>
                                         <td>
