@@ -167,7 +167,9 @@ adminRoute.get("/coupons", couponController.loadCouponPage)
 adminRoute.post("/api/coupons/createCoupon",couponController.createCoupon)
 adminRoute.get("/api/coupons/fetchCoupons",couponController.loadCoupons)
 adminRoute.put("/api/coupons/disableCoupon",couponController.disableCoupon)
-
+adminRoute.get("/coupons/editCoupon/:couponId",couponController.loadEditCoupon)
+adminRoute.post("/coupons/editCoupon",couponController.updateCoupon)
+adminRoute.get('/api/coupons/checkName',couponController.checkName)
 // ---- banners ----
 
 adminRoute.get("/banners", auth.isLogin, bannerController.loadBanners)
@@ -176,6 +178,8 @@ adminRoute.get("/newBanner", auth.isLogin, bannerController.newBanner)
 adminRoute.post("/newBanner", auth.isLogin, uploadBanner.array('image', 1), bannerController.addBanner)
 
 adminRoute.get("/deleteBanner/:bannerId", bannerController.deleteBanner)
+
+
 
 // Catch-all route for unmatched routes
 adminRoute.get("*", (req, res) => {

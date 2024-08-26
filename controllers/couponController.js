@@ -64,20 +64,68 @@ const disableCoupon = async (req, res) => {
 
         await coupon.save();
 
-        res.status(200).json({message:'Coupon status updated'})
+        res.status(200).json({ message: 'Coupon status updated' })
 
     } catch (error) {
         console.error(error)
     }
 }
 
-const getCoupons = async (req,res)=>{
+const getCoupons = async (req, res) => {
     try {
-        const coupons = await Coupon.find({is_active:true});
+        const coupons = await Coupon.find({ is_active: true });
         res.json(coupons)
     } catch (error) {
         console.error(error)
-        res.status(500).json({message:'Error fetching coupons'})
+        res.status(500).json({ message: 'Error fetching coupons' })
+    }
+}
+
+const loadEditCoupon = async (req, res) => {
+    try {
+        const id = req.params.couponId
+        const coupon = await Coupon.findById(id)
+        res.render('editCoupon', { title: "Edit Coupons", header: true, sidebar: true, footer: true, coupon })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Error fetching coupons' })
+    }
+}
+
+const updateCoupon = async (req, res) => {
+    try {
+        const { couponId, couponName, 'coupon-value': couponValue, 'minimum-amount': minimumAmount } = req.body;
+
+        // Find the coupon by its ID and update the relevant fields
+        const updatedCoupon = await Coupon.findByIdAndUpdate(
+            couponId,
+            {
+                couponName: couponName,
+                couponValue: couponValue,
+                minimumAmount: minimumAmount
+            },
+        );
+
+        if (updatedCoupon) {
+            return res.redirect('/admin/coupons');
+        } else {
+            res.status(404).json({ message: 'Coupon not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating coupon', error: error.message });
+    }
+};
+
+
+const checkName = async (req, res) => {
+    const couponName = req.query.name;
+    try {
+        const existingCoupon = await Coupon.findOne({ couponName: couponName });
+        res.json({ exists: !!existingCoupon });
+    } catch (error) {
+        console.error('Error checking coupon name:', error);
+        res.status(500).json({ error: 'An error occurred while checking the coupon name' });
     }
 }
 
@@ -86,5 +134,8 @@ module.exports = {
     createCoupon,
     loadCoupons,
     disableCoupon,
-    getCoupons
+    getCoupons,
+    loadEditCoupon,
+    updateCoupon,
+    checkName
 }

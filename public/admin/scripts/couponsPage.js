@@ -20,21 +20,6 @@
         if (event.target.classList.contains('disableButton')) {
             const couponId = event.target.getAttribute('data-id');
             disableCoupon(couponId)
-        } else if (event.target.classList.contains('couponDetails')) {
-            const couponId = event.target.getAttribute('data-id');
-            editCoupon(couponId)
-        }
-    }
-
-    async function editCoupon(couponId) {
-        try {
-            const response = await fetch('/admin/api/coupons/editCoupon',{
-                method:'PATCH',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({couponId})
-            })
-        } catch (error) {
-            console.error(error)
         }
     }
 
@@ -85,14 +70,13 @@
             } else {
                 const result = await response.json();
                 console.log('Coupon created successfully:', result);
-                fetchAndLoadCoupons()
+                window.location.reload();
+
                 // You can also display a success message or redirect the user
             }
-
         } catch (error) {
             console.error(error)
             showError(createBtn, "An error occurred while creating the coupon");
-
         }
     }
 
@@ -167,35 +151,42 @@
         coupons.forEach(coupon => {
             const couponItem = createCouponItem(coupon);
             couponList.appendChild(couponItem)
-
         });
     }
     function createCouponItem(coupon) {
         const couponItem = document.createElement('tr');
         couponItem.innerHTML = `
-                                        <td class="text-center ">
-                                            <div class="form-check">➤
-                                            </div>
-                                        </td>
-                                        <td class = 'couponDetails' data-id="${coupon._id}"><b>
-                                                ${coupon.couponName}  
-                                            </b></td>
-                                        <td class = 'couponDetails' data-id="${coupon._id}">
-                                            ₹${coupon.couponValue}.00/-
-                                        </td>
-                                        <td class = 'couponDetails' data-id="${coupon._id}">
-                                            ₹${coupon.minimumAmount}.00/-
-                                        </td>
-                                        <td>
-                                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                                    <span class="badge rounded-pill ${coupon.is_active ? 'alert-success' : 'alert-danger'}">${coupon.is_active ? 'Active' : 'Disabled'}</span>
-                                            </div>
-                                        </td>
-                                        <td class="text-end">
-                                            <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}">
-                                                ${coupon.is_active ? '🔒 Disable' : '🔓Enable'}
-                                            </button>
-                                          </td>
+                                <td class="text-center">
+                                    <div class="form-check">➤</div>
+                                </td>
+                                <td class="couponDetails">
+                                    <a href="/admin/coupons/editCoupon/${coupon._id}" >
+                                        <b>${coupon.couponName}</b>
+                                    </a>
+                                </td>
+                                <td class="couponDetails">
+                                    <a href="/admin/coupons/editCoupon/${coupon._id}">
+                                        ₹${coupon.couponValue}.00/-
+                                    </a>
+                                </td>
+                                <td class="couponDetails">
+                                    <a href="/admin/coupons/editCoupon/${coupon._id}" >
+                                        ₹${coupon.minimumAmount}.00/-
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                        <span class="badge rounded-pill ${coupon.is_active ? 'alert-success' : 'alert-danger'}">
+                                            ${coupon.is_active ? 'Active' : 'Disabled'}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}">
+                                        ${coupon.is_active ? '🔒 Disable' : '🔓 Enable'}
+                                    </button>
+                                </td>
+
                                 `;
         return couponItem;
     }

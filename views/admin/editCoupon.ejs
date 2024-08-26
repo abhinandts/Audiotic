@@ -1,0 +1,72 @@
+<style>
+    .message {
+        font-size: 0.8em;
+        margin-top: 5px;
+    }
+    .message.success {
+        color: green;
+    }
+    .message.error {
+        color: red;
+    }
+</style>
+
+<section class="content-main">
+
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Coupon </h2>
+            <p>Edit Name, Value or Minimum amount of Coupon </p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: center;">
+
+        <div class="card col-md-4 mt-5">
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="">
+
+                        <form id="edit-coupon-form" method="post" action="/admin/coupons/editCoupon">
+                            <input id="couponId" type="hidden" name="couponId" value="<%= coupon._id  %>">
+
+                            <div class="mb-4">
+                                <label for="couponName" class="form-label">Coupon Name</label>
+                                <input type="text" placeholder="Type here" class="form-control mb-2" name="couponName"
+                                    id="coupon-name" required value="<%= coupon.couponName %>" />
+                                <div id="coupon-name-error" class="error-message"></div>
+                                <div id="coupon-name-message" class="message"></div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="couponValue" class="form-label">Coupon value</label>
+                                <input type="number" placeholder="Type here" class="form-control mb-2" name="coupon-value" id="couponValue" required value="<%= coupon.couponValue  %>" />
+                                <div id="coupon-value-error" class="error-message"></div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="minimumAmount" class="form-label">Minimum order amount</label>
+                                <input type="number" placeholder="Type here" class="form-control mb-2" name="minimum-amount" id="minimumAmount" required value="<%= coupon.minimumAmount  %>" />
+                                <div id="minimum-amount-error" class="error-message"></div>
+                            </div>                            
+
+                            <div class="d-grid">
+                                <div style="display: flex; align-items: center; justify-content: space-evenly;  ">
+                                    <a href="/admin/coupons" class="btn btn-light"> Discard </a>
+                                    <button class="btn btn-primary" id="save-button">Save</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+
+    </div>
+
+</section>
+
+<script src="/admin/scripts/editCoupon.js"></script>
