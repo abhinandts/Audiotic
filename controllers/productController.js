@@ -9,8 +9,16 @@ const path = require('path');
 
 const loadProducts = async (req, res) => {
     try {
-        const productData = await Product.find().populate('category', 'name');
-        res.render('productList', { title: 'Products', header: true, sidebar: true, footer: true, productData })
+        const page = parseInt(req.query.page) || 1;
+        const limit = 8;
+        const skip = (page - 1) * limit;
+
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit)
+
+        const productData = await Product.find().populate('category', 'name').sort({ _id: -1 }).skip(skip).limit(limit);
+        res.render('productList', { title: 'Products', header: true, sidebar: true, footer: true, productData, currentPage: page, totalPages: totalPages })
+
     } catch (error) {
         console.log(error.message)
     }
@@ -140,14 +148,14 @@ const deleteImage = async (req, res) => {
 
         // Assuming `image` is the array field in your Product schema
         const deleteImage = await Product.findByIdAndUpdate(
-            productId, 
+            productId,
             { $pull: { image: imageName } }
         );
 
         if (deleteImage) {
             console.log(`Product ID: ${productId}`);
 
-            
+
             // Redirecting to the correct URL
             res.redirect(`/admin/editProduct/${productId}`);
         } else {

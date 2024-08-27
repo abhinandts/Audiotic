@@ -170,6 +170,11 @@ adminRoute.put("/api/coupons/disableCoupon",couponController.disableCoupon)
 adminRoute.get("/coupons/editCoupon/:couponId",couponController.loadEditCoupon)
 adminRoute.post("/coupons/editCoupon",couponController.updateCoupon)
 adminRoute.get('/api/coupons/checkName',couponController.checkName)
+// adminRoute.get('/api/coupons/pagination',)
+adminRoute.get('/api/coupons/pagination', couponController.paginateCoupons);
+
+adminRoute.post("/api/coupons/create", couponController.createCoupon);
+adminRoute.put("/api/coupons/toggle/:id", couponController.toggleCouponStatus);
 // ---- banners ----
 
 adminRoute.get("/banners", auth.isLogin, bannerController.loadBanners)

@@ -56,8 +56,17 @@ const loadDashboard = async (req, res) => {
 
 const loadUsers = async (req, res) => {
     try {
-        const userData = await User.find()
-        res.render('users', { title: 'Users', header: true, sidebar: true, footer: true, userData })
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6;
+        const skip = (page -1)*limit;
+
+        const totalUsers = await User.countDocuments();
+        const totalPages = Math.ceil(totalUsers/limit)
+
+        const userData = await User.find().sort({_id:-1}).skip(skip).limit(limit);
+
+        res.render('users', { title: 'Users', header: true, sidebar: true, footer: true, userData,currentPage:page,totalPages:totalPages });
     } catch (error) {
         console.log(error.message)
     }

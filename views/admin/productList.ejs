@@ -2,7 +2,7 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Products List</h2>
-            <p>✏️ Add ,  📝 Edit , and  🚮 Delete Products
+            <p>✏️ Add , 📝 Edit , and 🚮 Delete Products
 
             </p>
         </div>
@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="card mb-4">
-        
+
         <!-- <header class="card-header">
             <div class="row align-items-center">
                 <div class="col col-check flex-grow-0">
@@ -90,7 +90,7 @@
                                         <% if(x.is_active){ %>
                                             <a href="/admin/blockProduct/<%- x._id %>"
                                                 class="btn btn-sm font-sm btn-light rounded">
-                                               🚮 &nbsp;&nbsp;Delete
+                                                🚮 &nbsp;&nbsp;Delete
                                             </a>
                                             <% }else{ %>
                                                 <a href="/admin/blockProduct/<%- x._id %>"
@@ -108,16 +108,16 @@
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
     <div class="pagination-area mt-30 mb-50">
-        <!-- <nav aria-label="Page navigation example">
+        <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                </li>
+                <% for(let i=1;i<=totalPages;i++){ %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="/admin/products?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                    <% } %>
             </ul>
-        </nav> -->
+        </nav>
     </div>
 </section>

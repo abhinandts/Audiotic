@@ -319,6 +319,7 @@ const loadProducts = async (req, res) => {
         console.log(error.message)
     }
 }
+
 const getCategories = async (req, res) => {
     try {
         const categories = await Category.find({ is_active: true }, { name: 1 })
