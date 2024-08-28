@@ -174,25 +174,7 @@
                         <input type="hidden" id="cartTotal" name="" value="<%= cartData.cartTotal %>">
                     </div>
                     <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                    <!-- <div class="payment_method">
-                        <div class="mb-25">
-                            <h5>Payment</h5>
-                        </div>
 
-                        <div class="payment_option">
-                            <div class="custome-radio">
-                                <input class="form-check-input" required="" type="radio" name="payment_option" id="cod" checked="" />
-                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse"  aria-controls="cod">Cash on Delivery</label>
-
-                            </div>
-                            <div class="custome-radio">
-                                <input class="form-check-input" required="" type="radio" name="payment_option" id="razorpay" checked="" />
-                                <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse"  aria-controls="cod">Razorpay</label>
-
-                            </div>
-                        </div>
-
-                    </div> -->
 
 
                     <div class="payment_method">
@@ -202,11 +184,19 @@
 
                         <div class="payment_option">
 
+                            <% if(cod){ %>
+                                <div class="custome-radio">
+                                    <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="" />
+                                    <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on delivery</label>
+                                </div>
+                            <% }else {%>
 
-                            <div class="custome-radio">
-                                <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="" />
-                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on delivery</label>
-                            </div>
+                            <p class="cod-unavailable">Cash on Delivery is only available for orders below ₹1000</p>
+                            
+                            <% } %>
+
+
+
                             
                             <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="" />

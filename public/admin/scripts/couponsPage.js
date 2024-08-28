@@ -33,7 +33,8 @@
                 body: JSON.stringify({ couponId })
             });
             if (response.ok) {
-                await fetchAndLoadCoupons();
+                // await fetchAndLoadCoupons();
+window.location.reload();
             } else {
                 const errorData = await response.json()
                 console.log(errorData)

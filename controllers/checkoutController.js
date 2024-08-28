@@ -64,16 +64,21 @@ const loadCheckout = async (req, res) => {
 
         const shipping = cartSubtotal - couponValue > 20000 ? 0 : 500;
         const cartTotal = cartSubtotal - couponValue + shipping;
+        let cod = false
+        if(cartTotal<1000){
+            cod = true
+        }
 
         const cartData = {
             cartProducts,
             cartSubtotal,
             couponValue,
             shipping,
-            cartTotal
+            cartTotal,
+
         }
 
-        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
+        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false,cod })
     } catch (error) {
         console.error(error);
     }
