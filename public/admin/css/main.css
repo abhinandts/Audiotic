@@ -539,6 +539,7 @@ b {
 
 .menu-aside .menu-item.active .menu-link {
   background-color: rgba(8, 129, 120, 0.2);
+  
 }
 
 .menu-aside .menu-item.active .submenu a.active {
@@ -547,9 +548,8 @@ b {
 
 .menu-aside .menu-link {
   padding: 10px;
-  font-weight: 500;
-  font-size: 13px;
-  color: #292f46;
+  font-size: 17px;
+  color: #353a4e;
   border-radius: 0.3rem;
   position: relative;
 }

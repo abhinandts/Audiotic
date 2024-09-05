@@ -1,6 +1,6 @@
 (function () {
 
-    let selectedAddress, addressList, placeOrderButton,cartTotalSpan;
+    let selectedAddress, addressList, placeOrderButton, cartTotalSpan;
     let couponId;
 
     function initializeElements() {
@@ -23,15 +23,15 @@
         placeOrderButton.addEventListener('click', placeOrder)
     }
 
-    function checkCartTotal (){
+    function checkCartTotal() {
         console.log(cartTotalSpan.value)
         let cartTotal = cartTotalSpan.value
-        if(cartTotal>1000){
-            
+        if (cartTotal > 1000) {
+
         }
     }
 
-    
+
     function selectAddress(addressCard) {
         if (selectedAddress) {
             selectedAddress.classList.remove('selected');

@@ -9,7 +9,7 @@ const loadCouponPage = async (req, res) => {
         const totalCoupons = await Coupon.countDocuments();
         const totalPages = Math.ceil(totalCoupons/limit)
 
-        console.log(page,limit,skip,totalCoupons,totalPages)
+        // console.log(page,limit,skip,totalCoupons,totalPages)
 
         const coupons = await Coupon.find()
         .sort({ _id: -1 })

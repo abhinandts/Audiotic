@@ -7,26 +7,26 @@ const productSchema = new mongoose.Schema({
     },
     productSpecifications: {
         type: String,
-        require: true
+        required: true
     },
     mrp: {
         type: Number,
-        require: true
+        required: true
     },
     price: {
         type: Number,
-        require: true
+        required: true
     },
     stock: {
         type: Number,
-        require: true
+        required: true
     },
     discount: {
         type: Number,
     },
     image: {
         type: Array,
-        require: true
+        required: true
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

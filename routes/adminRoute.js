@@ -48,7 +48,7 @@ adminRoute.use('/fonts', express.static(__dirname + '/public/admin/fonts'))
 adminRoute.use('/imgs', express.static(__dirname + '/public/admin/imgs'))
 adminRoute.use('/js', express.static(__dirname + '/public/admin/js'))
 adminRoute.use('/sass', express.static(__dirname + '/public/admin/sass'))
-adminRoute.use('/scripts',express.static(__dirname + '/public/admin/scripts'))
+adminRoute.use('/scripts', express.static(__dirname + '/public/admin/scripts'))
 
 // Body parsing middleware
 const bodyParser = require('body-parser')
@@ -115,6 +115,7 @@ const productController = require('../controllers/productController')
 const bannerController = require('../controllers/bannerController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const offerController = require('../controllers/offerController')
 // ---------------------------------------
 
 
@@ -164,17 +165,24 @@ adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
 // ---- coupons ----
 
 adminRoute.get("/coupons", couponController.loadCouponPage)
-adminRoute.post("/api/coupons/createCoupon",couponController.createCoupon)
-adminRoute.get("/api/coupons/fetchCoupons",couponController.loadCoupons)
-adminRoute.put("/api/coupons/disableCoupon",couponController.disableCoupon)
-adminRoute.get("/coupons/editCoupon/:couponId",couponController.loadEditCoupon)
-adminRoute.post("/coupons/editCoupon",couponController.updateCoupon)
-adminRoute.get('/api/coupons/checkName',couponController.checkName)
+adminRoute.post("/api/coupons/createCoupon", couponController.createCoupon)
+adminRoute.get("/api/coupons/fetchCoupons", couponController.loadCoupons)
+adminRoute.put("/api/coupons/disableCoupon", couponController.disableCoupon)
+adminRoute.get("/coupons/editCoupon/:couponId", couponController.loadEditCoupon)
+adminRoute.post("/coupons/editCoupon", couponController.updateCoupon)
+adminRoute.get('/api/coupons/checkName', couponController.checkName)
 // adminRoute.get('/api/coupons/pagination',)
 adminRoute.get('/api/coupons/pagination', couponController.paginateCoupons);
 
 adminRoute.post("/api/coupons/create", couponController.createCoupon);
 adminRoute.put("/api/coupons/toggle/:id", couponController.toggleCouponStatus);
+
+// ---- offers ----
+
+adminRoute.get("/offers", offerController.loadOffers)
+adminRoute.post("/api/offers/productOffer",offerController.applyProductOffer)
+adminRoute.post("/api/offers/categoryOffer",offerController.applyCategoryOffer)
+
 // ---- banners ----
 
 adminRoute.get("/banners", auth.isLogin, bannerController.loadBanners)

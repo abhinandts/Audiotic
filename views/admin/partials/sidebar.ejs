@@ -1,3 +1,10 @@
+<style>
+    .menu-item a {
+    font-size: 20px;
+}
+
+</style>
+
 <aside class="navbar-aside" id="offcanvas_aside">
     <div class="aside-top">
         <a href="/admin/dashboard" class="brand-wrap">
@@ -11,11 +18,11 @@
     <nav>
         <ul class="menu-aside">
 
-            <!-- <li class="menu-item active">
-                <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/dashboard" id="dashboard-btn"> <i class="icon material-icons md-home"></i>
                     <span class="text">Dashboard</span>
                 </a>
-            </li> -->
+            </li>
 
             <li class="menu-item ">
                 <a class="menu-link" href="/admin/users" id="usersButton"> <i class="icon material-icons md-person"></i>
@@ -56,6 +63,10 @@
                         class="icon material-icons md-local_play"></i>
                     <span class="text"> Coupons </span>
                 </a>
+            </li>
+            <li class="menu-item">
+                <a class="menu-link" href="/admin/offers" id="offers-button"> <i class="icon material-icons md-stars"></i>
+                    <span class="text">Offers</span> </a>
             </li>
 
 
@@ -135,12 +146,15 @@
     const currentUrl = window.location.href;
 
     // Get the link elements
+    const dashboardButton = document.getElementById('dashboard-btn')
     const usersButton = document.getElementById('usersButton')
     const productsButton = document.getElementById('productsButton')
     const categoryButton = document.getElementById('categoryButton');
     const ordersButton = document.getElementById('ordersButton')
     const bannersButton = document.getElementById('bannersButton');
-    const couponsButton = document.getElementById('couponsButton')
+    const couponsButton = document.getElementById('couponsButton');
+    const offersButton = document.getElementById('offers-button')
+
 
     // Add the active class to the respective link based on the URL
     if (currentUrl.includes('/admin/users')) {
@@ -153,8 +167,12 @@
     } else if (currentUrl.includes('/admin/banners')) {
         bannersButton.parentNode.classList.add('active');
     } else if (currentUrl.includes('/admin/orders')) {
-        ordersButton.parentNode.classList.add('active')
+        ordersButton.parentNode.classList.add('active');
     } else if (currentUrl.includes('/admin/coupons')) {
-        couponsButton.parentNode.classList.add('active')
+        couponsButton.parentNode.classList.add('active');
+    }else if(currentUrl.includes('/admin/offers')){
+        offersButton.parentNode.classList.add('active');
+    }else if(currentUrl.includes('/admin/dashboard')){
+        dashboardButton.parentNode.classList.add('active');
     }
 </script>
