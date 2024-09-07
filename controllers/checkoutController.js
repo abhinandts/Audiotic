@@ -8,19 +8,10 @@ const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
 const crypto = require('crypto')
 
-// -----------------------------------
-
-// -----------------------------------
-
 const Razorpay = require('razorpay');
 
 const { v4: uuidv4 } = require('uuid');
 
-
-// const razorpayInstance = new Razorpay({
-//     key_id: 'rzp_test_l5PYAz2fxdpeOD',
-//     key_secret: 'l1TAq3R3gd5YtoUSXb1PoJYC'
-// })
 const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -53,8 +44,8 @@ const loadCheckout = async (req, res) => {
         if (couponId) {
             const coupon = await Coupon.findById(couponId);
 
-            if(cartSubtotal >= coupon.minimumAmount && cartSubtotal > coupon.couponValue){
-                couponValue = coupon.couponValue;
+            if (cartSubtotal >= coupon.minimumAmount && cartSubtotal > coupon.value) {
+                couponValue = coupon.value;
             }
             console.log(couponValue)
 
@@ -62,10 +53,10 @@ const loadCheckout = async (req, res) => {
             console.log("no coupon", couponValue)
         }
 
-        const shipping = cartSubtotal - couponValue > 20000 ? 0 : 500;
+        const shipping = cartSubtotal - couponValue > 10000 ? 0 : 500;
         const cartTotal = cartSubtotal - couponValue + shipping;
         let cod = false
-        if(cartTotal<1000){
+        if (cartTotal < 1000) {
             cod = true
         }
 
@@ -75,10 +66,9 @@ const loadCheckout = async (req, res) => {
             couponValue,
             shipping,
             cartTotal,
-
         }
 
-        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false,cod })
+        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false, cod })
     } catch (error) {
         console.error(error);
     }
@@ -125,7 +115,7 @@ const placeOrder = async (req, res) => {
 
             if (appliedCoupon && cartSubtotal >= appliedCoupon.minimumAmount) {
 
-                couponDiscount = Math.min(appliedCoupon.couponValue, cartSubtotal);
+                couponDiscount = Math.min(appliedCoupon.value, cartSubtotal);
             }
         }
 
@@ -233,14 +223,14 @@ const verifyPayment = async (req, res) => {
 
         if (digest === response.razorpay_signature) {
             console.log("Payment verified successfully");
-            const order =await Orders.findOneAndUpdate({orderId:orderDetails.receipt},{$set:{payment:true}})
+            const order = await Orders.findOneAndUpdate({ orderId: orderDetails.receipt }, { $set: { payment: true } })
 
             res.json({ status: 'ok' });
         } else {
             console.log("Payment verification failed");
             res.status(400).json({ staus: 'failed' })
         }
- 
+
     } catch (error) {
         console.error(error)
         res.status(500).json({ status: 'error', message: error.message });

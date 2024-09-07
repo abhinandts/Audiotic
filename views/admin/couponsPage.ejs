@@ -27,21 +27,28 @@
                     <!-- <form> -->
                     <div class="mb-4">
                         <label for="couponName" class="form-label">Coupon Name</label>
-                        <input type="text" placeholder="Type here" class="form-control mb-2 " name="couponName"
+                        <input type="text" placeholder="Type here" class="form-control mb-2" name="couponName"
                             id="couponName" required />
                     </div>
 
                     <div class="mb-4">
                         <label for="couponValue" class="form-label">Coupon value</label>
-                        <input type="number" placeholder="Type here" class="form-control mb-2 " name="couponValue"
+                        <input type="number" placeholder="Type here" class="form-control mb-2" name="couponValue"
                             id="couponValue" required />
                     </div>
 
                     <div class="mb-4">
                         <label for="minimumAmount" class="form-label">Minimum order amount</label>
-                        <input type="number" placeholder="Type here" class="form-control mb-2 " name="minimumAmount"
+                        <input type="number" placeholder="Type here" class="form-control mb-2" name="minimumAmount"
                             id="minimumAmount" required />
                     </div>
+
+                    <div class="mb-4">
+                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                        <input type="datetime-local" class="form-control mb-2" name="expiry-date" id="expiry-date"
+                            min="" max="" required />
+                    </div>
+
 
                     <div class="d-grid">
                         <button id="createBtn" class="btn btn-primary">Create Coupon</button>
@@ -84,30 +91,16 @@
         </div> <!-- card body .// -->
     </div> <!-- card .// -->
 
-    <!-- <div class="pagination-area mt-30 mb-50">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i
-                            class="material-icons md-chevron_right"></i></a></li>
-            </ul>
-        </nav>
-    </div> -->
-
     <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation example">
 
             <ul class="pagination justify-content-start" id="pagination">
 
             </ul>
-            
+
         </nav>
     </div>
 
 </section>
 
-<script src="/admin/scripts/couponsPage.js"></script>g
+<script src="/admin/scripts/couponsPage.js"></script>

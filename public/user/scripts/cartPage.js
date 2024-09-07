@@ -37,7 +37,7 @@
             couponElement.innerHTML = `
                         <input type="checkbox" id="${coupon._id}" class="col-md-2" name="coupon" value="${coupon._id}">
                         <label for="${coupon._id}" class="col-md-10">
-                            ${coupon.couponName} - ₹${coupon.couponValue} off on orders above ₹${coupon.minimumAmount}
+                            ${coupon.name} - ₹${coupon.value} off on orders above ₹${coupon.minimumAmount}
                         </label>
             `;
             couponList.appendChild(couponElement);
@@ -163,8 +163,8 @@
         shippingCharge.textContent = `₹ ${cart.shipping.toFixed(2)}/-`;
 
         let couponDiscount = 0;
-        if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount && cart.cartSubtotal > selectedCoupon.couponValue) {
-            couponDiscount = selectedCoupon.couponValue;
+        if (selectedCoupon && cart.cartSubtotal >= selectedCoupon.minimumAmount && cart.cartSubtotal > selectedCoupon.value) {
+            couponDiscount = selectedCoupon.value;
         }
 
         const couponDiscountSpan = document.getElementById('couponDiscount')

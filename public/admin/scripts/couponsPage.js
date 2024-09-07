@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    let couponNameInput, couponValueInput, minimumAmountInput, createBtn, couponList, pageList;
+    let couponNameInput, couponValueInput, minimumAmountInput, createBtn, couponList, pageList, expiryDateInput;
 
     function initializeElements() {
         couponNameInput = document.getElementById('couponName');
@@ -9,8 +9,8 @@
         minimumAmountInput = document.getElementById('minimumAmount');
         createBtn = document.getElementById('createBtn');
         couponList = document.getElementById('couponList');
-        pageList = document.getElementById('pagination')
-
+        pageList = document.getElementById('pagination');
+        expiryDateInput = document.getElementById('expiry-date');
     }
 
     function initializeEventListeners() {
@@ -34,7 +34,7 @@
             });
             if (response.ok) {
                 // await fetchAndLoadCoupons();
-window.location.reload();
+                window.location.reload();
             } else {
                 const errorData = await response.json()
                 console.log(errorData)
@@ -44,9 +44,7 @@ window.location.reload();
         }
     }
 
-
     async function validateForm() {
-
         let couponName = couponNameInput.value.trim();
         if (!validateCouponName(couponName)) return;
 
@@ -56,31 +54,77 @@ window.location.reload();
         let minimumAmount = minimumAmountInput.value.trim();
         if (!validateAmount(minimumAmount, couponValue)) return;
 
+        let expiryDate = expiryDateInput.value;
+        if (!validateExpiryDate(expiryDate)) return;
+
         try {
             const response = await fetch('/admin/api/coupons/createCoupon', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ couponName, couponValue, minimumAmount })
-            })
+                body: JSON.stringify({
+                    name: couponName,
+                    value: parseInt(couponValue),
+                    minimumAmount: parseInt(minimumAmount),
+                    expiryDate: new Date(expiryDate).toISOString()
+                })
+            });
 
             if (!response.ok) {
                 const error = await response.json();
                 console.error('Error creating coupon:', error);
-                // Handle error (e.g., show error message to the user)
-                showError(couponNameInput, error.message || "Failed to create coupon");
+                showError(createBtn, error.message || "Failed to create coupon");
             } else {
                 const result = await response.json();
                 console.log('Coupon created successfully:', result);
                 window.location.reload();
-
-                // You can also display a success message or redirect the user
             }
         } catch (error) {
-            console.error(error)
+            console.error(error);
             showError(createBtn, "An error occurred while creating the coupon");
         }
+    }
+
+    // function validateExpiryDate(expiryDate) {
+    //     const now = new Date();
+    //     const minExpiryDate = new Date(now.getTime() + 5 * 6000);
+    //     const inputDate = new Date(expiryDate);
+
+    //     if (!expiryDate) {
+    //         showError(expiryDateInput, "Please select expiry date");
+    //         return false;
+    //     }
+
+    //     if (inputDate <= minExpiryDate) {
+    //         showError(expiryDateInput, "Expiry date must be at least 5 minutes in the future")
+    //         return false;
+    //     }
+    //     hideError(expiryDateInput);
+    //     return true;
+    // }
+
+    function validateExpiryDate(expiryDate) {
+        const now = new Date();
+        const minExpiryDate = new Date(now.getTime() + 5 * 60000); // 5 minutes from now
+        const inputDate = new Date(expiryDate);
+
+        if (!expiryDate) {
+            showError(expiryDateInput, "Please select an expiry date and time");
+            return false;
+        }
+
+        if (isNaN(inputDate.getTime())) {
+            showError(expiryDateInput, "Please enter a valid date and time");
+            return false;
+        }
+
+        if (inputDate <= minExpiryDate) {
+            showError(expiryDateInput, "Expiry date must be at least 5 minutes in the future");
+            return false;
+        }
+        hideError(expiryDateInput);
+        return true;
     }
 
     function validateAmount(minimumAmount, couponValue) {
@@ -135,36 +179,6 @@ window.location.reload();
         }
     }
 
-    // async function pagination() {
-    //     try {
-    //         const response = await Coupons.fetch('/api/coupons/pagination');
-
-    //         if (response.ok) {
-    //             throw new Error('Failed to fetch coupons');
-    //         }
-    //         const pages = await response.json();
-
-    //         updatePagination(pages)
-
-    //     } catch (error) {
-    //         console.error("Client side error", error)
-    //     }
-    // }
-
-    // function updatePagination(pages) {
-    //     pageList.innerHTML = ""
-    //     pages.forEach(page => {
-    //         const pageItem = createPageItem(page)
-    //         pageList.appendChild(pageItem)
-    //     })
-    // }
-    // function createPageItem(page) {
-    //     const item = document.createElement('li');
-    //     // item.classList.add('page-item ${i} === currentPage ? 'active' : ''%>')
-    //     item.innerHTML = `
-    //                     <a class="page-link" href="/api/coupons/pagination?page=${i}"> ${i}</a>
-    //     `
-    // }
 
     async function pagination(page = 1) {
         try {
@@ -179,7 +193,7 @@ window.location.reload();
             console.error("Client side error", error);
         }
     }
-    
+
     function updatePagination(currentPage, totalPages) {
         pageList.innerHTML = "";
         for (let i = 1; i <= totalPages; i++) {
@@ -187,7 +201,7 @@ window.location.reload();
             pageList.appendChild(pageItem);
         }
     }
-    
+
     function createPageItem(page, currentPage) {
         const item = document.createElement('li');
         item.classList.add('page-item');
@@ -227,18 +241,19 @@ window.location.reload();
     }
     function createCouponItem(coupon) {
         const couponItem = document.createElement('tr');
+        const isExpired = new Date(coupon.expiryDate) <= new Date();
         couponItem.innerHTML = `
                                 <td class="text-center">
                                     <div class="form-check">➤</div>
                                 </td>
                                 <td class="couponDetails">
                                     <a href="/admin/coupons/editCoupon/${coupon._id}" >
-                                        <b>${coupon.couponName}</b>
+                                        <b>${coupon.name}</b>
                                     </a>
                                 </td>
                                 <td class="couponDetails">
                                     <a href="/admin/coupons/editCoupon/${coupon._id}">
-                                        ₹${coupon.couponValue}.00/-
+                                        ₹${coupon.value}.00/-
                                     </a>
                                 </td>
                                 <td class="couponDetails">
@@ -246,16 +261,18 @@ window.location.reload();
                                         ₹${coupon.minimumAmount}.00/-
                                     </a>
                                 </td>
-                                <td>
-                                    <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                        <span class="badge rounded-pill ${coupon.is_active ? 'alert-success' : 'alert-danger'}">
-                                            ${coupon.is_active ? 'Active' : 'Disabled'}
-                                        </span>
-                                    </div>
-                                </td>
+
+
+        <td>
+            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                <span class="badge rounded-pill ${isExpired ? 'alert-warning' : (coupon.is_active ? 'alert-success' : 'alert-danger')}">
+                    ${isExpired ? 'Expired' : (coupon.is_active ? 'Active' : 'Disabled')}
+                </span>
+            </div>
+        </td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}">
-                                        ${coupon.is_active ? '🔒 Disable' : '🔓 Enable'}
+                                    <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}" ${isExpired ? 'disabled' : ''} >
+                                         ${isExpired ? 'Expired' : (coupon.is_active ? '🔒 Disable' : '🔓 Enable')}
                                     </button>
                                 </td>
 
@@ -272,65 +289,3 @@ window.location.reload();
 
     document.addEventListener('DOMContentLoaded', init);
 })();
-
-
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     const createBtn = document.getElementById('createBtn');
-//     const couponList = document.getElementById('couponList');
-
-//     createBtn.addEventListener('click', createCoupon);
-//     couponList.addEventListener('click', handleCouponAction);
-
-//     function createCoupon() {
-//         const couponName = document.getElementById('couponName').value;
-//         const couponValue = document.getElementById('couponValue').value;
-//         const minimumAmount = document.getElementById('minimumAmount').value;
-
-//         fetch('/admin/api/coupons/create', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ couponName, couponValue, minimumAmount }),
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.success) {
-//                 alert('Coupon created successfully');
-//                 location.reload(); // Reload the page to show the new coupon
-//             } else {
-//                 alert('Failed to create coupon');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             alert('An error occurred while creating the coupon');
-//         });
-//     }
-
-//     function handleCouponAction(event) {
-//         if (event.target.classList.contains('toggle-status')) {
-//             const couponId = event.target.dataset.id;
-//             toggleCouponStatus(couponId);
-//         }
-//     }
-
-//     function toggleCouponStatus(couponId) {
-//         fetch(`/admin/api/coupons/toggle/${couponId}`, {
-//             method: 'PUT',
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.success) {
-//                 location.reload(); // Reload the page to reflect the changes
-//             } else {
-//                 alert('Failed to toggle coupon status');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             alert('An error occurred while toggling the coupon status');
-//         });
-//     }
-// });
