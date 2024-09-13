@@ -178,38 +178,33 @@
 
 
                     <div class="payment_method">
-                        <div class="mb-25">
-                            <h5>Payment</h5>
+                        <div class="mb-15">
+                            <h4>Payment Methods</h4>
                         </div>
 
                         <div class="payment_option">
 
                             <% if(cod){ %>
                                 <div class="custome-radio">
-                                    <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="" />
-                                    <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on delivery</label>
+                                    <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios4" value="Cash on Delivery"  />
+                                    <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on Delivery</label>
                                 </div>
                             <% }else {%>
-
-                            <p class="cod-unavailable">Cash on Delivery is only available for orders below ₹1000</p>
-                            
+                                <p class="cod-unavailable">Cash on Delivery is only available for orders below ₹1000</p>
                             <% } %>
-
-
-
                             
                             <div class="custome-radio">
-                                <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="" />
+                                <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios6" value="Wallet" />
+                                <label class="form-check-label" for="exampleRadios6" data-bs-toggle="collapse" data-target="#wallet" aria-controls="wallet">Wallet</label>
+                            </div>
+                            
+                            <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios5" value="Razorpay" checked="" />
                                 <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="razorpay">Razorpay</label>
-
                             </div>
 
-                        </div>
-                        
+                        </div>           
                     </div>
-                    
-
-
 
                     <a href="/cart" class="btn btn-secondary btn-fill-out btn-block mt-30"  >Go back to cart</a>
                     <button class="btn btn-fill-out btn-block mt-30" id="placeOrder">Place Order</button>

@@ -10,9 +10,7 @@ const Wallet = require('../models/walletModel')
 const orderConfirmation = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
-        console.log(order)
-        if (order.orderTotal > 2000)
-            res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
+        res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {
         console.error(error)
     }
@@ -31,13 +29,11 @@ const getOrders = async (req, res) => {
             const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
             const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
-            console.log(`${formattedDate} ${formattedTime}`);
-
             return {
                 date: `${formattedDate} ${formattedTime}`,
                 orderId: order.orderId,
                 totalPrice: order.orderTotal,
-                status: order.status
+                status: order.orderStatus
             };
         });
 
@@ -54,6 +50,7 @@ const trackOrder = async (req, res) => {
     try {
         const id = req.body.orderId.trim()
         const order = await Orders.findOne({ orderId: id }).populate('products.product')
+        console.log(order)
 
         if (!order) {
             return res.render('myAccount', { message: "Order not found" });

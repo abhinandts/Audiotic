@@ -25,35 +25,6 @@ const loadCouponPage = async (req, res) => {
     }
 }
 
-// const createCoupon = async (req, res) => {
-//     try {
-
-//         const { couponName, couponValue, minimumAmount, expiryDate } = req.body;
-
-//         const now = new Date();
-//         const minExpiryDate = new Date(now.getTime() + 5 * 60000); // 5 minutes from now
-//         const inputDate = new Date(expiryDate);
-
-//         if (inputDate <= minExpiryDate) {
-//             return res.status(400).json({ success: false, error: 'Expiry date must be at least 5 minutes in the future' });
-//         }
-
-//         const newCoupon = new Coupon({
-//             name:couponName,
-//             value:couponValue,
-//             minimumAmount:minimumAmount,
-//             expiryDate: inputDate
-//         });
-
-
-//         // const newCoupon = new Coupon({ couponName, couponValue, minimumAmount });
-//         await newCoupon.save();
-//         res.json({ success: true });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ success: false, error: 'Server error' });
-//     }
-// };
 const createCoupon = async (req, res) => {
     try {
         const { name, value, minimumAmount, expiryDate } = req.body;
@@ -144,7 +115,6 @@ const getCoupons = async (req, res) => {
     try {
         const currentDate = new Date();
         const coupons = await Coupon.find({ expiryDate: { $gt: currentDate }, is_active: true });
-        console.log(coupons)
         res.json(coupons)
     } catch (error) {
         console.error(error)

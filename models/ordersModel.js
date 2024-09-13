@@ -29,29 +29,37 @@ const orderSchema = new mongoose.Schema(
                 },
             }
         ],
-        orderTotal: {
+        couponApplied: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coupon',
+            required: false,
+        },
+        couponDiscount: {
             type: Number,
-            default: 0,
+            default: 0
         },
         shipping: {
             type: Number,
             default: 0
         },
-        status: {
-            type: String,
-            enum: [
-                "Processing",
-                "Shipped",
-                "Out for delivery",
-                "Delivered",
-                "Cancelled",
-                "Returned"
-            ],
-            default: "Processing"
+        orderTotal: {
+            type: Number,
+            default: 0,
         },
-        orderDate: {
-            type: Date,
-            default: Date.now,
+        paymentMethod: {
+            type: String,
+            enum: ["Cash on Delivery", "Razorpay", "Wallet"],
+            required: true
+        },
+        orderStatus: {
+            type: String,
+            enum: ["Processing", "Pending", "Shipped", "Delivered", "Cancelled", "Returned"],
+            default: "Processing",
+        },
+        paymentStatus: {
+            type: String,
+            enum: ["Pending", "Paid", "Refunded", "Failed", "No Payment Required"],
+            default: "Pending",
         },
         address: {
             type: Object,
@@ -59,30 +67,12 @@ const orderSchema = new mongoose.Schema(
         },
         reason: {
             type: String,
-            required: false,
+            required: function () { return this.orderStatus === "Cancelled" || this.orderStatus === "Returned"; },
             default: ""
         },
-        couponUsed: {
-            type: mongoose.Schema.Types.ObjectId, ref: 'Coupon'
-        },
-        couponDiscount: {
-            type: Number,
-            default: 0
-        },
-        isRazorpay: {
-            type: Boolean,
-            required: true
-        },
-        payment: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        refund: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
+    },
+    {
+        timestamps: true
     }
 )
 

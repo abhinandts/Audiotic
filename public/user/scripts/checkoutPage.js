@@ -1,12 +1,11 @@
 (function () {
 
-    let selectedAddress, addressList, placeOrderButton, cartTotalSpan;
+    let selectedAddress, addressList, placeOrderButton;
     let couponId;
 
     function initializeElements() {
         addressList = document.getElementById('addressList');
         placeOrderButton = document.getElementById('placeOrder');
-        cartTotalSpan = document.getElementById('cartTotal');
 
         const urlParams = new URLSearchParams(window.location.search);
         couponId = urlParams.get('couponId');
@@ -22,15 +21,6 @@
         });
         placeOrderButton.addEventListener('click', placeOrder)
     }
-
-    function checkCartTotal() {
-        console.log(cartTotalSpan.value)
-        let cartTotal = cartTotalSpan.value
-        if (cartTotal > 1000) {
-
-        }
-    }
-
 
     function selectAddress(addressCard) {
         if (selectedAddress) {
@@ -52,18 +42,18 @@
             return;
         }
 
-        const selectedPaymentMethod = document.querySelector('input[name="payment_option"]:checked');
-        if (!selectedPaymentMethod) {
+        const selectedPaymentMethodElement = document.querySelector('input[name="payment-option"]:checked');
+        if (!selectedPaymentMethodElement) {
             showToast("Please select a payment method", "error");
             return;
         }
-        const razorpay = selectedPaymentMethod.id === 'exampleRadios5' ? true : false;
+        const method = selectedPaymentMethodElement.value
 
         try {
             const orderData = {
                 addressId: addressId,
                 couponId: couponId,
-                razorpay: razorpay
+                paymentMethod : method
             };
 
             const response = await fetch(`/api/checkout/placeOrder`, {
@@ -71,15 +61,15 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             });
+
             if (response.ok) {
-                console.log("Order Placed")
 
-                if (razorpay) {
-                    const razorpayOrder = await response.json();
-                    initializeRazorpay(razorpayOrder);
+                const responseData = await response.json();
 
+                if (method ==="Razorpay") {
+                    initializeRazorpay(responseData);
                 } else {
-                    window.location.href = response.url;
+                    window.location.href =  `/orders/orderConfirmation/${responseData.orderId}`;
                 }
             } else {
                 const errorData = await response.json()
@@ -99,11 +89,11 @@
             name: 'AUDIOTIC',
             description: 'Payment for order',
             order_id: razorpayOrder.id,
-            handler: function (response, order) {
+            handler: function (response) {
                 // Handle payment success
                 console.log('Payment successful:', response);
                 // Perform any necessary actions, such as updating the order status on the server
-                verifyPayment(response, orderDetails)
+                verifyPayment(response,razorpayOrder)
             },
             prefill: {
                 name: 'Customer Name',
@@ -121,10 +111,10 @@
         rzp1.open();
     }
 
-    function verifyPayment(response, orderDetails) {
+    async function verifyPayment(response, razorpayOrder) {
 
         const paymentDetails = {
-            response, orderDetails
+            response, razorpayOrder
         }
         return fetch('/api/checkout/verifyPayment', {
             method: 'POST',
@@ -135,7 +125,7 @@
             .then(data => {
                 if (data.status === 'ok') {
                     console.log('Payment verified successfull')
-                    window.location.href = `/orders/orderConfirmation/${orderDetails.receipt}`;
+                    window.location.href = data.redirect;
                 } else {
                     console.log('Payment verification failed');
                     showToast('Payment verification failed', 'error');

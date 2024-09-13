@@ -152,12 +152,11 @@ const removeFromCart = async (req, res) => {
         cart.cartTotal = cart.cartSubtotal + cart.shipping
 
         await cart.save()
-        console.log(cart)
 
         res.status(200).json({ message: "Address deleted successfully" });
 
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(500).json({ error: "Server error." })
     }
 }

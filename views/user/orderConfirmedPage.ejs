@@ -11,23 +11,16 @@
                 <div class="order_review">
                     <div class="mb-20">
                         <h4 class="mb-10">Order Status : <span style="color: rgb(2, 112, 22);"> <strong>
-                                    <%= order.status %>
+                                    <%= order.orderStatus %>
                                 </strong></span></h4>
 
                         <h5 class="mb-5">Payment Mode : <span>
-                                <% if(order.isRazorpay){ %>
-                                    Razorpay
-                                    <%}else{ %>
-                                        Cash on Delivery
-                                        <% } %>
+                            <%= order.paymentMethod %>
                             </span></h5>
 
                         <h5 class="mb-5">Payment :
-                            <% if(order.payment){ %>
-                                <span style="color: rgb(0, 231, 42);"> Paid </span>
-                                <%}else{ %>
-                                    <span style="color: rgb(255, 114, 5);">Payment pending</span>
-                                    <% } %>
+
+                                    <span style="color: rgb(255, 114, 5);"><%= order.paymentStatus  %></span>
                         </h5>
 
                         <% if(order.isRazorpay && order.status=="Cancelled" ){ %>
@@ -67,8 +60,8 @@
                                     </tr>
                                     <% }); %>
                                         <tr>
-                                            <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">₹<%= order.orderTotal %>
+                                            <th>Coupon Discount</th>
+                                            <td class="product-subtotal" colspan="2">₹<%= order.couponDiscount %>
                                             </td>
                                         </tr>
                                         <tr>
