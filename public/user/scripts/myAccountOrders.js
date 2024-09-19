@@ -1,28 +1,25 @@
 (function () {
 
-    let tableBody, form, orderIdInput, orderIdError;
+    let tableBody,wholeTable;
 
     function initializeElements() {
-        tableBody = document.getElementById('tableBody')
-        form = document.getElementById('trackOrderForm')
-        orderIdInput = document.getElementById('orderIdInput')
-        orderIdError = document.getElementById('orderIdError')
-    }
-    function initEventListeners() {
-        form.addEventListener('submit', handleForm);
+        tableBody = document.getElementById('table-body')
+        wholeTable = document.getElementById('whole-table')
     }
 
-    function handleForm(event) {
-        event.preventDefault();
+    function initializeEventListeners(){
+        tableBody.addEventListener('click',handleClick)
+    }
 
-        const orderId = orderIdInput.value.trim();
-
-        if (orderId.length <= 6) {
-            orderIdError.textContent = "Please provide valid Order Id"
-            orderIdError.style.display = 'block';
-            return
+    function handleClick(event){
+        if(event.target.classList.contains('product-row')){
+            const orderId = event.target.getAttribute('data-id')
+            showOrderPage(couponId)
         }
-        form.submit();
+    }
+
+    function showOrderPage(id){
+        console.log(id)
     }
 
     async function fetchAndLoadOrders() {
@@ -49,10 +46,10 @@
 
     function createOrderItem(order) {
         const orderItem = document.createElement('tr');
-        orderItem.className = 'productRow';
+        orderItem.className = 'product-row';
         orderItem.innerHTML = `
                                 <td>${order.date}</td>
-                                <td>${order.orderId}</td>
+                                <td> <a href="/myAccount/getOrder/${order.orderId}" > ${order.orderId}</td>
                                 <td>₹${order.totalPrice}</td>
                                 <td>${order.status}</td>
         `
@@ -61,8 +58,8 @@
 
     function init() {
         initializeElements();
-        initEventListeners();
+        initializeEventListeners();
         fetchAndLoadOrders();
     }
     document.addEventListener('DOMContentLoaded', init);
-})();
+})()

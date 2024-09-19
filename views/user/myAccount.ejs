@@ -80,23 +80,30 @@
                                     <div class="card-body">
                                         <h3>Wallet Balance : ₹ <span style="color: rgb(4, 137, 93);"><%= wallet.money  %>.00</span> /-</h3>
                                     </div>
-                                    <!-- <div class="table-responsive ">
+                                    <div class="table-responsive ">
                                         <table class="table wallet-table">
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
-                                                    <th>Order ID</th>
+                                                    <th>Transaction ID</th>
                                                     <th>Amount</th>
-                                                    <th>Status</th>
+                                                    <th>Type</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
+                                                <% transactions.forEach(element => { %>
+                                                    <tr>
 
+                                                    <td><%= element.createdAt %></td>
+                                                    <td><%= element.transactionId  %></td>
+                                                    <td><%= element.amount  %></td>
+                                                    <td><%= element.type  %></td>
                                                 </tr>
+                                                <% }); %>
+
                                             </tbody>
                                         </table>
-                                    </div> -->
+                                    </div>
 
                                 </div>
                             </div>
@@ -109,16 +116,16 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive wholeBody">
-                                            <table class="table">
+                                            <table class="table" id="whole-table">
                                                 <thead>
                                                     <tr>
                                                         <th>Date</th>
                                                         <th>Order ID</th>
                                                         <th>Total</th>
-                                                        <th>Status</th>
+                                                        <th>Order status</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="tableBody">
+                                                <tbody id="table-body">
                                                     <tr>
 
                                                     </tr>
@@ -272,3 +279,5 @@
 <script src="/scripts/myAccountAddress.js"></script>
 <!---- orders ---->
 <script src="/scripts/myAccountOrders.js"></script>
+<!---- track orders ---->
+<script src="/scripts/myAccountTrackOrders.js"></script>

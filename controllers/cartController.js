@@ -4,7 +4,7 @@ const Cart = require('../models/cartModel')
 
 const loadCart = async (req, res) => {
     try {
-        res.render('cartPage', {  header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
+        res.render('cartPage', { header: false, smallHeader: true, breadcrumb: "Cart", footer: true })
     } catch (error) {
         console.log(error.message)
     }
@@ -42,7 +42,7 @@ const getProducts = async (req, res) => {
                     subtotal
                 };
             })
-            const shipping = cartSubtotal > 20000 ? 0 : 500;
+            const shipping = cartSubtotal > 2000 ? 0 : 500;
             const cartTotal = cartSubtotal + shipping;
 
             const cartData = {

@@ -111,11 +111,11 @@
                         <a href="/myAccount" class="btn" style="cursor: pointer;">Show Orders</a>
 
 
-                        <% if(order.status==="Pending" || order.status==="Processing" || order.status==="Shipped" ){ %>
+                        <% if(order.orderStatus==="Pending" || order.orderStatus==="Processing" || order.orderStatus==="Shipped" ){ %>
                             <button onclick="showCancellationDialog()" class="btn btn-secondary">Cancel Order</button>
                             <% } %>
 
-                                <% if(order.status==="Delivered" ){ %>
+                                <% if(order.orderStatus==="Delivered" ){ %>
                                     <button onclick="showReturnDialog()" class="btn btn-secondary">Return Order</button>
                                     <%} %>
 

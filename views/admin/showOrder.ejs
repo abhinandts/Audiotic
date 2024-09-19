@@ -1,33 +1,44 @@
 <section class="content-main">
     <div class="content-header">
         <div>
-            <h2 class="content-title card-title">Order detail</h2>
-            <p>Details for Order ID: 3453012</p>
+            <h2 class="content-title card-title">Order Details</h2>
         </div>
     </div>
     <div class="card">
         <header class="card-header">
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                    <span>
-                        <i class="material-icons md-calendar_today"></i> <b>
-                            <%= order.orderDate %>
+                    <span class="mb-20">
+                        🗓️<b>
+                            <%= order.createdAt %>
                         </b>
-                    </span> <br>
-                    <small class="text-muted">Order ID: <%= order.orderId %></small>
+                    </span>
+                    <p style="color: rgb(66, 143, 70);">Details for Order ID: <strong>
+                            <%= order.orderId %>
+                        </strong> </p>
+
                 </div>
-                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
 
-                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="orderStatusSelect">
+                <% if(orderStatuses.length ===0 ){ %>
+                    <h4 class="col-lg-6 col-md-6 ms-auto text-md-end" >Order Status : <span> <strong>
+                                <%= order.orderStatus %>
+                            </strong></span></h4>
+                <% } else { %>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
 
-                        <% orderStatuses.forEach(function (status) { %>
-                            <option value="<%= status %>" <%=order.status===status ? 'selected' : '' %>><%= status%>
-                            </option>
-                            <% }); %>
+                            <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="orderStatusSelect">
 
-                    </select>
-                    <a class="btn btn-primary" id="saveBtn">Save</a>
-                </div>
+                                <% orderStatuses.forEach(function (status) { %>
+                                    <option value="<%= status %>" <%=order.status===status ? 'selected' : '' %>><%=
+                                            status%>
+                                    </option>
+                                    <% }); %>
+
+                            </select>
+                            <a class="btn btn-primary" id="saveBtn">Save</a>
+                        </div>
+                <% } %>
+
             </div>
         </header> <!-- card-header end// -->
         <div class="card-body">
@@ -130,17 +141,17 @@
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Grand total:</dt>
-                                                        <dd> <b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/-
-                                                            </b> </dd>
+                                                        <dd><b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/-
+                                                            </b></dd>
                                                     </dl>
-                                                    <!-- <dl class="dlist">
-                                                        <dt class="text-muted">Status:</dt>
+                                                    <dl class="dlist">
+                                                        <dt class="text-muted">Payment Status:</dt>
                                                         <dd>
-                                                            <span
-                                                                class="badge rounded-pill alert-success text-success">Payment
-                                                                done</span>
+                                                            <span class="badge rounded-pill alert-success">
+                                                                <%= order.paymentStatus %>
+                                                            </span>
                                                         </dd>
-                                                    </dl> -->
+                                                    </dl>
                                                 </article>
                                             </td>
                                         </tr>
@@ -149,10 +160,10 @@
                     </div> <!-- table-responsive// -->
                     <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
                     <h4>Order Status : <span style="color: rgb(0, 231, 42);"> <strong>
-                                <%= order.status %>
+                                <%= order.orderStatus %>
                             </strong></span></h4>
                     <% if(order.reason.length>0){ %>
-                        <h4>Cancelation reason : <span style="color: rgb(231, 0, 0);"> <strong>
+                        <h4>Reason : <span style="color: rgb(229, 22, 22);"> <strong>
                                     <%= order.reason %>
                                 </strong></span></h4>
                         <% } %>
@@ -202,7 +213,7 @@
                 })
                 const data = await response
 
-                if(data){
+                if (data) {
                     window.location.reload();
                 }
             } catch (error) {

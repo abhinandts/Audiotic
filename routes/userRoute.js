@@ -102,6 +102,8 @@ userRoute.delete('/api/myAccount/deleteAddress/:addressId', check.isLoggedIn, ch
 userRoute.get('/api/myAccount/editAddress/:addressId', check.isLoggedIn, check.checkUserBlocked, addressController.getEditAddress)
 userRoute.put('/api/myAccount/editAddress', check.isLoggedIn, check.checkUserBlocked, addressController.editAddress)
 userRoute.get('/api/myAccount/getOrders', orderController.getOrders)
+userRoute.get('/myAccount/getOrder/:orderId', orderController.getOrder)
+
 userRoute.post('/myAccount/trackOrder', orderController.trackOrder)
 
 userRoute.get('/cart', check.isLoggedIn, check.checkUserBlocked, cartController.loadCart)

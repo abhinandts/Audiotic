@@ -32,7 +32,7 @@
                     </select>
                 </div>
             </div>
-        </header> card-header end// -->
+        </header>  -->
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -41,83 +41,35 @@
                             <th scope="col">Date</th>
                             <!-- <th scope="col">Name</th> -->
                             <th scope="col">Email</th>
-                            <th>#ID</th>
+                            <th>Order ID</th>
                             <th scope="col">Order Status</th>
                             <th scope="col">Total</th>
-                            <th scope="col" class="text-end"> Action </th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- <tr>
-                            <td>0901</td>
-                            <td><b>Marvin McKinney</b></td>
-                            <td>marvin@example.com</td>
-                            <td>$9.00</td>
-                            <td><span class="badge rounded-pill alert-warning">Pending</span></td>
-                            <td>03.12.2022</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
-                                        <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">View detail</a>
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div> 
-                            </td>
-                        </tr>
 
-                        <tr>
-                            <td>1233</td>
-                            <td><b>Esther Howard</b></td>
-                            <td>esther@example.com</td>
-                            <td>$12.00</td>
-                            <td><span class="badge rounded-pill alert-danger">Canceled</span></td>
-                            <td>03.07.2022</td>
-                            <td class="text-end">
-                                <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
-                                        <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">View detail</a>
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div> 
-                            </td>
-                        </tr> -->
-                        
+<tbody>
+    <% orders.forEach(element => { %>
+        <tr>
+            <td><%= element.formattedDate %></td>
+            <td><%= element.user.email %></td>
+            <td><a href="/admin/showOrder/<%= element.orderId %>"><%= element.orderId %></a></td>
+            <td>
+                <span class="badge rounded-pill 
+                    <%= element.orderStatus === "Delivered" ? 'alert-success' : 
+                        element.orderStatus === "Pending" ? 'alert-warning' : 
+                        element.orderStatus === "Shipped" ? 'alert-secondary' : 
+                        element.orderStatus === "Processing" ? 'alert-info' : 
+                        (element.orderStatus === "Cancelled" || element.orderStatus === "Returned") ? 'alert-danger' : 
+                        'alert-warning' %>">
+                    <%= element.orderStatus %>
+                </span>
+            </td>
+            <td><%= element.orderTotal %> .00</td>
+        </tr>
+    <% }); %>
+</tbody>
 
-                        <% orders.forEach(element=> {%>
-                            <tr>
-                                <td><%= element.formattedDate  %></td>
-
-                                <!-- <td><b><%= element.user.name  %></b></td> -->
-                                <td><%= element.user.email  %></td>
-                                <td><%= element.orderId  %></td>
-                                <td><span class="badge rounded-pill alert-success"><%= element.status  %></span></td>
-                                <td> <%=element.orderTotal  %> .00</td>
-                                <td class="text-end">
-                                    <a href="/admin/showOrder/<%=element.orderId %>" class="btn btn-md rounded font-sm">Detail</a>
-                                    <div class="dropdown">
-                                        <a href="#" data-bs-toggle="dropdown"
-                                            class="btn btn-light rounded btn-sm font-sm">
-                                            <i class="material-icons md-more_horiz"></i> </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#">View detail</a>
-                                            <a class="dropdown-item" href="#">Edit info</a>
-                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                        </div>
-                                    </div> <!-- dropdown //end -->
-                                </td>
-                            </tr>
-
-                            <% }); %>
-
-                    </tbody>
+                    
                 </table>
             </div> <!-- table-responsive //end -->
         </div> <!-- card-body end// -->

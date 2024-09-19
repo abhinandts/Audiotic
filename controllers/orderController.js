@@ -5,6 +5,7 @@ const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
 const Coupon = require('../models/couponModel')
 const Wallet = require('../models/walletModel')
+const Transaction = require('../models/transactionModel')
 
 
 const orderConfirmation = async (req, res) => {
@@ -25,7 +26,7 @@ const getOrders = async (req, res) => {
         }
 
         const orders = allOrders.map(order => {
-            const date = new Date(order.orderDate);
+            const date = new Date(order.createdAt);
             const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
             const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
@@ -45,12 +46,26 @@ const getOrders = async (req, res) => {
     }
 };
 
+const getOrder = async (req, res) => {
+    try {
+        const orderId = req.params.orderId
+        const order = await Orders.findOne({ orderId }).populate('products.product')
+
+        if (!order) {
+            return res.render('myAccount', { message: "Order not found" });
+        }
+        res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 
 const trackOrder = async (req, res) => {
     try {
         const id = req.body.orderId.trim()
         const order = await Orders.findOne({ orderId: id }).populate('products.product')
-        console.log(order)
 
         if (!order) {
             return res.render('myAccount', { message: "Order not found" });
@@ -68,9 +83,9 @@ const trackOrder = async (req, res) => {
 
 const loadOrders = async (req, res) => {
     try {
-        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, orderDate: 1, status: 1 }).populate({ path: 'user', select: 'name email' })
+        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, createdAt: 1, orderStatus: 1 }).populate({ path: 'user', select: 'name email' })
         orders.forEach(order => {
-            const date = new Date(order.orderDate);
+            const date = new Date(order.createdAt);
             const formattedDate = date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -78,7 +93,6 @@ const loadOrders = async (req, res) => {
             });
             order.formattedDate = formattedDate
         });
-        console.log(orders)
         res.render('orders', { orders, title: "Orders List", sidebar: true, header: true, footer: true })
     } catch (error) {
         console.error("Error ", error);
@@ -89,8 +103,16 @@ const loadOrders = async (req, res) => {
 const showOrder = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate({ path: 'user', select: 'name email mobile' }).populate({ path: 'products.product', select: 'productName price image' })
-        const orderStatuses = Orders.schema.path('status').enumValues;
 
+        let orderStatuses = [];
+
+        if (["Processing", "Shipped"].includes(order.orderStatus)) {
+            if (order.orderStatus === "Processing") {
+                orderStatuses = ["Shipped", "Delivered"];
+            } else if (order.orderStatus === "Shipped") {
+                orderStatuses = ["Delivered"];
+            }
+        }
         res.render("showOrder", { order, orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
 
     } catch (error) {
@@ -101,9 +123,9 @@ const showOrder = async (req, res) => {
 const updateStatus = async (req, res) => {
     try {
         const id = req.body.orderId
-        const status = req.body.orderStatus
+        const orderStatus = req.body.orderStatus
 
-        await Orders.findByIdAndUpdate(id, { status })
+        await Orders.findByIdAndUpdate(id, { orderStatus })
         res.status(200).send({ message: "Order status successfully updated." });
 
     } catch (error) {
@@ -128,7 +150,17 @@ const cancelOrder = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Wallet is not found' })
         }
 
-        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, status: 'Cancelled', refund: true }, { new: true })
+        const transaction = new Transaction({
+            transactionId: `txn_${new Date().getTime()}`,
+            walletId:wallet._id,
+            type:'Refund',
+            amount:order.orderTotal,
+            referenceId:order.id
+        })
+
+        await transaction.save();
+
+        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, orderStatus: 'Cancelled', paymentStatus: 'Refunded' })
 
         if (updatedOrder) {
             return res.status(200).json({ success: true, message: 'Order cancelled successfully' })
@@ -179,5 +211,6 @@ module.exports = {
     showOrder,
     updateStatus,
     cancelOrder,
-    returnOrder
+    returnOrder,
+    getOrder
 }

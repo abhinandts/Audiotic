@@ -7,10 +7,11 @@ const Address = require('../models/addressModel')
 const Orders = require('../models/ordersModel')
 const Product = require('../models/productModel')
 const Wallet = require('../models/walletModel')
+const Transaction = require('../models/transactionModel')
+
 const crypto = require('crypto')
 const Razorpay = require('razorpay');
 const { v4: uuidv4 } = require('uuid');
-const { findOneAndUpdate } = require('../models/userModel');
 
 const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -21,7 +22,9 @@ const razorpayInstance = new Razorpay({
 const loadCheckout = async (req, res) => {
     try {
         const couponId = req.query.couponId;
-        const userId = req.session.userId
+        const userId = req.session.userId;
+
+        const userWallet = await Wallet.findOne({ user: userId })
 
         const cart = await Cart.findOne({ user: userId }).populate({ path: 'cartProducts.product', select: 'price stock productName image' })
         if (!cart) {
@@ -51,10 +54,14 @@ const loadCheckout = async (req, res) => {
             console.log("no coupon", couponValue)
         }
 
-        const shipping = cartSubtotal - couponValue > 1000 ? 0 : 500;
+        const shipping = cartSubtotal - couponValue > 2000 ? 0 : 500;
         const cartTotal = cartSubtotal - couponValue + shipping;
 
         let cod = false
+        let wallet = false
+        if (userWallet.money > cartSubtotal) {
+            wallet = true
+        }
         if (cartTotal < 2000) {
             cod = true
         }
@@ -67,7 +74,7 @@ const loadCheckout = async (req, res) => {
             cartTotal,
         }
 
-        res.render('checkoutPage', { cartData, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false, cod })
+        res.render('checkoutPage', { cartData, cod, wallet, header: false, smallHeader: true, breadcrumb: "Checkout", footer: false })
     } catch (error) {
         console.error(error);
     }
@@ -181,7 +188,20 @@ const handleWalletOrder = async (order, userId, orderTotal, res) => {
     )
 
     wallet.money -= orderTotal;
-    await wallet.save();
+
+    await wallet.save()
+
+
+    const transaction = new Transaction({
+        transactionId : `txn_${new Date().getTime()}`,
+        walletId : wallet._id,
+        type:'Purchase',
+        amount:orderTotal,
+        referenceId:order.orderId
+    })
+
+    await transaction.save();
+    
 
     await finalizeOrder(userId);
     return res.status(200).json({ orderId: order.orderId });
@@ -214,7 +234,6 @@ const generateRazorpay = async (orderId, amount) => {
         throw error;
     }
 }
-
 
 
 const validateCartAndStock = async (userId) => {
@@ -265,10 +284,11 @@ const getSelectedAddress = async (userId, addressId) => {
 const calculateShipping = (cartSubtotal) => cartSubtotal > 1000 ? 0 : 500;
 
 const createOrder = async (userId, cart, orderTotalAfterDiscount, shipping, address, coupon, couponDiscount, paymentMethod) => {
-    console.log(address)
+    const orderId = `${getRandomElement(figures)}-${getRandomElement(objects)}-${Date.now()}`;
+
     const order = new Orders({
         user: userId,
-        orderId: uuidv4(),
+        orderId: orderId,
         products: cart.cartProducts.map(item => ({
             product: item.product._id,
             quantity: item.quantity,
@@ -324,6 +344,26 @@ const updateUserWallet = async (userId, orderTotalAfterDiscount) => {
         return res.status(404).json({ success: false, message: 'Wallet is not found' })
     }
 }
+
+const figures = [
+    'Einstein', 'Newton', 'Tesla', 'Curie', 'Galileo',
+    'Aristotle', 'DaVinci', 'Darwin', 'Hawking', 'Edison',
+    'Babbage', 'Archimedes', 'Feynman', 'Turing', 'Copernicus',
+    'Pythagoras', 'Kepler', 'Marie Curie', 'Mendel', 'Lovelace',
+    'Faraday', 'Bohr', 'Fibonacci', 'Pascal', 'Franklin'
+];
+
+const objects = [
+    'Book', 'Lamp', 'Rocket', 'Wheel', 'Compass',
+    'Telescope', 'Abacus', 'Globe', 'Scroll', 'Hammer',
+    'Gadget', 'Mirror', 'Quill', 'Key', 'Gavel',
+    'Chalice', 'Sundial', 'Map', 'Odometer', 'Flask',
+    'Satchel', 'Inkwell', 'Lens', 'Sextant', 'Hourglass'
+];
+
+const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
+
+const orderId = `${getRandomElement(figures)}-${getRandomElement(objects)}-${Date.now()}`;
 
 
 module.exports = {

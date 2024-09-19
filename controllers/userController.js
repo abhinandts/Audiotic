@@ -6,6 +6,7 @@ const Address = require('../models/addressModel')
 const Cart = require('../models/cartModel')
 const Wallet = require('../models/walletModel')
 const Products = require('../models/productModel')
+const Transaction = require('../models/transactionModel')
 
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -371,9 +372,11 @@ const loadProfile = async (req, res) => {
         const userId = req.session.userId
         const user = await User.findById(userId)
         const wallet = await Wallet.findOne({ user: userId })
-        console.log(wallet)
 
-        res.render('myAccount', { user, wallet, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
+        const transactions = await Transaction.find({ walletId:wallet._id})
+
+        res.render('myAccount', { user, wallet,transactions, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
+        
     } catch (error) {
         console.log(error.message)
     }
