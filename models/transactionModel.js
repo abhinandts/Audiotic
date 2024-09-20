@@ -12,7 +12,7 @@ const transactionSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Purchase', 'Refund'], 
+        enum: ['Purchase', 'Refund', 'Top-Up'],
         required: true
     },
     amount: {
@@ -24,9 +24,9 @@ const transactionSchema = new mongoose.Schema({
         default: Date.now
     },
     referenceId: {
-        type: String,  
+        type: String,
         default: null
     },
 });
 
-module.exports = mongoose.model('Transaction',transactionSchema);
+module.exports = mongoose.model('Transaction', transactionSchema);

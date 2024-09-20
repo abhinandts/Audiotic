@@ -77,9 +77,25 @@
                                     <div class="card-header">
                                         <h5> <%=user.name  %>'s Wallet </h5>
                                     </div>
+
+
                                     <div class="card-body">
-                                        <h3>Wallet Balance : ₹ <span style="color: rgb(4, 137, 93);"><%= wallet.money  %>.00</span> /-</h3>
+                                        <h3>Wallet Balance : ₹ <span style="color: rgb(4, 137, 93);"><%= wallet.money %>.00</span> /-</h3>
+                                    
+                                        <button type="button" class="btn" id="wallet-recharge-dialog-btn">Recharge Wallet</button>
+                                    
+                                        <dialog id="wallet-recharge-dialog" style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                                            <form id="wallet-recharge-form" style="display: flex; flex-direction: column; gap: 8px;">
+                                                <label for="Recharge Amount">Recharge Amount</label>
+                                                <input type="number" id="recharge-amount" name="recharge-amount" placeholder="Enter Recharge Amount" required min="1" />
+
+                                                <button formmethod="dialog" id="wallet-recharge-dialog-close-btn" type="button" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                                                <button type="submit" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                                            </form>
+                                        </dialog>
                                     </div>
+                                    
+
                                     <div class="table-responsive ">
                                         <table class="table wallet-table">
                                             <thead>
@@ -126,141 +142,104 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="table-body">
-                                                    <tr>
-
-                                                    </tr>
+                                                    <tr></tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            
 
 
-                            <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                aria-labelledby="track-orders-tab">
+                            <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="mb-0">Orders Tracking</h5>
                                     </div>
                                     <div class="card-body contact-from-area">
-                                        <p>To track your order, please enter your Order ID in the box below and press
-                                            the "Track" button. This was given to you on your receipt and in the
-                                            confirmation email you should have received.</p>
+                                        <p>To track your order, please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.</p>
                                         <div class="row">
                                             <div class="col-lg-8">
-
-                                                <form id="trackOrderForm" action="/myAccount/trackOrder" method="POST"
-                                                    class="contact-form-style mt-30 mb-50">
+                                                <form id="trackOrderForm" action="/myAccount/trackOrder" method="POST" class="contact-form-style mt-30 mb-50">
                                                     <div class="input-style mb-20">
                                                         <label>Order ID</label>
-
-                                                        <input name="orderId" id="orderIdInput" required="true"
-                                                            placeholder="Found in your order confirmation email"
-                                                            type="text" class="square" />
-                                                        <small id="orderIdError" class="text-danger"
-                                                            style="display: none;"></small>
+                            
+                                                        <input name="orderId" id="orderIdInput" required="true" placeholder="Found in your order confirmation email" type="text" class="square" />
+                                                        <small id="orderIdError" class="text-danger" style="display: none;"></small>
                                                     </div>
-                                                    <button class="submit submit-auto-width"
-                                                        type="submit">Track</button>
+                                                    <button class="submit submit-auto-width" type="submit">Track</button>
                                                 </form>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+                            
 
                             <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                 <div class="row">
-
                                     <div class="col-md-12 mb-3">
-                                        <button type="button" class="btn btn-fill-out submit" name="submit"
-                                            value="Submit" id="openDialogButton">Add Address</button>
+                                        <button type="button" class="btn btn-fill-out submit" name="submit" value="Submit" id="openDialogButton">Add Address</button>
                                     </div>
-
-                                    <dialog id="addAddressDialog"
-                                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
-                                        <form id="addAddressForm"
-                                            style="display: flex; flex-direction: column; gap: 8px;">
+                            
+                                    <dialog id="addAddressDialog" style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                                        <form id="addAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
                                             <label for="addressName">Address name</label>
-                                            <input type="text" id="addressName" name="addressName"
-                                                placeholder="Enter a name for address" required data-validate="notEmpty"
-                                                data-error="Address name is required">
-
+                                            <input type="text" id="addressName" name="addressName" placeholder="Enter a name for address" required data-validate="notEmpty" data-error="Address name is required" />
+                            
                                             <label for="street">Street</label>
-                                            <input type="text" id="street" name="street" placeholder="Enter street"
-                                                required data-validate="notEmpty" data-error="Street is required">
-
+                                            <input type="text" id="street" name="street" placeholder="Enter street" required data-validate="notEmpty" data-error="Street is required" />
+                            
                                             <label for="city">City</label>
-                                            <input type="text" id="city" name="city" placeholder="Enter city" required
-                                                data-validate="notEmpty" data-error="City is required">
-
+                                            <input type="text" id="city" name="city" placeholder="Enter city" required data-validate="notEmpty" data-error="City is required" />
+                            
                                             <label for="state">State</label>
-                                            <input type="text" id="state" name="state" placeholder="Enter state"
-                                                required data-validate="notEmpty" data-error="State is required">
-
+                                            <input type="text" id="state" name="state" placeholder="Enter state" required data-validate="notEmpty" data-error="State is required" />
+                            
                                             <label for="pinCode">Pin Code</label>
-                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code"
-                                                required data-validate="pincode" data-error="Pin code must be 6 digits">
-
+                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required data-validate="pincode" data-error="Pin code must be 6 digits" />
+                            
                                             <label for="country">Country</label>
-                                            <input type="text" id="country" name="country" placeholder="Enter country"
-                                                required data-validate="notEmpty" data-error="Country is required">
-
-                                            <button formmethod="dialog" id="cancelDialogButton" type="button"
-                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
-                                            <button type="submit"
-                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                                            <input type="text" id="country" name="country" placeholder="Enter country" required data-validate="notEmpty" data-error="Country is required" />
+                            
+                                            <button formmethod="dialog" id="cancelDialogButton" type="button" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                                            <button type="submit" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
                                         </form>
                                     </dialog>
-
+                            
                                     <div id="addressList" class="row">
-
                                         <!-- address will be dynamically added here -->
-
                                     </div>
-
-                                    <dialog id="editAddressDialog"
-                                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
-                                        <form id="editAddressForm"
-                                            style="display: flex; flex-direction: column; gap: 8px;">
+                            
+                                    <dialog id="editAddressDialog" style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                                        <form id="editAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
                                             <label for="addressName">Address name</label>
-                                            <input type="text" id="addressName" name="addressName"
-                                                placeholder="Enter a name for address" required data-validate="notEmpty"
-                                                data-error="Address name is required">
-
+                                            <input type="text" id="addressName" name="addressName" placeholder="Enter a name for address" required data-validate="notEmpty" data-error="Address name is required" />
+                            
                                             <label for="street">Street</label>
-                                            <input type="text" id="street" name="street" placeholder="Enter street"
-                                                required data-validate="notEmpty" data-error="Street is required">
-
+                                            <input type="text" id="street" name="street" placeholder="Enter street" required data-validate="notEmpty" data-error="Street is required" />
+                            
                                             <label for="city">City</label>
-                                            <input type="text" id="city" name="city" placeholder="Enter city" required
-                                                data-validate="notEmpty" data-error="City is required">
-
+                                            <input type="text" id="city" name="city" placeholder="Enter city" required data-validate="notEmpty" data-error="City is required" />
+                            
                                             <label for="state">State</label>
-                                            <input type="text" id="state" name="state" placeholder="Enter state"
-                                                required data-validate="notEmpty" data-error="State is required">
-
+                                            <input type="text" id="state" name="state" placeholder="Enter state" required data-validate="notEmpty" data-error="State is required" />
+                            
                                             <label for="pinCode">Pin Code</label>
-                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code"
-                                                required data-validate="pincode" data-error="Pin code must be 6 digits">
-
+                                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required data-validate="pincode" data-error="Pin code must be 6 digits" />
+                            
                                             <label for="country">Country</label>
-                                            <input type="text" id="country" name="country" placeholder="Enter country"
-                                                required data-validate="notEmpty" data-error="Country is required">
-
-                                            <input type="hidden" id="addressId" name="addressId">
-
-                                            <button formmethod="dialog" id="cancelEditDialogButton" type="button"
-                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
-
-                                            <button type="submit"
-                                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                                            <input type="text" id="country" name="country" placeholder="Enter country" required data-validate="notEmpty" data-error="Country is required" />
+                            
+                                            <input type="hidden" id="addressId" name="addressId" />
+                            
+                                            <button formmethod="dialog" id="cancelEditDialogButton" type="button" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                            
+                                            <button type="submit" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
                                         </form>
                                     </dialog>
-
                                 </div>
                             </div>
 
@@ -275,6 +254,10 @@
 
 <!---- Edit account details ---->
 <script src="/scripts/myAccountDetails.js"></script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script src="/scripts/myAccountWallet.js"></script>
 <!---- address ---->
 <script src="/scripts/myAccountAddress.js"></script>
 <!---- orders ---->

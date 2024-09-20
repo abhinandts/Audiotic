@@ -53,7 +53,7 @@
             const orderData = {
                 addressId: addressId,
                 couponId: couponId,
-                paymentMethod : method
+                paymentMethod: method
             };
 
             const response = await fetch(`/api/checkout/placeOrder`, {
@@ -66,10 +66,10 @@
 
                 const responseData = await response.json();
 
-                if (method ==="Razorpay") {
+                if (method === "Razorpay") {
                     initializeRazorpay(responseData);
                 } else {
-                    window.location.href =  `/orders/orderConfirmation/${responseData.orderId}`;
+                    window.location.href = `/orders/orderConfirmation/${responseData.orderId}`;
                 }
             } else {
                 const errorData = await response.json()
@@ -93,7 +93,7 @@
                 // Handle payment success
                 console.log('Payment successful:', response);
                 // Perform any necessary actions, such as updating the order status on the server
-                verifyPayment(response,razorpayOrder)
+                verifyPayment(response, razorpayOrder)
             },
             prefill: {
                 name: 'Customer Name',
@@ -106,9 +106,23 @@
             theme: {
                 color: '#3399cc',
             },
-        };
+            modal: {
+                ondismiss: function () {
+                    // This function is triggered when the payment modal is closed by the user or fails
+                    console.log('Payment failed or dismissed.');
+                    handlePaymentFailure(); // You can handle the failure here
+                },
+            }
+        }
         const rzp1 = new Razorpay(options);
         rzp1.open();
+    }
+
+    function handlePaymentFailure() {
+        // Define your logic here for handling failed payment
+        console.log('Payment failed or canceled.');
+        showToast('Payment failed, please try again.', 'error');
+        // You can also redirect to a failure page or retry
     }
 
     async function verifyPayment(response, razorpayOrder) {

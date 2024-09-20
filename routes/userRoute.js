@@ -61,6 +61,7 @@ const wishlistController = require('../controllers/wishlistController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
 const checkoutController = require('../controllers/checkoutController')
+const walletController = require('../controllers/walletController')
 
 
 // ---- routes ----
@@ -103,8 +104,9 @@ userRoute.get('/api/myAccount/editAddress/:addressId', check.isLoggedIn, check.c
 userRoute.put('/api/myAccount/editAddress', check.isLoggedIn, check.checkUserBlocked, addressController.editAddress)
 userRoute.get('/api/myAccount/getOrders', orderController.getOrders)
 userRoute.get('/myAccount/getOrder/:orderId', orderController.getOrder)
-
 userRoute.post('/myAccount/trackOrder', orderController.trackOrder)
+userRoute.post('/api/myAccount/walletRecharge',walletController.rechargeWallet)
+userRoute.post('/api/myAccount/wallet/verifyPayment',walletController.verifyPayment)
 
 userRoute.get('/cart', check.isLoggedIn, check.checkUserBlocked, cartController.loadCart)
 userRoute.post('/api/addToCart', check.isLoggedIn, check.checkUserBlocked, cartController.addToCart)

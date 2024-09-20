@@ -1,5 +1,3 @@
-// addressManager.js
-
 (function () {
     'use strict';
 
