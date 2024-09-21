@@ -20,6 +20,8 @@
     async function handleWalletRechargeForm(e) {
         e.preventDefault();
 
+        walletRechargeDialog.close()
+
         const rechargeAmount = rechargeAmountInput.value
 
         const response = await fetch('/api/myAccount/walletRecharge', {
@@ -85,7 +87,9 @@
             .then(data => {
                 if (data.status === 'ok') {
                     console.log('Payment verified successfull')
-                    window.location.href = data.redirect;
+                    // window.location.href = data.redirect;
+                    showToast('Payment Done.... ');
+
                 } else {
                     console.log('Payment verification failed');
                     showToast('Payment verification failed', 'error');

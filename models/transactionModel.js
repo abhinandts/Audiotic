@@ -12,7 +12,7 @@ const transactionSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Purchase', 'Refund', 'Top-Up'],
+        enum: ['Purchase', 'Return', 'Cancellation', 'Top-Up'],
         required: true
     },
     amount: {

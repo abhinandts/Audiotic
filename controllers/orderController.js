@@ -108,9 +108,9 @@ const showOrder = async (req, res) => {
 
         if (["Processing", "Shipped"].includes(order.orderStatus)) {
             if (order.orderStatus === "Processing") {
-                orderStatuses = ["Shipped", "Delivered"];
+                orderStatuses = ["Processing","Shipped", "Delivered"];
             } else if (order.orderStatus === "Shipped") {
-                orderStatuses = ["Delivered"];
+                orderStatuses = ["Shipped","Delivered"];
             }
         }
         res.render("showOrder", { order, orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
@@ -153,7 +153,7 @@ const cancelOrder = async (req, res) => {
         const transaction = new Transaction({
             transactionId: `txn_${new Date().getTime()}`,
             walletId:wallet._id,
-            type:'Refund',
+            type:'Cancellation',
             amount:order.orderTotal,
             referenceId:order.id
         })
@@ -189,6 +189,16 @@ const returnOrder = async (req, res) => {
             console.error(error)
             return res.status(404).json({ success: false, message: 'Wallet is not found' })
         }
+
+        const transaction = new Transaction({
+            transactionId: `txn_${new Date().getTime()}`,
+            walletId:wallet._id,
+            type:'Return',
+            amount:order.orderTotal,
+            referenceId:order.id
+        })
+        await transaction.save();
+
         const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, status: 'Returned', refund: true }, { new: true })
 
         if (updatedOrder) {
