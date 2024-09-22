@@ -14,7 +14,6 @@
 
 <section class="mt-50 mb-50">
     <div class="container">
-
         <!-- <div class="row">
             <div class="col-12">
                 <div class="divider mt-50 mb-50"></div>
@@ -22,99 +21,73 @@
         </div> -->
         <div class="row">
             <div class="col-md-5">
-                <div class="mb-25 ">
+                <div class="mb-25">
                     <h4>Choose an Address</h4>
                 </div>
-                <div class="row ">
-
+                <div class="row">
                     <div class="col-md-12 mb-3">
-                        <button type="button" class="btn btn-fill-out submit" name="submit" value="Submit"
-                            id="openDialogButton">Add Address</button>
+                        <button type="button" class="btn btn-fill-out submit" name="submit" value="Submit" id="openDialogButton">Add Address</button>
                     </div>
 
-                    <dialog id="addAddressDialog"
-                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                    <dialog id="addAddressDialog" style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
                         <form id="addAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
                             <label for="addressName">Address name</label>
-                            <input type="text" id="addressName" name="addressName"
-                                placeholder="Enter a name for address" required data-validate="notEmpty"
-                                data-error="Address name is required">
+                            <input type="text" id="addressName" name="addressName" placeholder="Enter a name for address" required data-validate="notEmpty" data-error="Address name is required" />
 
                             <label for="street">Street</label>
-                            <input type="text" id="street" name="street" placeholder="Enter street" required
-                                data-validate="notEmpty" data-error="Street is required">
+                            <input type="text" id="street" name="street" placeholder="Enter street" required data-validate="notEmpty" data-error="Street is required" />
 
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" placeholder="Enter city" required
-                                data-validate="notEmpty" data-error="City is required">
+                            <input type="text" id="city" name="city" placeholder="Enter city" required data-validate="notEmpty" data-error="City is required" />
 
                             <label for="state">State</label>
-                            <input type="text" id="state" name="state" placeholder="Enter state" required
-                                data-validate="notEmpty" data-error="State is required">
+                            <input type="text" id="state" name="state" placeholder="Enter state" required data-validate="notEmpty" data-error="State is required" />
 
                             <label for="pinCode">Pin Code</label>
-                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required
-                                data-validate="pincode" data-error="Pin code must be 6 digits">
+                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required data-validate="pincode" data-error="Pin code must be 6 digits" />
 
                             <label for="country">Country</label>
-                            <input type="text" id="country" name="country" placeholder="Enter country" required
-                                data-validate="notEmpty" data-error="Country is required">
+                            <input type="text" id="country" name="country" placeholder="Enter country" required data-validate="notEmpty" data-error="Country is required" />
 
-                            <button formmethod="dialog" id="cancelDialogButton" type="button"
-                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
-                            <button type="submit"
-                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                            <button formmethod="dialog" id="cancelDialogButton" type="button" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                            <button type="submit" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
                         </form>
                     </dialog>
 
                     <div id="addressList" class="row">
-
                         <!-- address will be dynamically added here -->
                         <!-- <div class="col-lg-6 mb-2 ">
                         </div> -->
-
                     </div>
 
-                    <dialog id="editAddressDialog"
-                        style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
+                    <dialog id="editAddressDialog" style="width: 90%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; padding: 15px; background: #fff;">
                         <form id="editAddressForm" style="display: flex; flex-direction: column; gap: 8px;">
                             <label for="addressName">Address name</label>
-                            <input type="text" id="addressName" name="addressName"
-                                placeholder="Enter a name for address" required data-validate="notEmpty"
-                                data-error="Address name is required">
+                            <input type="text" id="addressName" name="addressName" placeholder="Enter a name for address" required data-validate="notEmpty" data-error="Address name is required" />
 
                             <label for="street">Street</label>
-                            <input type="text" id="street" name="street" placeholder="Enter street" required
-                                data-validate="notEmpty" data-error="Street is required">
+                            <input type="text" id="street" name="street" placeholder="Enter street" required data-validate="notEmpty" data-error="Street is required" />
 
                             <label for="city">City</label>
-                            <input type="text" id="city" name="city" placeholder="Enter city" required
-                                data-validate="notEmpty" data-error="City is required">
+                            <input type="text" id="city" name="city" placeholder="Enter city" required data-validate="notEmpty" data-error="City is required" />
 
                             <label for="state">State</label>
-                            <input type="text" id="state" name="state" placeholder="Enter state" required
-                                data-validate="notEmpty" data-error="State is required">
+                            <input type="text" id="state" name="state" placeholder="Enter state" required data-validate="notEmpty" data-error="State is required" />
 
                             <label for="pinCode">Pin Code</label>
-                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required
-                                data-validate="pincode" data-error="Pin code must be 6 digits">
+                            <input type="text" id="pinCode" name="pinCode" placeholder="Enter pin code" required data-validate="pincode" data-error="Pin code must be 6 digits" />
 
                             <label for="country">Country</label>
-                            <input type="text" id="country" name="country" placeholder="Enter country" required
-                                data-validate="notEmpty" data-error="Country is required">
+                            <input type="text" id="country" name="country" placeholder="Enter country" required data-validate="notEmpty" data-error="Country is required" />
 
-                            <input type="hidden" id="addressId" name="addressId">
+                            <input type="hidden" id="addressId" name="addressId" />
 
-                            <button formmethod="dialog" id="cancelEditDialogButton" type="button"
-                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+                            <button formmethod="dialog" id="cancelEditDialogButton" type="button" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
 
-                            <button type="submit"
-                                style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
+                            <button type="submit" style="padding: 8px 0; border: none; border-radius: 4px; font-size: 14px; cursor: pointer;">Submit</button>
                         </form>
                     </dialog>
-
                 </div>
-
             </div>
             <div class="col-md-7">
                 <div class="order_review">
@@ -130,52 +103,46 @@
                                 </tr>
                             </thead>
                             <tbody>
-
                                 <% cartData.cartProducts.forEach(element=> {%>
-                                    <tr>
-                                        <td class="image product-thumbnail"><img
-                                                src="/admin/productImages/<%= element.product.image[0]  %>" alt="#">
-                                        </td>
-                                        <td>
-                                            <h5><a href="shop-product-full.html">
-                                                    <%= element.product.productName %>
-                                                </a></h5>
-                                            <span class="product-qty">x <%= element.quantity %> </span>
-                                        </td>
-                                        <td>₹<%= element.subtotal %>.00/-</td>
-                                    </tr>
+                                <tr>
+                                    <td class="image product-thumbnail"><img src="/admin/productImages/<%= element.product.image[0]  %>" alt="#" /></td>
+                                    <td>
+                                        <h5>
+                                            <a href="shop-product-full.html">
+                                                <%= element.product.productName %>
+                                            </a>
+                                        </h5>
+                                        <span class="product-qty">x <%= element.quantity %> </span>
+                                    </td>
+                                    <td>₹<%= element.subtotal %>.00/-</td>
+                                </tr>
 
-                                    <% }); %>
+                                <% }); %>
 
-                                        <tr>
-                                            <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">₹<%= cartData.cartSubtotal %>.00/-</td>
-                                        </tr>
-                                        <% if(cartData.couponValue){%>
-                                            <tr>
-                                                <th>Coupon Discount</th>
-                                                <td colspan="2">-₹<%= cartData.couponValue %>.00/-</td>
-
-                                            </tr>
-                                            <% } %>  
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td colspan="2"><em>₹<%= cartData.shipping %>.00/-</em></td>
-                                        </tr>
-                                        <tr></tr>
-                                            <tr>
-                                                <th>Total</th>
-                                                <td colspan="2" class="product-subtotal"><span
-                                                        class="font-xl text-brand fw-900" >₹<%= cartData.cartTotal %>.00/-</span>
-                                                </td>
-                                            </tr>
+                                <tr>
+                                    <th>SubTotal</th>
+                                    <td class="product-subtotal" colspan="2">₹<%= cartData.cartSubtotal %>.00/-</td>
+                                </tr>
+                                <% if(cartData.couponValue){%>
+                                <tr>
+                                    <th>Coupon Discount</th>
+                                    <td colspan="2">-₹<%= cartData.couponValue %>.00/-</td>
+                                </tr>
+                                <% } %>
+                                <tr>
+                                    <th>Shipping</th>
+                                    <td colspan="2"><em>₹<%= cartData.shipping %>.00/-</em></td>
+                                </tr>
+                                <tr></tr>
+                                <tr>
+                                    <th>Total</th>
+                                    <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%= cartData.cartTotal %> .00/-</span></td>
+                                </tr>
                             </tbody>
                         </table>
-                        <input type="hidden" id="cartTotal" name="" value="<%= cartData.cartTotal %>">
+                        <input type="hidden" id="cartTotal" name="" value="<%= cartData.cartTotal %>" />
                     </div>
                     <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-
-
 
                     <div class="payment_method">
                         <div class="mb-15">
@@ -183,39 +150,36 @@
                         </div>
 
                         <div class="payment_option">
-
                             <% if(cod){ %>
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios4" value="Cash on Delivery"  />
-                                    <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on Delivery</label>
-                                </div>
+                            <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios4" value="Cash on Delivery" />
+                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#cod" aria-controls="cod">Cash on Delivery</label>
+                            </div>
                             <% } else {%>
-                                <p>Cash on Delivery is only available for orders below ₹2000/-</p>
-                            <% } %>
-                            
-                            <% if(wallet){ %>
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios6" value="Wallet" />
-                                    <label class="form-check-label" for="exampleRadios6" data-bs-toggle="collapse" data-target="#wallet" aria-controls="wallet">Wallet</label>
-                                </div>
+                            <p>Cash on Delivery is only available for orders below ₹2000/-</p>
+                            <% } %> <% if(wallet){ %>
+                            <div class="custome-radio">
+                                <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios6" value="Wallet" />
+                                <label class="form-check-label" for="exampleRadios6" data-bs-toggle="collapse" data-target="#wallet" aria-controls="wallet">Wallet</label>
+                            </div>
                             <% } else { %>
-                                <p>Wallet balance is less than order Total. <a href="/myAccount">TopUp wallet</a>  </p>
+                            <p>Wallet balance is less than order Total. <a href="/myAccount">TopUp wallet</a></p>
                             <% } %>
                             <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment-option" id="exampleRadios5" value="Razorpay" checked="" />
                                 <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="razorpay">Razorpay</label>
                             </div>
-
-                        </div>           
+                        </div>
                     </div>
 
-                    <a href="/cart" class="btn btn-secondary btn-fill-out btn-block mt-30"  >Go back to cart</a>
+                    <a href="/cart" class="btn btn-secondary btn-fill-out btn-block mt-30">Go back to cart</a>
                     <button class="btn btn-fill-out btn-block mt-30" id="placeOrder">Place Order</button>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 </main>
 
 

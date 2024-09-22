@@ -43,6 +43,8 @@
                             <th scope="col">Email</th>
                             <th>Order ID</th>
                             <th scope="col">Order Status</th>
+                            <th scope="col">Payment Status</th>
+
                             <th scope="col">Total</th>
                         </tr>
                     </thead>
@@ -64,7 +66,18 @@
                     <%= element.orderStatus %>
                 </span>
             </td>
-            <td><%= element.orderTotal %> .00</td>
+            <td>
+                <span class="badge rounded-pill 
+                    <%= element.paymentStatus === "Paid" ? 'alert-success' : 
+                        element.paymentStatus === "Pending" ? 'alert-warning' : 
+                        element.paymentStatus === "Refunded" ? 'alert-secondary' : 
+                        element.paymentStatus === "Failed" ? 'alert-danger' : 
+                        element.paymentStatus === "Not Applicable" ? 'alert-info' : '' %>">
+                    <%= element.paymentStatus %>
+                </span>
+            </td>
+            
+            <td><%= element.orderTotal.toLocaleString("en-IN") %> .00</td>
         </tr>
     <% }); %>
 </tbody>

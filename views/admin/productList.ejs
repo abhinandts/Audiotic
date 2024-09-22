@@ -2,9 +2,7 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Products List</h2>
-            <p>✏️ Add , 📝 Edit , and 🚮 Delete Products
-
-            </p>
+            <p>✏️ Add , 📝 Edit , and 🚮 Delete Products</p>
         </div>
         <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
@@ -40,73 +38,87 @@
                 </div>
             </div>
         </header>  -->
-
         <div class="card-body">
-
             <% productData.forEach((x)=>{ %>
-
-                <article class="itemlist">
-                    <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check">➤</div>
-                        </div>
-                        <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
-                            <a class="itemside" href="#">
-                                <div class="left">
-                                </div>
-
-                                <div class="info">
-                                    <h6 class="mb-0">
-                                        <%= x.productName %>
-                                    </h6>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>
-                                <%=x.price%>
-                            </span> </div>
-
-                        <% if(x.is_active){ %>
-                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                <span class="badge rounded-pill alert-success">Active</span>
+        
+            <article class="itemlist">
+                <div class="row align-items-center">
+                    <div class="col col-check flex-grow-0">
+                        <div class="form-check">➤</div>
+                    </div>
+                    <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
+                        <a class="itemside" href="#">
+                            <div class="left"></div>
+        
+                            <div class="info">
+                                <h6 class="mb-0">
+                                    <%= x.productName %>
+                                </h6>
                             </div>
-                            <%} else{ %>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-danger">Deleted</span>
-                                </div>
-                                <% } %>
-
-                                    <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                        <span>
-                                            <%= x.category.name %>
-                                        </span>
-                                    </div>
-                                    <div class="col-lg-3 col-sm-3 col-5 col-action text-end">
-                                        <a href="/admin/editProduct/<%- x._id %>"
-                                            class="btn btn-sm font-sm rounded btn-brand">
-                                            📝 Edit
-                                        </a>
-
-                                        <% if(x.is_active){ %>
-                                            <a href="/admin/blockProduct/<%- x._id %>"
-                                                class="btn btn-sm font-sm btn-light rounded">
-                                                🚮 &nbsp;&nbsp;Delete
-                                            </a>
-                                            <% }else{ %>
-                                                <a href="/admin/blockProduct/<%- x._id %>"
-                                                    class="btn btn-sm font-sm btn-light rounded">
-                                                    🔃Restore
-                                                </a>
-                                                <% } %>
-                                    </div>
-                    </div> <!-- row .// -->
-                </article> <!-- itemlist  .// -->
-
-                <% }) %>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-price">
+                        <span>
+                            <%=x.price%>
+                        </span>
+                    </div>
+        
+                    <% if(x.is_active){ %>
+                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                        <span class="badge rounded-pill alert-success">Active</span>
+                    </div>
+                    <%} else{ %>
+                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                        <span class="badge rounded-pill alert-danger">Deleted</span>
+                    </div>
+                    <% } %>
+        
+                    <div class="col-lg-1 col-sm-1 col-2 col-date">
+                        <span>
+                            <%= x.category.name %>
+                        </span>
+                    </div>
 
 
-        </div> <!-- card-body end// -->
+
+                    <% if(x.stock !==0){ %>
+                        <div class="col-lg-1 col-sm-1 col-2 col-status">
+                            <span class="badge rounded-pill alert-success">In Stock</span>
+                        </div>
+                        <%} else{ %>
+                        <div class="col-lg-1 col-sm-1 col-2 col-status">
+                            <span class="badge rounded-pill alert-danger">Sold Out</span>
+                        </div>
+                        <% } %>
+
+
+
+                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                        <a href="/admin/editProduct/<%- x._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                            📝 Edit
+                        </a>
+        
+                        <% if(x.is_active){ %>
+                        <a href="/admin/blockProduct/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
+                            🚮 &nbsp;&nbsp;Delete
+                        </a>
+                        <% }else{ %>
+                        <a href="/admin/blockProduct/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
+                            🔃Restore
+                        </a>
+                        <% } %>
+                    </div>
+                </div>
+            </article>
+        
+            <% }) %>
+        </div>
+
+        
+
     </div> <!-- card end// -->
+
+
     <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">

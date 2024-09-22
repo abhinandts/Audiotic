@@ -17,7 +17,6 @@ const razorpayInstance = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
-
 const loadCheckout = async (req, res) => {
     try {
         const couponId = req.query.couponId;
@@ -120,7 +119,6 @@ const placeOrder = async (req, res) => {
     }
 };
 
-
 const verifyRazorpaySignature = (razorpayOrder, response) => {
     const secret = process.env.RAZORPAY_KEY_SECRET;
     const shasum = crypto.createHmac('sha256', secret);
@@ -138,7 +136,7 @@ const verifyPayment = async (req, res) => {
         if (verifyRazorpaySignature(razorpayOrder, response)) {
             const order = await Orders.findOneAndUpdate(
                 { orderId: razorpayOrder.receipt },
-                { $set: { paymentStatus: "Paid" } }
+                { $set: { paymentStatus: "Paid",orderStatus:"Processing" } }
             );
 
             await finalizeOrder(userId);
@@ -146,7 +144,9 @@ const verifyPayment = async (req, res) => {
             res.json({ status: 'ok', redirect: `/orders/orderConfirmation/${order.orderId}` });
         } else {
             await handleFailedPayment(razorpayOrder.receipt);
-            res.status(400).json({ status: 'failed', message: 'Payment verification failed' });
+            clearUserCart(userId);
+            // res.status(400).json({ status: 'failed', message: 'Payment verification failed' });
+            res.json({ status: 'ok', redirect: `/orders/orderConfirmation/${order.orderId}` });
         }
     } catch (error) {
         console.error(error);
@@ -154,22 +154,44 @@ const verifyPayment = async (req, res) => {
     }
 };
 
-const handleFailedPayment = async (orderId) => {
-    await Orders.findOneAndUpdate(
-        { orderId: orderId },
-        { $set: { paymentStatus: "Failed" } }
-    );
+const failedPayment = async (req, res) => {
 
-    console.log("Payment failed")
-    // You can add more logic here, like sending a notification to the user
-};
+    const { orderId } = req.body;
+    const userId = req.session.userId
+
+    try {
+        const order = await Orders.findOne({ orderId: orderId })
+
+        await handleFailedPayment({ _id: orderId })
+
+        await clearUserCart(userId);
+        res.json({ status: 'ok', redirect: `/orders/orderConfirmation/${order.orderId}` });
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ status: 'error' })
+    }
+}
 
 
+const retryPayment = async (req, res) => {
+    const { id } = req.query
+    const order = await Orders.findOne({ orderId: id })
 
+    return initializeRazorpayOrder(order, res);
+}
 
 
 
 // ---- Helper functions ----
+
+const handleFailedPayment = async (orderId) => {
+    console.log("inside the server code")
+    await Orders.findOneAndUpdate(
+        { orderId: orderId },
+        { $set: { paymentStatus: "Failed", orderStatus: "Pending" } }
+    );
+};
 
 const handleCODOrder = async (order, userId, res) => {
     await finalizeOrder(userId);
@@ -190,17 +212,15 @@ const handleWalletOrder = async (order, userId, orderTotal, res) => {
 
     await wallet.save()
 
-
     const transaction = new Transaction({
-        transactionId : `txn_${new Date().getTime()}`,
-        walletId : wallet._id,
-        type:'Purchase',
-        amount:orderTotal,
-        referenceId:order.orderId
+        transactionId: `txn_${new Date().getTime()}`,
+        walletId: wallet._id,
+        type: 'Purchase',
+        amount: orderTotal,
+        referenceId: order.orderId
     })
 
     await transaction.save();
-    
 
     await finalizeOrder(userId);
     return res.status(200).json({ orderId: order.orderId });
@@ -233,7 +253,6 @@ const generateRazorpay = async (orderId, amount) => {
         throw error;
     }
 }
-
 
 const validateCartAndStock = async (userId) => {
     const cart = await Cart.findOne({ user: userId }).populate({
@@ -368,5 +387,7 @@ const orderId = `${getRandomElement(figures)}-${getRandomElement(objects)}-${Dat
 module.exports = {
     loadCheckout,
     placeOrder,
-    verifyPayment
+    verifyPayment,
+    failedPayment,
+    retryPayment
 }

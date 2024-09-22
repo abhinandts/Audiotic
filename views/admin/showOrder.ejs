@@ -54,7 +54,7 @@
                                 <%= order.user.name %> <br>
                                     <%= order.user.email %> <br> + <%= order.user.mobile %>
                             </p>
-                            <a href="#">View profile</a>
+                            <!-- <a href="#">View profile</a> -->
                         </div>
                     </article>
                 </div> <!-- col// -->
@@ -91,10 +91,11 @@
                     </article>
                 </div> <!-- col// -->
             </div> <!-- row // -->
+
             <div class="row">
                 <div class="col-lg-7">
                     <div class="table-responsive">
-                        <table class="table ">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th width="40%">Product</th>
@@ -105,83 +106,102 @@
                             </thead>
                             <tbody>
                                 <% order.products.forEach(element=> { %>
-
-                                    <tr>
-                                        <td>
-                                            <a class="itemside" href="#">
-                                                <div class="left">
-                                                    <img src="/admin/productImages/<%= element.product.image[0] %>"
-                                                        width="40" height="40" class="img-xs" alt="Item">
-                                                </div>
-                                                <div class="info">
-                                                    <%= element.product.productName %>
-                                                </div>
-                                            </a>
-                                        </td>
-                                        <td> ₹<%= element.product.price %>
-                                        </td>
-                                        <td>
-                                            <%= element.quantity %>
-                                        </td>
-                                        <td class="text-end"> ₹<%= element.price * element.quantity %>.00 </td>
-                                    </tr>
-
-                                    <% }); %>
-
-                                        <tr>
-                                            <td colspan="4">
-                                                <article class="float-end">
-                                                    <dl class="dlist">
-                                                        <dt>Subtotal:</dt>
-                                                        <dd>₹<%= order.orderTotal %>.00/-</dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt>Shipping cost:</dt>
-                                                        <dd>₹<%= order.shipping %>.00/-</dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt>Grand total:</dt>
-                                                        <dd><b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/-
-                                                            </b></dd>
-                                                    </dl>
-                                                    <dl class="dlist">
-                                                        <dt class="text-muted">Payment Status:</dt>
-                                                        <dd>
-                                                            <span class="badge rounded-pill alert-success">
-                                                                <%= order.paymentStatus %>
-                                                            </span>
-                                                        </dd>
-                                                    </dl>
-                                                </article>
-                                            </td>
-                                        </tr>
+            
+                                <tr>
+                                    <td>
+                                        <a class="itemside" href="#">
+                                            <div class="left">
+                                                <img src="/admin/productImages/<%= element.product.image[0] %>" width="40" height="40" class="img-xs" alt="Item" />
+                                            </div>
+                                            <div class="info">
+                                                <%= element.product.productName %>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td>₹<%= element.product.price %></td>
+                                    <td>
+                                        <%= element.quantity %>
+                                    </td>
+                                    <td class="text-end">₹<%= element.price * element.quantity %>.00</td>
+                                </tr>
+            
+                                <% }); %>
+            
+                                <tr>
+                                    <td colspan="4">
+                                        <article class="float-end">
+                                            <dl class="dlist">
+                                                <dt>Subtotal:</dt>
+                                                <dd>₹<%= order.orderTotal %>.00/-</dd>
+                                            </dl>
+                                            <dl class="dlist">
+                                                <dt>Shipping cost:</dt>
+                                                <dd>₹<%= order.shipping %>.00/-</dd>
+                                            </dl>
+                                            <dl class="dlist">
+                                                <dt>Grand total:</dt>
+                                                <dd><b class="h5"> ₹<%= order.orderTotal+order.shipping %>.00/- </b></dd>
+                                            </dl>
+                                            <dl class="dlist">
+                                                <dt class="text-muted">Payment Method:</dt>
+                                                <dd>
+                                                        <%= order.paymentMethod  %>
+                                                </dd>
+                                            </dl>
+                                            <dl class="dlist">
+                                                <dt class="text-muted">Payment Status:</dt>
+                                                <dd>
+                                                    <span class="badge rounded-pill alert-success">
+                                                        <%= order.paymentStatus %>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                            
+                                        </article>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                    </div> <!-- table-responsive// -->
+                    </div>
+                    <!-- table-responsive// -->
                     <!-- <a class="btn btn-primary" href="page-orders-tracking.html">View Order Tracking</a> -->
-                    <h4>Order Status : <span style="color: rgb(0, 231, 42);"> <strong>
+                    <h4>
+                        Order Status :
+                        <span style="color: rgb(0, 231, 42);">
+                            <strong>
                                 <%= order.orderStatus %>
-                            </strong></span></h4>
+                            </strong>
+                        </span>
+                    </h4>
                     <% if(order.reason.length>0){ %>
-                        <h4>Reason : <span style="color: rgb(229, 22, 22);"> <strong>
-                                    <%= order.reason %>
-                                </strong></span></h4>
-                        <% } %>
-                </div> <!-- col// -->
+                    <h4>
+                        Reason :
+                        <span style="color: rgb(229, 22, 22);">
+                            <strong>
+                                <%= order.reason %>
+                            </strong>
+                        </span>
+                    </h4>
+                    <% } %>
+                </div>
+                <!-- col// -->
                 <div class="col-lg-1"></div>
                 <div class="col-lg-4">
                     <!-- <div class="box shadow-sm bg-light">
-                        <h6 class="mb-15">Payment info</h6>
-                        <p>
-                            <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card
-                            **** **** 4768 <br>
-                            Business name: Grand Market LLC <br>
-                            Phone: +1 (800) 555-154-52
-                        </p>
-                    </div> -->
-
-                </div> <!-- col// -->
+                                    <h6 class="mb-15">Payment info</h6>
+                                    <p>
+                                        <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card
+                                        **** **** 4768 <br>
+                                        Business name: Grand Market LLC <br>
+                                        Phone: +1 (800) 555-154-52
+                                    </p>
+                                </div> -->
+                </div>
+                <!-- col// -->
             </div>
+            
+
+
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
 </section>

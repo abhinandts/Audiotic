@@ -4,7 +4,6 @@
     <a href="/home" class="btn mt-15 ml-10 hover-up " style="background-color: white; border-color: GREEN; color: green;">Continue Shopping</a>
 </div> -->
 
-
 <section class="mt-50 mb-50">
     <div class="container">
         <div class="row justify-content-center">
@@ -123,11 +122,16 @@
                         <a href="/home" class="btn btn-light" id="cancelEditDialogButton" style="background-color: azure; color: black; cursor: pointer;">Home</a>
                         <a href="/myAccount" class="btn" style="cursor: pointer;">Show Orders</a>
 
-                        <% if(order.orderStatus==="Pending" || order.orderStatus==="Processing" || order.orderStatus==="Shipped" ){ %>
+                        <% if(order.orderStatus==="Processing" || order.orderStatus==="Shipped" ){ %>
                         <button onclick="showCancellationDialog()" class="btn btn-secondary">Cancel Order</button>
                         <% } %> <% if(order.orderStatus==="Delivered" ){ %>
                         <button onclick="showReturnDialog()" class="btn btn-secondary">Return Order</button>
+                        <%} %> <% if(order.orderStatus === "Pending"){ %>
+                        <button onclick="retryPayment()" class="btn btn-secondary">Retry Paymet</button>
                         <%} %>
+
+                        <input type="hidden" id="orderId" value="<%= order.orderId %>" />
+                        <input type="hidden" id="orderTotal" value="<%= order.orderTotal  %>" />
                     </div>
                 </div>
             </div>
@@ -136,6 +140,7 @@
 </section>
 
 <script src="/scripts/header.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
     function showCancellationDialog() {
@@ -143,7 +148,7 @@
             title: "Tell us your reason for canceling the order",
             input: "text",
             inputAttributes: {
-                autocapitalize: "off"
+                autocapitalize: "off",
             },
             showCancelButton: true,
             confirmButtonText: "Submit",
@@ -152,62 +157,61 @@
                 const trimmedInput = input.trim();
 
                 if (trimmedInput.length === 0) {
-                    Swal.showValidationMessage('This field cannot be empty');
+                    Swal.showValidationMessage("This field cannot be empty");
                     return false;
                 }
 
                 if (trimmedInput.length < 10) {
-                    Swal.showValidationMessage('Please enter at least 20 characters');
+                    Swal.showValidationMessage("Please enter at least 20 characters");
                     return false;
                 }
 
                 return trimmedInput;
             },
-            allowOutsideClick: () => !Swal.isLoading()
+            allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-
-                cancelOrder(result.value)
+                cancelOrder(result.value);
             }
         });
     }
 
     function cancelOrder(reason) {
-        fetch('/api/order/cancelOrder', {
-            method: 'POST',
+        fetch("/api/order/cancelOrder", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                orderId: '<%= order._id %>', // Get the order ID from your EJS template
-                reason: reason
-            })
+                orderId: "<%= order._id %>", // Get the order ID from your EJS template
+                reason: reason,
+            }),
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 if (data.success) {
                     Swal.fire({
-                        title: 'Order Canceled',
-                        text: 'Your order has been successfully canceled.',
-                        icon: 'success'
+                        title: "Order Canceled",
+                        text: "Your order has been successfully canceled.",
+                        icon: "success",
                     }).then(() => {
                         // Reload the page or redirect to update the UI
                         window.location.reload();
                     });
                 } else {
                     Swal.fire({
-                        title: 'Error',
-                        text: 'There was a problem cancelling your order. Please try again.',
-                        icon: 'error'
+                        title: "Error",
+                        text: "There was a problem cancelling your order. Please try again.",
+                        icon: "error",
                     });
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
+            .catch((error) => {
+                console.error("Error:", error);
                 Swal.fire({
-                    title: 'Error',
-                    text: 'There was a problem communicating with the server. Please try again.',
-                    icon: 'error'
+                    title: "Error",
+                    text: "There was a problem communicating with the server. Please try again.",
+                    icon: "error",
                 });
             });
     }
@@ -217,7 +221,7 @@
             title: "Tell us your reason for Returning the order",
             input: "text",
             inputAttributes: {
-                autocapitalize: "off"
+                autocapitalize: "off",
             },
             showCancelButton: true,
             confirmButtonText: "Submit",
@@ -226,63 +230,172 @@
                 const trimmedInput = input.trim();
 
                 if (trimmedInput.length === 0) {
-                    Swal.showValidationMessage('This field cannot be empty');
+                    Swal.showValidationMessage("This field cannot be empty");
                     return false;
                 }
 
                 if (trimmedInput.length < 10) {
-                    Swal.showValidationMessage('Please enter at least 20 characters');
+                    Swal.showValidationMessage("Please enter at least 20 characters");
                     return false;
                 }
 
                 return trimmedInput;
             },
-            allowOutsideClick: () => !Swal.isLoading()
+            allowOutsideClick: () => !Swal.isLoading(),
         }).then((result) => {
             if (result.isConfirmed) {
-
-                returnOrder(result.value)
+                returnOrder(result.value);
             }
         });
     }
 
     function returnOrder(reason) {
-        fetch('/api/order/returnOrder', {
-            method: 'POST',
+        fetch("/api/order/returnOrder", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                orderId: '<%= order._id %>', // Get the order ID from your EJS template
-                reason: reason
-            })
+                orderId: "<%= order._id %>", // Get the order ID from your EJS template
+                reason: reason,
+            }),
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 if (data.success) {
                     Swal.fire({
-                        title: 'Order Returned',
-                        text: 'Payment will shortly reflect on your wallet.',
-                        icon: 'success'
+                        title: "Order Returned",
+                        text: "Payment will shortly reflect on your wallet.",
+                        icon: "success",
                     }).then(() => {
                         // Reload the page or redirect to update the UI
                         window.location.reload();
                     });
                 } else {
                     Swal.fire({
-                        title: 'Error',
-                        text: 'There was a problem Returning your order. Please try again.',
-                        icon: 'error'
+                        title: "Error",
+                        text: "There was a problem Returning your order. Please try again.",
+                        icon: "error",
                     });
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "There was a problem communicating with the server. Please try again.",
+                    icon: "error",
+                });
+            });
+    }
+
+    async function retryPayment() {
+        // Get the order details (assuming they are stored somewhere)
+
+        let id = document.getElementById("orderId").value;
+
+
+        const response = await fetch(`/api/retryPayment?id=${id}`)
+
+        const responseData = await response.json();
+
+
+        initializeRazorpay(responseData);
+
+
+    }
+
+    function initializeRazorpay(razorpayOrder) {
+        let orderDetails = razorpayOrder
+        const options = {
+            key: 'rzp_test_l5PYAz2fxdpeOD', // Replace with your Razorpay key ID
+            amount: razorpayOrder.amount,
+            currency: 'INR',
+            name: 'AUDIOTIC',
+            description: 'Payment for order',
+            order_id: razorpayOrder.id,
+            handler: function (response) {
+                // Handle payment success
+                console.log('Payment successful:', response);
+                // Perform any necessary actions, such as updating the order status on the server
+                verifyPayment(response, razorpayOrder)
+            },
+            prefill: {
+                name: 'Customer Name',
+                email: 'customer@example.com',
+                contact: '9999999999',
+            },
+            notes: {
+                address: 'Razorpay Corporate Office',
+            },
+            theme: {
+                color: '#3399cc',
+            },
+            modal: {
+                ondismiss: function () {
+                    // This function is triggered when the payment modal is closed by the user or fails
+                    console.log('Payment failed or dismissed.');
+                    handlePaymentFailure(razorpayOrder); // You can handle the failure here
+                },
+            }
+        }
+        const rzp1 = new Razorpay(options);
+
+        rzp1.on('payment.failed', function (response){
+
+            handlePaymentFailure(razorpayOrder); // You can handle the failure here
+
+
+    });
+        rzp1.open();
+    }
+
+    function handlePaymentFailure(razorpayOrder) {
+
+        fetch('/api/checkout/handleFailedPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: razorpayOrder.receipt })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    console.log('Order status updated to failed.');
+                    window.location.href = data.redirect;
+
+                } else {
+                    console.error('Failed to update order status.');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+            });
+    }
+
+    async function verifyPayment(response, razorpayOrder) {
+
+        const paymentDetails = {
+            response, razorpayOrder
+        }
+        return fetch('/api/checkout/verifyPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paymentDetails)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    console.log('Payment verified successfull')
+                    window.location.href = data.redirect;
+                } else {
+                    console.log('Payment verification failed');
+                    showToast('Payment verification failed', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'There was a problem communicating with the server. Please try again.',
-                    icon: 'error'
-                });
+                showToast('An error occurred', 'error');
             });
     }
+
 </script>

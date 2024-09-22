@@ -126,7 +126,7 @@
                                     </td>
                                     <td class="price" data-title="Price">
                                         <span>
-                                            ₹${element.product.price} 
+                                            ₹${element.product.price.toLocaleString("en-IN")} 
                                         </span>
                                     </td>
                                     <td class="text-center" data-title="Stock">
@@ -145,7 +145,7 @@
                                         </div>
                                     </td>
                                     <td class="text-right" data-title="Cart">
-                                        <span class="subtotal" >₹ ${element.subtotal.toFixed(2)}/- </span>
+                                        <span class="subtotal" >₹ ${element.subtotal.toLocaleString("en-IN")}/- </span>
                                     </td>
 
                                      <td class="action" data-title="Remove">
@@ -159,7 +159,7 @@
     }
 
     function updateCartTotals(cart) {
-        cartSubtotalSpan.textContent = `₹ ${cart.cartSubtotal.toFixed(2)}/-`;
+        cartSubtotalSpan.textContent = `₹ ${cart.cartSubtotal.toLocaleString('en-IN')}/-`;
         shippingCharge.textContent = `₹ ${cart.shipping.toFixed(2)}/-`;
 
         let couponDiscount = 0;
@@ -173,7 +173,7 @@
         }
 
         const total = cart.cartSubtotal + cart.shipping - couponDiscount;
-        totalSpan.textContent = `₹ ${total.toFixed(2)}/-`;
+        totalSpan.textContent = `₹ ${total.toLocaleString("en-IN")}/-`;
     }
 
     function handleCartBodyClick(event) {

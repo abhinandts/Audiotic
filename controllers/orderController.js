@@ -83,7 +83,7 @@ const trackOrder = async (req, res) => {
 
 const loadOrders = async (req, res) => {
     try {
-        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, createdAt: 1, orderStatus: 1 }).populate({ path: 'user', select: 'name email' })
+        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, createdAt: 1, orderStatus: 1, paymentStatus: 1 }).populate({ path: 'user', select: 'name email' })
         orders.forEach(order => {
             const date = new Date(order.createdAt);
             const formattedDate = date.toLocaleDateString('en-US', {
@@ -108,9 +108,9 @@ const showOrder = async (req, res) => {
 
         if (["Processing", "Shipped"].includes(order.orderStatus)) {
             if (order.orderStatus === "Processing") {
-                orderStatuses = ["Processing","Shipped", "Delivered"];
+                orderStatuses = ["Processing", "Shipped", "Delivered"];
             } else if (order.orderStatus === "Shipped") {
-                orderStatuses = ["Shipped","Delivered"];
+                orderStatuses = ["Shipped", "Delivered"];
             }
         }
         res.render("showOrder", { order, orderStatuses, title: "Order", sidebar: 'true', sidebar: true, header: false, footer: false })
@@ -125,7 +125,17 @@ const updateStatus = async (req, res) => {
         const id = req.body.orderId
         const orderStatus = req.body.orderStatus
 
-        await Orders.findByIdAndUpdate(id, { orderStatus })
+        console.log(id)
+        console.log(orderStatus)
+
+        if(orderStatus ==="Delivered"){
+
+            await Orders.findByIdAndUpdate(id, { orderStatus:orderStatus,paymentStatus:"Paid" })
+
+        }else{
+            await Orders.findByIdAndUpdate(id, { orderStatus })
+        }
+
         res.status(200).send({ message: "Order status successfully updated." });
 
     } catch (error) {
@@ -141,26 +151,36 @@ const cancelOrder = async (req, res) => {
         const reason = req.body.reason
 
         const order = await Orders.findById(id);
-        const wallet = await Wallet.findOne({ user: userId })
+        console.log(order._id)
 
-        if (wallet) {
-            wallet.money = wallet.money + order.orderTotal
-            wallet.save()
+        let updatedOrder
+
+        if (order.paymentMethod === "Cash on Delivery") {
+
+            updatedOrder = await Orders.findByIdAndUpdate(id, { reason, orderStatus: 'Cancelled', paymentStatus: 'Not Applicable' })
+
         } else {
-            return res.status(404).json({ success: false, message: 'Wallet is not found' })
+            const wallet = await Wallet.findOne({ user: userId })
+
+            if (wallet) {
+                wallet.money = wallet.money + order.orderTotal
+                wallet.save()
+            } else {
+                return res.status(404).json({ success: false, message: 'Wallet is not found' })
+            }
+
+            const transaction = new Transaction({
+                transactionId: `txn_${new Date().getTime()}`,
+                walletId: wallet._id,
+                type: 'Cancellation',
+                amount: order.orderTotal,
+                referenceId: order.id
+            })
+
+            await transaction.save();
+
+            updatedOrder = await Orders.findByIdAndUpdate(id, { reason, orderStatus: 'Cancelled', paymentStatus: 'Refunded' })
         }
-
-        const transaction = new Transaction({
-            transactionId: `txn_${new Date().getTime()}`,
-            walletId:wallet._id,
-            type:'Cancellation',
-            amount:order.orderTotal,
-            referenceId:order.id
-        })
-
-        await transaction.save();
-
-        const updatedOrder = await Orders.findByIdAndUpdate(id, { reason, orderStatus: 'Cancelled', paymentStatus: 'Refunded' })
 
         if (updatedOrder) {
             return res.status(200).json({ success: true, message: 'Order cancelled successfully' })
@@ -192,14 +212,14 @@ const returnOrder = async (req, res) => {
 
         const transaction = new Transaction({
             transactionId: `txn_${new Date().getTime()}`,
-            walletId:wallet._id,
-            type:'Return',
-            amount:order.orderTotal,
-            referenceId:order.id
+            walletId: wallet._id,
+            type: 'Return',
+            amount: order.orderTotal,
+            referenceId: order.id
         })
         await transaction.save();
 
-        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, status: 'Returned', refund: true }, { new: true })
+        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, orderStatus: 'Returned', paymentStatus:"Refunded" }, { new: true })
 
         if (updatedOrder) {
             return res.status(200).json({ success: true, message: 'Order Returned successfull' })
@@ -220,7 +240,9 @@ module.exports = {
     loadOrders,
     showOrder,
     updateStatus,
-    cancelOrder,
+    getOrder,
+
+
+    cancelOrder,   
     returnOrder,
-    getOrder
 }

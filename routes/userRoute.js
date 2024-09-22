@@ -118,6 +118,8 @@ userRoute.get('/api/cart/getCount', cartController.getCount)
 userRoute.get('/checkout', check.isLoggedIn, check.checkUserBlocked, checkoutController.loadCheckout)
 userRoute.post('/api/checkout/placeOrder', check.isLoggedIn, check.checkUserBlocked, checkoutController.placeOrder)
 userRoute.post('/api/checkout/verifyPayment', check.isLoggedIn, check.checkUserBlocked, checkoutController.verifyPayment)
+userRoute.post('/api/checkout/handleFailedPayment',checkoutController.failedPayment)
+userRoute.get('/api/retryPayment',checkoutController.retryPayment)
 
 userRoute.get('/orders/orderConfirmation/:orderId', orderController.orderConfirmation)
 userRoute.post('/api/order/cancelOrder', orderController.cancelOrder)

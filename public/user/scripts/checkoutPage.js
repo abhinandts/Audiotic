@@ -110,19 +110,40 @@
                 ondismiss: function () {
                     // This function is triggered when the payment modal is closed by the user or fails
                     console.log('Payment failed or dismissed.');
-                    handlePaymentFailure(); // You can handle the failure here
+                    handlePaymentFailure(razorpayOrder); // You can handle the failure here
                 },
             }
         }
         const rzp1 = new Razorpay(options);
+
+        rzp1.on('payment.failed', function (response){
+
+            handlePaymentFailure(razorpayOrder); // You can handle the failure here
+
+    });
         rzp1.open();
     }
 
-    function handlePaymentFailure() {
-        // Define your logic here for handling failed payment
-        console.log('Payment failed or canceled.');
-        showToast('Payment failed, please try again.', 'error');
-        // You can also redirect to a failure page or retry
+    function handlePaymentFailure(razorpayOrder) {
+
+        fetch('/api/checkout/handleFailedPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId: razorpayOrder.receipt })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    console.log('Order status updated to failed.');
+                    window.location.href = data.redirect;
+
+                } else {
+                    console.error('Failed to update order status.');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+            });
     }
 
     async function verifyPayment(response, razorpayOrder) {
@@ -158,5 +179,4 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-
 })();
