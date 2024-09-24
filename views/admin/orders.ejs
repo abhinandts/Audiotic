@@ -7,7 +7,7 @@
             <p>View and change status of the orders</p>
         </div>
         <div>
-            <input type="text" placeholder="Search order ID" class="form-control bg-white">
+            <!-- <input type="text" placeholder="Search order ID" class="form-control bg-white"> -->
         </div>
     </div>
     <div class="card mb-4">
@@ -49,55 +49,29 @@
                         </tr>
                     </thead>
 
-<tbody>
-    <% orders.forEach(element => { %>
-        <tr>
-            <td><%= element.formattedDate %></td>
-            <td><%= element.user.email %></td>
-            <td><a href="/admin/showOrder/<%= element.orderId %>"><%= element.orderId %></a></td>
-            <td>
-                <span class="badge rounded-pill 
-                    <%= element.orderStatus === "Delivered" ? 'alert-success' : 
-                        element.orderStatus === "Pending" ? 'alert-warning' : 
-                        element.orderStatus === "Shipped" ? 'alert-secondary' : 
-                        element.orderStatus === "Processing" ? 'alert-info' : 
-                        (element.orderStatus === "Cancelled" || element.orderStatus === "Returned") ? 'alert-danger' : 
-                        'alert-warning' %>">
-                    <%= element.orderStatus %>
-                </span>
-            </td>
-            <td>
-                <span class="badge rounded-pill 
-                    <%= element.paymentStatus === "Paid" ? 'alert-success' : 
-                        element.paymentStatus === "Pending" ? 'alert-warning' : 
-                        element.paymentStatus === "Refunded" ? 'alert-secondary' : 
-                        element.paymentStatus === "Failed" ? 'alert-danger' : 
-                        element.paymentStatus === "Not Applicable" ? 'alert-info' : '' %>">
-                    <%= element.paymentStatus %>
-                </span>
-            </td>
-            
-            <td><%= element.orderTotal.toLocaleString("en-IN") %> .00</td>
-        </tr>
-    <% }); %>
-</tbody>
 
+                    <tbody id="table-body">
+
+
+                    </tbody>
+                    
                     
                 </table>
             </div> <!-- table-responsive //end -->
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
-    <!-- <div class="pagination-area mt-15 mb-50">
+    
+    <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                </li>
+
+            <ul class="pagination justify-content-start" id="page-list">
+
             </ul>
+
         </nav>
-    </div> -->
+    </div>
+
 </section> <!-- content-main end// -->
+
+
+<script src="/admin/scripts/ordersPage.js"></script>

@@ -83,9 +83,23 @@ const toggleCouponStatus = async (req, res) => {
 
 const loadCoupons = async (req, res) => {
     try {
-        const coupons = await Coupon.find()
-        return res.status(200).json(coupons)
+        const page = parseInt(req.query.page) || 1;
+        const limit = 6; // Coupons per page
+        const skip = (page - 1) * limit;
 
+        const totalCoupons = await Coupon.countDocuments();
+        const totalPages = Math.ceil(totalCoupons / limit);
+
+        const coupons = await Coupon.find()
+            .sort({ _id: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        res.json({
+            coupons: coupons,
+            currentPage: page,
+            totalPages: totalPages
+        });
     } catch (error) {
         console.error(error)
         return res.status(500).json({ message: error });
@@ -170,30 +184,6 @@ const checkName = async (req, res) => {
     }
 }
 
-const paginateCoupons = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = 6; // Coupons per page
-        const skip = (page - 1) * limit;
-
-        const totalCoupons = await Coupon.countDocuments();
-        const totalPages = Math.ceil(totalCoupons / limit);
-
-        const coupons = await Coupon.find()
-            .sort({ _id: -1 })
-            .skip(skip)
-            .limit(limit);
-
-        res.json({
-            coupons: coupons,
-            currentPage: page,
-            totalPages: totalPages
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "An error occurred while fetching coupons" });
-    }
-};
 
 module.exports = {
     loadCouponPage,
@@ -205,5 +195,4 @@ module.exports = {
     updateCoupon,
     checkName,
     toggleCouponStatus,
-    paginateCoupons
 }

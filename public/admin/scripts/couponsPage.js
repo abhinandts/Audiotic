@@ -86,23 +86,7 @@
         }
     }
 
-    // function validateExpiryDate(expiryDate) {
-    //     const now = new Date();
-    //     const minExpiryDate = new Date(now.getTime() + 5 * 6000);
-    //     const inputDate = new Date(expiryDate);
 
-    //     if (!expiryDate) {
-    //         showError(expiryDateInput, "Please select expiry date");
-    //         return false;
-    //     }
-
-    //     if (inputDate <= minExpiryDate) {
-    //         showError(expiryDateInput, "Expiry date must be at least 5 minutes in the future")
-    //         return false;
-    //     }
-    //     hideError(expiryDateInput);
-    //     return true;
-    // }
 
     function validateExpiryDate(expiryDate) {
         const now = new Date();
@@ -182,13 +166,16 @@
 
     async function pagination(page = 1) {
         try {
-            const response = await fetch(`/admin/api/coupons/pagination?page=${page}`);
+            const response = await fetch(`/admin/api/coupons/fetchCoupons?page=${page}`);
+            
             if (!response.ok) {
                 throw new Error('Failed to fetch coupons');
             }
             const data = await response.json();
+
             updateCouponTable(data.coupons);
             updatePagination(data.currentPage, data.totalPages);
+
         } catch (error) {
             console.error("Client side error", error);
         }
@@ -261,21 +248,18 @@
                                         ₹${coupon.minimumAmount}.00/-
                                     </a>
                                 </td>
-
-
-        <td>
-            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                <span class="badge rounded-pill ${isExpired ? 'alert-warning' : (coupon.is_active ? 'alert-success' : 'alert-danger')}">
-                    ${isExpired ? 'Expired' : (coupon.is_active ? 'Active' : 'Disabled')}
-                </span>
-            </div>
-        </td>
+                                <td>
+                                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                        <span class="badge rounded-pill ${isExpired ? 'alert-warning' : (coupon.is_active ? 'alert-success' : 'alert-danger')}">
+                                            ${isExpired ? 'Expired' : (coupon.is_active ? 'Active' : 'Disabled')}
+                                        </span>
+                                    </div>
+                                </td>
                                 <td class="text-end">
                                     <button class="btn btn-sm font-sm btn-light rounded disableButton" data-id="${coupon._id}" ${isExpired ? 'disabled' : ''} >
                                          ${isExpired ? 'Expired' : (coupon.is_active ? '🔒 Disable' : '🔓 Enable')}
                                     </button>
                                 </td>
-
                                 `;
         return couponItem;
     }
@@ -283,7 +267,7 @@
     function init() {
         initializeElements();
         initializeEventListeners();
-        fetchAndLoadCoupons()
+        // fetchAndLoadCoupons()
         pagination()
     }
 

@@ -52,6 +52,11 @@
                     <span class="text">Orders</span>
                 </a>
             </li>
+            <li class="menu-item">
+                <a class="menu-link" disabled href="/admin/sales" id="sales-btn" >   <i class="icon material-icons md-pie_chart"></i>
+                    <span class="text">Sales</span>
+                </a>
+            </li>
             <li class="menu-item ">
                 <a class="menu-link" href="/admin/banners" id="bannersButton"> <i
                         class="icon material-icons md-collections"></i>
@@ -116,11 +121,7 @@
                 <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
                     <span class="text">Brands</span> </a>
             </li>
-            <li class="menu-item">
-                <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
-                    <span class="text">Statistics</span>
-                </a>
-            </li>
+
         </ul>
         <hr>
         <ul class="menu-aside">
@@ -153,7 +154,8 @@
     const ordersButton = document.getElementById('ordersButton')
     const bannersButton = document.getElementById('bannersButton');
     const couponsButton = document.getElementById('couponsButton');
-    const offersButton = document.getElementById('offers-button')
+    const offersButton = document.getElementById('offers-button');
+    const salesBtn = document.getElementById('sales-btn');
 
 
     // Add the active class to the respective link based on the URL
@@ -174,5 +176,7 @@
         offersButton.parentNode.classList.add('active');
     }else if(currentUrl.includes('/admin/dashboard')){
         dashboardButton.parentNode.classList.add('active');
+    }else if(currentUrl.includes('/admin/sales')){
+        salesBtn.parentNode.classList.add('active')
     }
 </script>

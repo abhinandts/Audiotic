@@ -81,7 +81,7 @@ const trackOrder = async (req, res) => {
 
 // -------------------------------------------------->
 
-const loadOrders = async (req, res) => {
+const loadOrderPage = async (req, res) => {
     try {
         const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, createdAt: 1, orderStatus: 1, paymentStatus: 1 }).populate({ path: 'user', select: 'name email' })
         orders.forEach(order => {
@@ -97,6 +97,31 @@ const loadOrders = async (req, res) => {
     } catch (error) {
         console.error("Error ", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const loadOrders = async (req, res) => {
+    try {
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = 10;
+        const skip = (page - 1) * limit;
+        const totalOrders = await Orders.countDocuments();
+        const totalPages = Math.ceil(totalOrders / limit)
+
+        const orders = await Orders.find().populate({
+            path: 'user',
+            select: 'email',
+        }).select('createdAt orderId orderStatus paymentStatus orderTotal')
+            .sort({ _id: -1 })
+            .skip(skip)
+            .limit(limit)
+
+        res.status(200).json({ orders: orders, currentPage: page, totalPages: totalPages })
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json(error)
     }
 }
 
@@ -128,11 +153,11 @@ const updateStatus = async (req, res) => {
         console.log(id)
         console.log(orderStatus)
 
-        if(orderStatus ==="Delivered"){
+        if (orderStatus === "Delivered") {
 
-            await Orders.findByIdAndUpdate(id, { orderStatus:orderStatus,paymentStatus:"Paid" })
+            await Orders.findByIdAndUpdate(id, { orderStatus: orderStatus, paymentStatus: "Paid" })
 
-        }else{
+        } else {
             await Orders.findByIdAndUpdate(id, { orderStatus })
         }
 
@@ -219,7 +244,7 @@ const returnOrder = async (req, res) => {
         })
         await transaction.save();
 
-        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, orderStatus: 'Returned', paymentStatus:"Refunded" }, { new: true })
+        const updatedOrder = await Orders.findByIdAndUpdate(orderId, { reason, orderStatus: 'Returned', paymentStatus: "Refunded" }, { new: true })
 
         if (updatedOrder) {
             return res.status(200).json({ success: true, message: 'Order Returned successfull' })
@@ -233,16 +258,159 @@ const returnOrder = async (req, res) => {
     }
 }
 
+
+// --------------sales page 
+
+const salesPage = async (req, res) => {
+    try {
+        res.render("salesPage", { title: "Sales", sidebar: 'true', sidebar: true, header: false, footer: false })
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+const loadSalesOrders = async (req, res) => {
+    try {
+        const orders = await Orders.find({ orderStatus: "Delivered" })
+            .populate({
+                path: 'user',          // Path to populate the 'user' field
+                select: 'email'        // Select only the 'email' field from the User model
+            })
+            .select('createdAt orderId paymentMethod paymentStatus orderTotal') // Select specific fields from the Orders model
+            .exec();
+
+        res.status(200).json(orders)
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const filter = async (req, res) => {
+    try {
+        const value = req.query.filter;
+
+        const currentDate = new Date();
+
+        let dateThreshold;
+
+        if (value === '7days') {
+            dateThreshold = new Date(currentDate.setDate(currentDate.getDate() - 7));
+        } else if (value === '30days') {
+            dateThreshold = new Date(currentDate.setDate(currentDate.getDate() - 30));
+        }
+
+        const query = { orderStatus: "Delivered" }
+
+        if (dateThreshold) {
+            query.createdAt = { $gte: dateThreshold };
+        }
+
+        const orders = await Orders.find(query).populate({
+            path: 'user',
+            select: 'email',
+        }).select('createdAt orderId paymentMethod paymentStatus orderTotal')
+            .sort({ createdAt: -1 })
+            .exec();
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+const getChartData = async (req, res) => {
+
+    try {
+
+        let labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+        const deliveredOrdersPerMonth = await Orders.aggregate([
+            { $match: { orderStatus: "Delivered" } },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" } },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1 }
+            }
+        ]);
+
+        let deliveredOrdersArray = new Array(12).fill(0);
+
+        deliveredOrdersPerMonth.forEach((order) => {
+            deliveredOrdersArray[order._id.month - 1] = order.totalOrders; // -1 since month is 1-based
+        });
+
+
+        const returnedOrdersPerMonth = await Orders.aggregate([
+            { $match: { orderStatus: "Returned" } },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" } },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1 }
+            }
+        ]);
+
+        let returnedOrdersArray = new Array(12).fill(0);
+
+        returnedOrdersPerMonth.forEach((order) => {
+            returnedOrdersArray[order._id.month - 1] = order.totalOrders; // -1 since month is 1-based
+        });
+
+
+
+        const cancelledOrdersPerMonth = await Orders.aggregate([
+            { $match: { orderStatus: "Cancelled" } },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" } },
+                    totalOrders: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.month": 1 }
+            }
+        ]);
+
+        let cancelledOrdersArray = new Array(12).fill(0);
+
+        cancelledOrdersPerMonth.forEach((order) => {
+            cancelledOrdersArray[order._id.month - 1] = order.totalOrders; // -1 since month is 1-based
+        });
+
+
+        const data = { labels, deliveredOrders: deliveredOrdersArray,returnedOrders:returnedOrdersArray,cancelledOrders:cancelledOrdersArray }
+
+        res.status(200).json(data)
+    } catch (error) {
+
+    }
+}
+
 module.exports = {
     orderConfirmation,
     getOrders,
     trackOrder,
-    loadOrders,
+    loadOrderPage,
     showOrder,
     updateStatus,
     getOrder,
+    salesPage,
+    loadSalesOrders,
+    filter,
+    loadOrders,
 
+    getChartData,
 
-    cancelOrder,   
+    cancelOrder,
     returnOrder,
 }

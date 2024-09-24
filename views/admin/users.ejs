@@ -2,7 +2,7 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Users List</h2>
-            <p>Block and Unblock Users </p>
+            <p>Block and Unblock Users</p>
         </div>
         <div>
             <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
@@ -33,68 +33,63 @@
             </div>
         </header> -->
 
-
         <!-- ------------------------------------------------------------------------------- -->
 
         <div class="card-body">
             <% userData.forEach(element=> { %>
-                <article class="itemlist">
-                    <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check">
-                                🢧
-                            </div>
+            <article class="itemlist">
+                <div class="row align-items-center">
+                    <div class="col col-check flex-grow-0">
+                        <div class="form-check">
+                            🢧
                         </div>
-                        <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
-                                <div class="info">
-                                    <h6 class="mb-0"><%= element.name %></h6>
-                                </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
+                        <div class="info">
+                            <h6 class="mb-0"><%= element.name %></h6>
                         </div>
-                        <div class="col-lg-4 col-sm-3 col-5 col-price">
-                            <span><%= element.email %></span>
-                        </div>
-                        <div class="col-lg-2 col-sm-2 col-4 col-status">
-                            <% if(element.is_active){ %>
-                                <span class="badge rounded-pill alert-success">Active</span>
-                            <% }else{ %>
-                                <span class="badge rounded-pill alert-danger">Blocked</span>
-                            <% } %>
-                        </div>
-                        <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
+                    </div>
+                    <div class="col-lg-4 col-sm-3 col-5 col-price">
+                        <span><%= element.email %></span>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                        <% if(element.is_active){ %>
+                        <span class="badge rounded-pill alert-success">Active</span>
+                        <% }else{ %>
+                        <span class="badge rounded-pill alert-danger">Blocked</span>
+                        <% } %>
+                    </div>
+                    <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
                             <span>02.11.2022</span>
                         </div> -->
-                        <div class="col-lg-2 col-sm-2 col-4 col-action text-end ">
-                            <% if(element.is_active){ %>
-                                <a href="/admin/blockUser/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-block"></i> Block
-                                </a>
-                            <% }else{ %>
-                                <a href="/admin/blockUser/<%= element._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-verified_user"></i> Unblock
-                                </a>
-                            <% } %>
-                        </div>
-                    </div> <!-- row .// -->
-                </article> <!-- itemlist  .// -->
+                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                        <% if(element.is_active){ %>
+                        <a href="/admin/blockUser/<%- element._id %>" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-block"></i> Block </a>
+                        <% }else{ %>
+                        <a href="/admin/blockUser/<%= element._id %>" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-verified_user"></i> Unblock </a>
+                        <% } %>
+                    </div>
+                </div>
+                <!-- row .// -->
+            </article>
+            <!-- itemlist  .// -->
             <% }); %>
         </div>
+    </div>
+    <!-- card end// -->
 
-
-    </div> <!-- card end// -->
     <div class="pagination-area mt-30 mb-50">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">
-
                 <% for(let i=1;i<=totalPages;i++){ %>
-                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                        <a class="page-link" href="/admin/users?page=<%= i %>">
-                            <%= i %>
-                        </a>
-                    </li>
-                    <% } %>
-
-
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                    <a class="page-link" href="/admin/users?page=<%= i %>">
+                        <%= i %>
+                    </a>
+                </li>
+                <% } %>
             </ul>
         </nav>
     </div>
+    
 </section>

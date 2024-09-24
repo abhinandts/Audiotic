@@ -116,6 +116,7 @@ const bannerController = require('../controllers/bannerController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
 const offerController = require('../controllers/offerController')
+const dashboardController = require('../controllers/dashboardController')
 // ---------------------------------------
 
 
@@ -124,11 +125,14 @@ adminRoute.post("/login", adminController.verifyLogin)
 
 adminRoute.get("/logout", auth.isLogin, adminController.logOut)
 
-adminRoute.get("/dashboard", auth.isLogin, adminController.loadDashboard)
-
 adminRoute.get("/users", auth.isLogin, adminController.loadUsers)
 
 adminRoute.get("/blockUser/:userId", auth.isLogin, adminController.blockUser)
+
+// ---- dashboard ----
+
+adminRoute.get("/dashboard", auth.isLogin, dashboardController.loadDashboard)
+
 
 // ---- category ----
 
@@ -158,9 +162,18 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, p
 
 // ---- orders ----
 
-adminRoute.get("/orders", auth.isLogin, orderController.loadOrders)
+adminRoute.get("/orders", auth.isLogin, orderController.loadOrderPage)
 adminRoute.get('/showOrder/:orderId', orderController.showOrder)
 adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
+adminRoute.get('/api/orders/loadOrders',orderController.loadOrders)
+
+// ---- sales ----
+
+adminRoute.get('/sales',auth.isLogin,orderController.salesPage)
+adminRoute.get('/api/sales/getSalesOrders',orderController.loadSalesOrders)
+adminRoute.get('/api/sales/value',orderController.filter)
+
+adminRoute.get('/api/dashboard/getChartData',orderController.getChartData)
 
 // ---- coupons ----
 
@@ -171,8 +184,6 @@ adminRoute.put("/api/coupons/disableCoupon", couponController.disableCoupon)
 adminRoute.get("/coupons/editCoupon/:couponId", couponController.loadEditCoupon)
 adminRoute.post("/coupons/editCoupon", couponController.updateCoupon)
 adminRoute.get('/api/coupons/checkName', couponController.checkName)
-// adminRoute.get('/api/coupons/pagination',)
-adminRoute.get('/api/coupons/pagination', couponController.paginateCoupons);
 
 adminRoute.post("/api/coupons/create", couponController.createCoupon);
 adminRoute.put("/api/coupons/toggle/:id", couponController.toggleCouponStatus);
@@ -191,8 +202,6 @@ adminRoute.get("/newBanner", auth.isLogin, bannerController.newBanner)
 adminRoute.post("/newBanner", auth.isLogin, uploadBanner.array('image', 1), bannerController.addBanner)
 
 adminRoute.get("/deleteBanner/:bannerId", bannerController.deleteBanner)
-
-
 
 // Catch-all route for unmatched routes
 adminRoute.get("*", (req, res) => {
