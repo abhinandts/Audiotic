@@ -11,6 +11,7 @@ const Transaction = require('../models/transactionModel')
 const orderConfirmation = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
+        
         res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {
         console.error(error)

@@ -92,22 +92,6 @@ const bannerStorage = multer.diskStorage({
 const uploadBanner = multer({ storage: bannerStorage })
 
 
-// // Multer setup for file uploads
-// const productStorage = multer.diskStorage({
-//   destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/admin/productImages')),
-//   filename: (req, file, cb) => cb(null, file.originalname)
-// });
-// const uploadProduct = multer({ storage: productStorage });
-
-// const bannerStorage = multer.diskStorage({
-//   destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/admin/bannerImages')),
-//   filename: (req, file, cb) => cb(null, file.originalname)
-// });
-// const uploadBanner = multer({ storage: bannerStorage });
-
-//----------------------
-
-
 // ---- controllers ----------------------
 const adminController = require('../controllers/adminController')
 const categoryController = require('../controllers/categoryController')
@@ -150,6 +134,7 @@ adminRoute.get("/products", auth.isLogin, productController.loadProducts)
 
 adminRoute.get("/newProduct", auth.isLogin, productController.newProduct)
 adminRoute.post("/newProduct", upload.array('image', 5), productController.addProduct)
+adminRoute.get("/api/product/checkName",productController.checkProductName)
 
 adminRoute.get("/blockProduct/:productId", productController.blockProduct)
 

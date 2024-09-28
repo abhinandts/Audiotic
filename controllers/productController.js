@@ -4,6 +4,7 @@ const adminRoute = require('../routes/adminRoute');
 
 const fs = require('fs');
 const path = require('path');
+const { checkName } = require('./couponController');
 
 // ---- /products -------------------------------
 
@@ -51,27 +52,7 @@ const newProduct = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         const { category, productName, productSpecifications, mrp, price, discount, stock } = req.body
-
-        const productExists = await Product.findOne({ productName })
-
-        if (productExists) {
-
-            // const categoryData = await Category.find({ is_active: true }, { name: 1 });
-
-            return res.render('newProduct', {
-                error: "Product name already exist", title: "Add Product", header: false, footer: false, sidebar: false,
-                categoryData: await Category.find({ is_active: true }, { name: 1 }),
-                productName,
-                productSpecifications,
-                mrp,
-                price,
-                discount,
-                stock,
-                category
-            })
-        }
         const cate = await Category.findOne({ name: category })
-
         const imageNames = req.files.map(file => file.filename)
 
         const product = new Product({
@@ -84,11 +65,9 @@ const addProduct = async (req, res) => {
             stock,
             image: imageNames
         })
-
         await product.save()
 
         res.redirect('/admin/products')
-
     } catch (error) {
         console.log(error.message)
     }
@@ -225,7 +204,23 @@ const replaceImage = async (req, res) => {
     }
 }
 
+const checkProductName = async (req, res) => {
+    try {
+        const name = req.query.name
 
+        const sameName = await Product.findOne({productName:name})
+
+        if(sameName){
+            res.status(409).json({message:"Product name already exists"})
+        }else{
+            res.status(200).json({message:"Product name available"})
+        }
+    
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({message:"Internal server error."})
+    }
+}
 
 module.exports = {
     loadProducts,
@@ -236,4 +231,5 @@ module.exports = {
     updateProduct,
     replaceImage,
     deleteImage,
+    checkProductName
 }
