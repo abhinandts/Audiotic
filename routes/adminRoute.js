@@ -38,7 +38,7 @@ adminRoute.use(require('express-session')({
 const ejsLayouts = require('express-ejs-layouts')
 adminRoute.set('views', './views/admin')
 adminRoute.use(ejsLayouts)
-adminRoute.set('layout', '../admin/layouts/fullwidth')
+adminRoute.set('layout', '../admin/layouts/fullWidth')
 
 // Middleware for static assets
 adminRoute.use(express.static('public'))
