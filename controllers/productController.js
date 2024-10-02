@@ -96,7 +96,7 @@ const blockProduct = async (req, res) => {
 
 const editProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.productId)
+        const product = await Product.findById(req.params.productId).populate({path:'category', select:'name'})
         const categories = await Category.find({}, { name: 1 })
 
         res.render('editProduct', { title: "Edit Product", header: false, sidebar: false, footer: true, product, categories })
@@ -105,120 +105,72 @@ const editProduct = async (req, res) => {
     }
 }
 
+
 const updateProduct = async (req, res) => {
     try {
-        const { productName, productSpecifications, mrp, discount, price, stock, category } = req.body;
-        const catId = await Category.findOne({ name: category })
-        console.log(catId)
-        await Product.findByIdAndUpdate(req.params.productId, { productName, productSpecifications, mrp, discount, price, stock, category: catId })
+        const productId = req.params.productId;
+        const product = await Product.findById(productId);
 
-        res.redirect('/admin/products')
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+        // Handle new image uploads
+        const newImages = req.files ? req.files.map(file => file.filename) : [];
 
+        // Handle image deletion
+        let deleteImages = req.body.deleteImages || []; // Images marked for deletion
 
-// ---- deleteImage
-
-const deleteImage = async (req, res) => {
-    try {
-        const { imageName, productId } = req.params;
-
-        // Assuming `image` is the array field in your Product schema
-        const deleteImage = await Product.findByIdAndUpdate(
-            productId,
-            { $pull: { image: imageName } }
-        );
-
-        if (deleteImage) {
-            console.log(`Product ID: ${productId}`);
-
-
-            // Redirecting to the correct URL
-            res.redirect(`/admin/editProduct/${productId}`);
-        } else {
-            console.log("Error occurred: Image deletion failed");
-            res.status(500).send("Image deletion failed");
+        // Convert to an array if it's a single string
+        if (!Array.isArray(deleteImages)) {
+            deleteImages = [deleteImages];
         }
+
+        // Remove the deleted images from the server and MongoDB
+        deleteImages.forEach(img => {
+            const imagePath = path.join(__dirname, '../public/admin/productImages', img);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath); // Delete image from server
+            }
+        });
+
+        // Filter out the deleted images from the product's image array in MongoDB
+        product.image = product.image.filter(img => !deleteImages.includes(img));
+
+        // 3. Add the newly uploaded images to the product's image array in MongoDB
+        product.image = product.image.concat(newImages);
+
+        // Update other product fields
+        product.productName = req.body.productName;
+        product.productSpecifications = req.body.productSpecifications;
+        product.mrp = req.body.mrp;
+        product.price = req.body.price;
+        product.stock = req.body.stock;
+        product.discount = req.body.discount;
+        product.category = req.body.category;
+
+        // Save the updated product
+        await product.save();
+
+        // Redirect to the products page
+        res.redirect('/admin/products');
     } catch (error) {
         console.log(error.message);
-        res.status(500).send("An error occurred while deleting the image");
     }
 };
 
-
-
-// const deleteImage = async (req, res) => {
-//     try {
-//         const { imageName, productId } = req.params;
-
-//         // Validate productId
-//         if (!mongoose.Types.ObjectId.isValid(productId)) {
-//             return res.status(400).send('Invalid product ID');
-//         }
-
-//         // Convert productId to ObjectId
-//         const objectId = mongoose.Types.ObjectId(productId);
-
-//         // Update product to remove image reference
-//         const updateResult = await Product.findByIdAndUpdate(objectId, { $pull: { image: imageName } });
-
-//         if (updateResult) {
-//             console.log(`Product ID: ${productId}, Image Name: ${imageName} removed`);
-
-//             // Delete the image file from the file system if needed
-//             const imagePath = path.join(__dirname, '../public/admin/productImages', imageName);
-//             if (fs.existsSync(imagePath)) {
-//                 fs.unlinkSync(imagePath);
-//             } else {
-//                 console.log('Image file not found:', imagePath);
-//             }
-
-//             res.redirect(`/admin/editProduct/<%- productId %> `);
-//         } else {
-//             console.log("Error occurred: Product not found or image not removed");
-//             res.status(500).send('An error occurred while deleting the image.');
-//         }
-//     } catch (error) {
-//         console.log('Error:', error.message);
-//         res.status(500).send('An error occurred while deleting the image.');
-//     }
-// };
-
-
-
-
-
-
-
-
-
-// ---- replaceImage
-
-const replaceImage = async (req, res) => {
-    try {
-        console.log("replace Image")
-    } catch (error) {
-        console.log(error.message)
-    }
-}
 
 const checkProductName = async (req, res) => {
     try {
         const name = req.query.name
 
-        const sameName = await Product.findOne({productName:name})
+        const sameName = await Product.findOne({ productName: name })
 
-        if(sameName){
-            res.status(409).json({message:"Product name already exists"})
-        }else{
-            res.status(200).json({message:"Product name available"})
+        if (sameName) {
+            res.status(409).json({ message: "Product name already exists" })
+        } else {
+            res.status(200).json({ message: "Product name available" })
         }
-    
+
     } catch (error) {
         console.error(error)
-        res.status(500).json({message:"Internal server error."})
+        res.status(500).json({ message: "Internal server error." })
     }
 }
 
@@ -229,7 +181,5 @@ module.exports = {
     blockProduct,
     editProduct,
     updateProduct,
-    replaceImage,
-    deleteImage,
     checkProductName
 }

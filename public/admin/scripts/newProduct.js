@@ -21,7 +21,7 @@
         imageInput.addEventListener("change", onImageInputChange);
         nameInput.addEventListener('blur', checkName);
         form.addEventListener('submit', function () {
-            priceInput.disabled = false; // Enable price input before submission
+            priceInput.disabled = false;
         });
     }
 

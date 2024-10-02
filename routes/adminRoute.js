@@ -5,10 +5,9 @@ const adminSession = require('express-session')
 const MongoDBStore = require('connect-mongodb-session')(adminSession)
 const mongoose = require("mongoose")
 
-const Toastify = require('toastify-js'); // Import Toastify
+const fs = require('fs');
 
-// // Import CSS (optional, for styling)
-// import "toastify-js/src/toastify.css";
+const Toastify = require('toastify-js'); // Import Toastify
 
 const adminRoute = express()
 
@@ -134,14 +133,14 @@ adminRoute.get("/products", auth.isLogin, productController.loadProducts)
 
 adminRoute.get("/newProduct", auth.isLogin, productController.newProduct)
 adminRoute.post("/newProduct", upload.array('image', 5), productController.addProduct)
-adminRoute.get("/api/product/checkName",productController.checkProductName)
+adminRoute.get("/api/product/checkName", productController.checkProductName)
 
 adminRoute.get("/blockProduct/:productId", productController.blockProduct)
 
 adminRoute.get("/editProduct/:productId", auth.isLogin, productController.editProduct)
-adminRoute.post("/editProduct/:productId", productController.updateProduct)
+adminRoute.post("/editProduct/:productId", auth.isLogin, upload.array('image', 5), productController.updateProduct)
 
-adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, productController.deleteImage)
+// adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, productController.deleteImage)
 
 // adminRoute.get("/replaceImage/:imageId",auth.isLogin,productController.replaceImage)
 
@@ -150,15 +149,15 @@ adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, p
 adminRoute.get("/orders", auth.isLogin, orderController.loadOrderPage)
 adminRoute.get('/showOrder/:orderId', orderController.showOrder)
 adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
-adminRoute.get('/api/orders/loadOrders',orderController.loadOrders)
+adminRoute.get('/api/orders/loadOrders', orderController.loadOrders)
 
 // ---- sales ----
 
-adminRoute.get('/sales',auth.isLogin,orderController.salesPage)
-adminRoute.get('/api/sales/getSalesOrders',orderController.loadSalesOrders)
-adminRoute.get('/api/sales/value',orderController.filter)
+adminRoute.get('/sales', auth.isLogin, orderController.salesPage)
+adminRoute.get('/api/sales/getSalesOrders', orderController.loadSalesOrders)
+adminRoute.get('/api/sales/value', orderController.filter)
 
-adminRoute.get('/api/dashboard/getChartData',orderController.getChartData)
+adminRoute.get('/api/dashboard/getChartData', orderController.getChartData)
 
 // ---- coupons ----
 
@@ -176,8 +175,8 @@ adminRoute.put("/api/coupons/toggle/:id", couponController.toggleCouponStatus);
 // ---- offers ----
 
 adminRoute.get("/offers", offerController.loadOffers)
-adminRoute.post("/api/offers/productOffer",offerController.applyProductOffer)
-adminRoute.post("/api/offers/categoryOffer",offerController.applyCategoryOffer)
+adminRoute.post("/api/offers/productOffer", offerController.applyProductOffer)
+adminRoute.post("/api/offers/categoryOffer", offerController.applyCategoryOffer)
 
 // ---- banners ----
 

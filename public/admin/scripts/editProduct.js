@@ -1,82 +1,83 @@
+
 (function () {
     "use strict";
 
     let imageInput, nameInput, mrpInput, discountInput, priceInput, errorElement, previewContainer;
-
+    let maxImages = 5;
+    let existingImages = document.querySelectorAll('.form-check-input:checked').length; // Track existing images on the page
     const croppedImages = new DataTransfer();
+    let hintShown = false; // To track if the hint has been shown
 
     function initializeElements() {
         imageInput = document.getElementById("image-input");
         nameInput = document.getElementById("product-name");
-        mrpInput = document.getElementById('mrp')
-        discountInput = document.getElementById('discount')
-        priceInput = document.getElementById('price')
+        mrpInput = document.getElementById('mrp');
+        discountInput = document.getElementById('discount');
+        priceInput = document.getElementById('price');
         errorElement = document.getElementById('imageError');
-        previewContainer = document.getElementById('input-upload')
+        previewContainer = document.getElementById('input-upload');
+        updateImageInputState();
     }
 
     function initializeEventListeners() {
         mrpInput.addEventListener('input', calculatePrice);
         discountInput.addEventListener('input', calculatePrice);
         imageInput.addEventListener("change", onImageInputChange);
-        // nameInput.addEventListener('blur', checkName);
-        form.addEventListener('submit', function () {
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            checkbox.addEventListener('change', onCheckboxChange);
+        });
+        form.addEventListener('submit', function (e) {
             priceInput.disabled = false;
+            if (croppedImages.files.length < maxImages && existingImages + croppedImages.files.length < maxImages) {
+                e.preventDefault();
+                alert("Please finish cropping all images before submitting the form.");
+            }
         });
     }
 
     function calculatePrice() {
-
         const mrp = parseFloat(document.getElementById('mrp').value);
-        const discount = parseFloat(document.getElementById('discount').value)
-
+        const discount = parseFloat(document.getElementById('discount').value);
         if (!isNaN(mrp) && !isNaN(discount)) {
-            const discountedPrice = mrp - (mrp * (discount / 100))
-            priceInput.value = discountedPrice.toFixed()
+            const discountedPrice = mrp - (mrp * (discount / 100));
+            priceInput.value = discountedPrice.toFixed();
         } else {
-            priceInput.value = ''
+            priceInput.value = '';
         }
     }
 
-    async function checkName() {
-        const productName = nameInput.value;
-        const response = await fetch(`/admin/api/product/checkName?name=${encodeURI(productName)}`)
+    function onCheckboxChange() {
+        existingImages = document.querySelectorAll('.form-check-input:checked').length;
+        updateImageInputState();
+    }
 
-        const result = await response.json();
-
-        if (response.status === 409) {
-            const errorElement = document.getElementById("nameError");
-            errorElement.textContent = result.message;
+    function updateImageInputState() {
+        const totalImages = existingImages + croppedImages.files.length;
+        if (totalImages >= maxImages) {
+            imageInput.disabled = true;
+            errorElement.textContent = "You have reached the maximum limit of 5 images.";
             errorElement.style.display = "block";
-
-            nameInput.classList.add("is-invalid");
         } else {
-            const errorElement = document.getElementById("nameError");
-            errorElement.textContent = "";
+            imageInput.disabled = false;
             errorElement.style.display = "none";
-
-            nameInput.classList.remove("is-invalid");
         }
     }
 
     function onImageInputChange(event) {
-                    // imageInput.value = "";
-
         const files = event.target.files;
+        const totalImages = existingImages + files.length;
 
-        if (files.length > 5) {
-            errorElement.textContent = `You can only upload 5 images`
+        if (totalImages > maxImages) {
+            errorElement.textContent = `You can only upload ${maxImages - existingImages} more images.`;
             errorElement.style.display = "block";
             imageInput.value = "";
             return;
         }
 
         errorElement.style.display = "none";
-
         previewContainer.innerHTML = "";
 
         if (files.length > 0) {
-            // Process each file for cropping
             Array.from(files).forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
@@ -89,7 +90,6 @@
     }
 
     function displayImagePreview(imageSrc) {
-        // Create an image element to show the preview
         const imgElement = document.createElement("img");
         imgElement.src = imageSrc;
         imgElement.classList.add("img-thumbnail", "preview-img");
@@ -98,10 +98,8 @@
         imgElement.style.objectFit = "cover";
         imgElement.style.marginRight = "10px";
 
-        // Append the image element to the preview container
         previewContainer.appendChild(imgElement);
     }
-
 
     function handleImageCropping(imageSrc, file, index) {
         const cropperModal = document.createElement("div");
@@ -111,6 +109,9 @@
             <div class="modal-content">
                 <div class="img-container">
                     <img src="${imageSrc}" />
+                </div>
+                <div class="hint" style="margin-bottom: 10px; font-size: 14px; color: grey;">
+                    Click and drag to adjust the crop area. Double-click to reset the crop.
                 </div>
                 <button type="button" class="btn btn-success save-crop">Save Crop</button>
                 <button type="button" class="btn btn-danger cancel-crop">Cancel</button>
@@ -126,6 +127,8 @@
             autoCropArea: 1,
         });
 
+        cropperModal.style.display = "flex"; // Ensure modal is visible
+
         const saveCropButton = cropperModal.querySelector(".save-crop");
         saveCropButton.addEventListener("click", function () {
             saveCroppedImage(cropper, file, cropperModal);
@@ -137,24 +140,30 @@
             cropperModal.remove();
         });
 
-        cropperModal.style.display = "flex";
+        // Show hint only once
+        if (!hintShown) {
+            const hintElement = cropperModal.querySelector(".hint");
+            hintElement.style.display = "block";
+            hintShown = true; // Ensures hint is only shown once
+        } else {
+            const hintElement = cropperModal.querySelector(".hint");
+            hintElement.style.display = "none"; // Hide hint if it's already been shown once
+        }
     }
 
     function saveCroppedImage(cropper, originalFile, cropperModal) {
-        cropper
-            .getCroppedCanvas({
-                width: 1160,
-                height: 1160,
-            })
-            .toBlob(function (blob) {
-                const newFile = new File([blob], originalFile.name, { type: originalFile.type });
-                croppedImages.items.add(newFile); // Add to cropped images
-                imageInput.files = croppedImages.files; // Update the input field with all cropped images
+        cropper.getCroppedCanvas({
+            width: 1160,
+            height: 1160,
+        }).toBlob(function (blob) {
+            const newFile = new File([blob], originalFile.name, { type: originalFile.type });
+            croppedImages.items.add(newFile);
+            imageInput.files = croppedImages.files;
 
-                // Close modal and clean up
-                cropper.destroy();
-                cropperModal.remove();
-            });
+            cropper.destroy();
+            cropperModal.remove();
+            updateImageInputState();
+        });
     }
 
     function init() {
@@ -164,3 +173,4 @@
 
     document.addEventListener("DOMContentLoaded", init);
 })();
+
