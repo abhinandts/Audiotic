@@ -140,10 +140,6 @@ adminRoute.get("/blockProduct/:productId", productController.blockProduct)
 adminRoute.get("/editProduct/:productId", auth.isLogin, productController.editProduct)
 adminRoute.post("/editProduct/:productId", auth.isLogin, upload.array('image', 5), productController.updateProduct)
 
-// adminRoute.get("/editProduct/deleteImage/:imageName/:productId", auth.isLogin, productController.deleteImage)
-
-// adminRoute.get("/replaceImage/:imageId",auth.isLogin,productController.replaceImage)
-
 // ---- orders ----
 
 adminRoute.get("/orders", auth.isLogin, orderController.loadOrderPage)

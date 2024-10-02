@@ -1,20 +1,38 @@
 <!-- -------- evara-frontend/shop-filter.html -->
 
+<style>
+    #category-dropdown {
+    display: none; /* Hidden by default */
+    position: absolute; /* Optional: Positioning dropdown */
+    background-color: #fff; /* Optional: Background for visibility */
+    border: 1px solid #ccc; /* Optional: Add a border */
+}
+
+#category-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+</style>
+
 <section class="mt-50 mb-50">
     <div class="container">
         <div class="row">
-
             <div class="col-lg-12">
-
                 <div class="shop-product-fillter">
                     <div class="totall-product">
-                        <p> We found <strong class="text-brand">
+                        <p>
+                            We found
+                            <strong class="text-brand">
                                 <%=products.length %>
-                            </strong> items for you!</p>
+                            </strong>
+                            items for you!
+                        </p>
                     </div>
                     <div class="sort-by-product-area">
                         <div class="sort-by-cover mr-10">
-                            <div class="sort-by-product-wrap ">
+                            <div class="sort-by-product-wrap">
                                 <div class="sort-by">
                                     <span><i class="fi-rs-apps"></i>Categories :</span>
                                 </div>
@@ -22,12 +40,8 @@
                                     <span> Select a category <i class="fi-rs-angle-small-down"></i></span>
                                 </div>
                             </div>
-                            <div class="sort-by-dropdown " id="category-dropdown">
-
-                                <ul id="category-list">
-
-                                </ul>
-
+                            <div class="sort-by-dropdown" id="category-dropdown">
+                                <ul id="category-list"></ul>
                             </div>
                         </div>
 
@@ -50,64 +64,60 @@
                                 </ul>
                             </div> -->
                         </div>
-                        
                     </div>
                 </div>
 
                 <div class="row product-grid-3" id="product-list">
-
                     <% products.forEach((element)=>{ %>
 
-                        <div class="col-lg-3 col-md-4 ">
-                            <div class="product-cart-wrap mb-30">
-                                <div class="product-img-action-wrap">
-                                    <div class="product-img product-img-zoom">
-                                        <a href="/productPage?productId=<%-element._id %>">
-                                            <img class="default-img" src="/admin/productImages/<%=element.image[0]  %>"
-                                                alt="">
-                                            <img class="hover-img" src="/admin/<%= element.image[0] %>" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="product-action-1">
-                                        <!-- <a aria-label="View" class="action-btn hover-up" data-bs-toggle="modal"
+                    <div class="col-lg-3 col-md-4">
+                        <div class="product-cart-wrap mb-30">
+                            <div class="product-img-action-wrap">
+                                <div class="product-img product-img-zoom">
+                                    <a href="/productPage?productId=<%-element._id %>">
+                                        <img class="default-img" src="/admin/productImages/<%=element.image[0]  %>" alt="" />
+                                        <img class="hover-img" src="/admin/<%= element.image[0] %>" alt="" />
+                                    </a>
+                                </div>
+                                <div class="product-action-1">
+                                    <!-- <a aria-label="View" class="action-btn hover-up" data-bs-toggle="modal"
                                     data-bs-target="#quickViewModal">
                                     <i class="fi-rs-search"></i></a>
                                 <a aria-label="Add To Wishlist" class="action-btn hover-up"
                                     href="#"><i class="fi-rs-heart"></i></a> -->
-                                    </div>
-                                    <!-- <div class="product-badges product-badges-position product-badges-mrg">
+                                </div>
+                                <!-- <div class="product-badges product-badges-position product-badges-mrg">
                                 <span class="hot">-30%</span>
                             </div> -->
+                            </div>
+                            <div class="product-content-wrap">
+                                <div class="product-category">
+                                    <a href="shop-grid-right.html">
+                                        <%= element.category.name %>
+                                    </a>
                                 </div>
-                                <div class="product-content-wrap">
-                                    <div class="product-category">
-                                        <a href="shop-grid-right.html">
-                                            <%= element.category.name %>
-                                        </a>
-                                    </div>
-                                    <h2><a href="/productPage?productId=<%-element._id %>">
-                                            <%= element.productName %>
-                                        </a></h2>
-                                    <!-- <div class="rating-result" title="90%">
+                                <h2>
+                                    <a href="/productPage?productId=<%-element._id %>">
+                                        <%= element.productName %>
+                                    </a>
+                                </h2>
+                                <!-- <div class="rating-result" title="90%">
                                 <span>
                                     <span>70%</span>
                                 </span>
                             </div> -->
-                                    <div class="product-price">
-                                        <span>₹<%= element.price %> </span>
-                                        <span class="old-price">₹<%= element.mrp %></span>
-                                    </div>
-                                    <div class="product-action-1 show">
-                                        <a aria-label="Add To Cart" class="action-btn hover-up"
-                                            onclick="addToCart('<%= element._id  %>')"><i
-                                                class="fi-rs-shopping-bag-add"></i></a>
-                                    </div>
+                                <div class="product-price">
+                                    <span>₹<%= element.price %> </span>
+                                    <span class="old-price">₹<%= element.mrp %></span>
+                                </div>
+                                <div class="product-action-1 show">
+                                    <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('<%= element._id  %>')"><i class="fi-rs-shopping-bag-add"></i></a>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <% }) %>
-
+                    <% }) %>
                 </div>
 
                 <!--pagination-->
@@ -124,7 +134,6 @@
                         </ul>
                     </nav>
                 </div> -->
-
             </div>
         </div>
     </div>

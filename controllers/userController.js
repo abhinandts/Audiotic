@@ -373,7 +373,7 @@ const loadProfile = async (req, res) => {
         const user = await User.findById(userId)
         const wallet = await Wallet.findOne({ user: userId })
 
-        const transactions = await Transaction.find({ walletId:wallet._id})
+        const transactions = await Transaction.find({ walletId:wallet._id}).sort({ createdAt: -1 })
 
         res.render('myAccount', { user, wallet,transactions, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
         

@@ -20,8 +20,10 @@ const orderConfirmation = async (req, res) => {
 
 const getOrders = async (req, res) => {
     try {
-        const allOrders = await Orders.find({ user: req.session.userId }).lean();
-
+        const allOrders = await Orders.find({ user: req.session.userId })
+        .lean()
+        .sort({ createdAt: -1 });
+        
         if (!allOrders || allOrders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
         }
