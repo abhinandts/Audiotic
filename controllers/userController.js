@@ -302,53 +302,52 @@ const loadProduct = async (req, res) => {
 const loadProducts = async (req, res) => {
     try {
         let breadcrumb, products;
-        const categoryId = req.query.categoryId
+        const categoryId = req.query.categoryId;
+        
+        // Pagination variables
+        const page = parseInt(req.query.page) || 1; // default to page 1
+        const limit = parseInt(req.query.limit) || 6; // default limit (10 products per page)
+        const skip = (page - 1) * limit;
 
+        let query = { is_active: true };
+
+        // If a category filter is applied
         if (categoryId) {
-            products = await Product.find({ category: categoryId, is_active: true })
-            breadcrumb = await Category.find({ name: 1 })
+            query.category = categoryId;
+            breadcrumb = await Category.find({ name: 1 });
         } else {
-            products = await Product.find().populate('category', 'name')
-            breadcrumb = "All Products"
+            breadcrumb = "All Products";
         }
 
-        const categories = await Category.find({ is_active: true }, { name: 1 })
+        // Find the products based on the query with pagination
+        products = await Product.find(query)
+            .populate('category', 'name')
+            .skip(skip)
+            .limit(limit);
 
-        res.render('products', { products, categories, breadcrumb, header: true, smallHeader: false, footer: true })
+        // Get total count for pagination
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        const categories = await Category.find({ is_active: true }, { name: 1 });
+
+        // Send the products, categories, breadcrumb, pagination info to the frontend
+        res.render('products', {
+            products,
+            categories,
+            breadcrumb,
+            currentPage: page,
+            totalPages,
+            header: true,
+            smallHeader: false,
+            footer: true
+        });
 
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
-}
+};
 
-const getCategories = async (req, res) => {
-    try {
-        const categories = await Category.find({ is_active: true }, { name: 1 })
-
-        if (categories && categories.length > 0) {
-            res.status(200).send(categories)
-        } else {
-            res.status(404).send('No categories found')
-        }
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Internal server Error')
-    }
-}
-const productsByCategory = async (req, res) => {
-    try {
-        const categoryId = req.params.categoryId
-        const products = await Products.find({ category: categoryId }, { productSpecifications: 0 }).populate('category')
-        if (products.length === 0) {
-            res.status(404).send("No related Products found")
-        } else {
-            res.status(200).send(products)
-        }
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Internal server Error')
-    }
-}
 
 const searchProducts = async (req, res) => {
     try {
@@ -361,9 +360,51 @@ const searchProducts = async (req, res) => {
         res.json(products);
     } catch (error) {
         console.error(error)
-        res.status(500).json({message:'Internal Server Error'})
+        res.status(500).json({ message: 'Internal Server Error' })
     }
 }
+
+const fetchProducts = async (req, res) => {
+    try {
+        const { categoryId, sortBy, page = 1, limit = 10 } = req.query;
+
+        let query = {};
+        if (categoryId) {
+            query.category = categoryId;
+        }
+
+        let sortOption = {};
+        if (sortBy === "priceLowToHigh") {
+            sortOption.price = 1;
+        } else if (sortBy === "priceHighToLow") {
+            sortOption.price = -1;
+        }
+
+        const skip = (page - 1) * limit;  // Calculate the number of items to skip for pagination
+
+        // Get total count of products (for pagination info)
+        const totalProducts = await Products.countDocuments(query);
+
+        const products = await Products.find(query)
+            .select('productName price mrp image')
+            .populate('category', 'name')
+            .sort(sortOption)
+            .skip(skip)    // Skip items for pagination
+            .limit(parseInt(limit))    // Limit the number of products per page
+            .lean();
+
+        res.status(200).json({
+            products,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: page
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal error' });
+    }
+};
 
 // ---------------------------------------------------------
 
@@ -373,10 +414,10 @@ const loadProfile = async (req, res) => {
         const user = await User.findById(userId)
         const wallet = await Wallet.findOne({ user: userId })
 
-        const transactions = await Transaction.find({ walletId:wallet._id}).sort({ createdAt: -1 })
+        const transactions = await Transaction.find({ walletId: wallet._id }).sort({ createdAt: -1 })
 
-        res.render('myAccount', { user, wallet,transactions, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
-        
+        res.render('myAccount', { user, wallet, transactions, header: false, smallHeader: true, breadcrumb: "My Account", footer: true })
+
     } catch (error) {
         console.log(error.message)
     }
@@ -445,7 +486,6 @@ module.exports = {
     checkEmail,
     loadChangePassword,
     changePassword,
-    getCategories,
-    productsByCategory,
-    searchProducts
+    searchProducts,
+    fetchProducts
 }

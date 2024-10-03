@@ -1,10 +1,9 @@
 (function () {
-    let cartCountIcon, wishlistCountIcon, listCategories, searchField, searchResult;
+    let cartCountIcon, wishlistCountIcon, searchField, searchResult;
 
     function initializeElements() {
         cartCountIcon = document.getElementById('cart-count')
         wishlistCountIcon = document.getElementById('wishlist-count')
-        listCategories = document.getElementById('select-category')
         searchField = document.getElementById('search-field')
         searchResult = document.getElementById('search-result')
     }
@@ -43,42 +42,6 @@
     }
     window.updateWishlistCount = function (count) {
         wishlistCountIcon.textContent = count
-    }
-
-    async function fetchCategories() {
-        try {
-            const response = await fetch('/api/products/getCategories')
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch categories')
-            }
-            const categories = await response.json();
-            updateCategoryOptions(categories)
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    function updateCategoryOptions(categories) {
-        try {
-            listCategories.innerHTML = "";
-            categories.forEach(category => {
-                const categoryItem = createCategoryOption(category);
-                listCategories.appendChild(categoryItem)
-            })
-        } catch (error) {
-            console.error(error)
-        }
-    }
-    function createCategoryOption(category) {
-        try {
-            const categoryItem = document.createElement('option');
-            categoryItem.innerHTML = `${category.name}`;
-            return categoryItem;
-        } catch (error) {
-            console.error(error)
-        }
     }
 
     async function handleSearch() {
@@ -121,7 +84,6 @@
                 <p class="product-price">Category: ₹${product.category.name}</p>
             </div>
         `;
-        // productItem.onclick = () => getProduct(`${product._id}`)
         productItem.addEventListener('click', () => getProduct(product._id));
         return productItem;
     }
@@ -138,13 +100,11 @@
         }
     }
 
-
     function init() {
         initializeElements()
         initializeEventListeners()
         fetchCartCount()
         fetchWishlistCount()
-        fetchCategories()
     }
     document.addEventListener('DOMContentLoaded', init)
 })()

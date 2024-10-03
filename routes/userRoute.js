@@ -87,12 +87,12 @@ userRoute.get('/logout', check.isLoggedIn, userController.logout)
 
 userRoute.get('/home', check.isLoggedIn, check.checkUserBlocked, userController.loadHome)
 
-userRoute.get('/productPage', check.isLoggedIn, check.checkUserBlocked, userController.loadProduct)
-
 userRoute.get('/products', check.isLoggedIn, check.checkUserBlocked, userController.loadProducts)
-userRoute.get('/api/products/getCategories', userController.getCategories)
-userRoute.get('/api/products/getProductsByCategory/:categoryId', userController.productsByCategory)
+userRoute.get('/api/products',check.isLoggedIn,check.checkUserBlocked,userController.fetchProducts)
+
 userRoute.get('/api/products/search', userController.searchProducts)
+
+userRoute.get('/productPage', check.isLoggedIn, check.checkUserBlocked, userController.loadProduct)
 
 userRoute.get('/myAccount', check.isLoggedIn, check.checkUserBlocked, userController.loadProfile)
 userRoute.post('/api/myAccount/updateAccountDetails', check.isLoggedIn, check.checkUserBlocked, userController.updateAccountDetails)

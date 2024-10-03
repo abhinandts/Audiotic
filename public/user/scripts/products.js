@@ -1,135 +1,122 @@
-(function () {
+(async function () {
+    let categoryDropdown, sortDropdown, currentPage = 1, totalPages;
 
-    let categoryList, productList;
-
-    // Initialize HTML elements
     function initializeElements() {
-        categoryList = document.getElementById('category-list');
-        productList = document.getElementById('product-list');
+        categoryDropdown = document.getElementById("category-dropdown");
+        sortDropdown = document.getElementById("sort-dropdown");
     }
 
-    // Initialize event listeners
     function initializeEventListeners() {
-        // Toggle dropdown display on click
-        document.querySelector('.sort-by-dropdown-wrap').addEventListener('click', function () {
-            const dropdown = document.getElementById('category-dropdown');
-            toggleDropdown(dropdown);
+        categoryDropdown.addEventListener("change", () => {
+            currentPage = 1;
+            fetchProducts();
         });
-
-        // Fetch categories when the page is loaded
-        fetchCategories();
+        sortDropdown.addEventListener("change", () => {
+            currentPage = 1;
+            fetchProducts();
+        });
     }
 
-    // Toggle dropdown display between block and none
-    function toggleDropdown(dropdown) {
-        if (dropdown.style.display === 'none' || !dropdown.style.display || dropdown.style.display === 'hidden') {
-            dropdown.style.display = 'block';
-        } else {
-            dropdown.style.display = 'none';
-        }
-    }
+    async function fetchProducts() {
+        const category = categoryDropdown.value;
+        const sort = sortDropdown.value;
+        const query = new URLSearchParams({ categoryId: category, sortBy: sort, page: currentPage, limit: 6 }).toString();
 
-    // Fetch categories from the server
-    async function fetchCategories() {
         try {
-            const response = await fetch('/api/products/getCategories');
+            const response = await fetch(`/api/products?${query}`);
             if (!response.ok) {
-                throw new Error('Failed to fetch categories');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const categories = await response.json();
-            updateCategoryList(categories);
+            const data = await response.json();
+            updateProductList(data.products, data.totalProducts);
+            updatePaginationControls(data.currentPage, data.totalPages);
+            updateTotalProductCount(data.totalProducts);
         } catch (error) {
-            console.error(error.message);
+            console.error("Fetch error:", error);
         }
     }
 
-    // Update the category list in the dropdown
-    function updateCategoryList(categories) {
-        categoryList.innerHTML = "";
-        categories.forEach(category => {
-            const categoryItem = createCategoryItem(category);
-            categoryList.appendChild(categoryItem);
-        });
-    }
-
-    // Create category list item
-    function createCategoryItem(category) {
-        const categoryItem = document.createElement('li');
-        categoryItem.innerHTML = `<a href="#" data-category-id="${category._id}">${category.name}</a>`;
-        categoryItem.addEventListener('click', (e) => {
-            e.preventDefault();
-            selectCategory(category._id);
-        });
-        return categoryItem;
-    }
-
-    // Fetch and display products for the selected category
-    async function selectCategory(categoryId) {
-        try {
-            const response = await fetch(`/api/products/getProductsByCategory/${categoryId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch products');
-            }
-            const products = await response.json();
-            displayProducts(products);
-
-            // Hide the dropdown after selecting a category
-            document.getElementById('category-dropdown').style.display = 'none';
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    // Display the products on the page
-    function displayProducts(products) {
+    function updateProductList(products, totalProducts) {
+        const productList = document.getElementById("product-list");
         productList.innerHTML = "";
-        products.forEach(product => {
-            const productItem = createProductCard(product);
-            productList.appendChild(productItem);
+
+        if (totalProducts === 0) {
+            productList.innerHTML = "<div class='col-12'><p class='text-center'>No products available</p></div>";
+            return;
+        }
+
+        products.forEach((product) => {
+            const productHtml = `
+                <div class="col-lg-3 col-md-4">
+                    <div class="product-cart-wrap mb-30">
+                        <div class="product-img-action-wrap">
+                            <div class="product-img product-img-zoom">
+                                <a href="/productPage?productId=${product._id}">
+                                    <img class="default-img" src="/admin/productImages/${product.image[0]}" alt="no image" />
+                                    <img class="hover-img" src="/admin/productImages/${product.image[0]}" alt="no image" />
+                                </a>
+                            </div>
+                            <div class="product-badges product-badges-position product-badges-mrg">
+                                <span class="hot">-30%</span>
+                            </div>
+                        </div>
+                        <div class="product-content-wrap">
+                            <div class="product-category">
+                                <a href="shop-grid-right.html">${product.category.name}</a>
+                            </div>
+                            <h2><a href="/productPage?productId=${product._id}">${product.productName}</a></h2>
+                            <div class="product-price">
+                                <span>₹${product.price}</span>
+                                <span class="old-price">₹${product.mrp}</span>
+                            </div>
+                            <div class="product-action-1 show">
+                                <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('${product._id}')">
+                                    <i class="fi-rs-shopping-bag-add"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            productList.insertAdjacentHTML("beforeend", productHtml);
         });
     }
 
-    // Create a product card to display each product
-    function createProductCard(product) {
-        const productItem = document.createElement('div');
-        productItem.className = "col-lg-3 col-md-4";
-        productItem.innerHTML = `
-            <div class="product-cart-wrap mb-30">
-                <div class="product-img-action-wrap">
-                    <div class="product-img product-img-zoom">
-                        <a href="/productPage?productId=${product._id}">
-                            <img class="default-img" src="/admin/productImages/${product.image[0]}" alt="">
-                            <img class="hover-img" src="/admin/${product.image[0]}" alt="">
-                        </a>
-                    </div>
-                    <div class="product-action-1"></div>
-                </div>
-                <div class="product-content-wrap">
-                    <div class="product-category">
-                        <a href="shop-grid-right.html">${product.category.name}</a>
-                    </div>
-                    <h2><a href="/productPage?productId=${product._id}">${product.productName}</a></h2>
-                    <div class="product-price">
-                        <span>₹${product.price} </span>
-                        <span class="old-price">₹ ${product.mrp}</span>
-                    </div>
-                    <div class="product-action-1 show">
-                        <a aria-label="Add To Cart" class="action-btn hover-up" onclick="addToCart('${product._id}')">
-                            <i class="fi-rs-shopping-bag-add"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
-        return productItem;
+    function updatePaginationControls(currentPage, totalPages) {
+        const paginationArea = document.querySelector('.pagination-area .pagination');
+        paginationArea.innerHTML = '';
+
+        if (totalPages === 0) {
+            paginationArea.style.display = 'none';
+            return;
+        }
+
+        paginationArea.style.display = 'flex';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="#" onclick="fetchProductsPage(${i})">${i}</a>`;
+            paginationArea.appendChild(li);
+        }
     }
 
-    // Initialize the app
+    function updateTotalProductCount(totalProducts) {
+        const totalProductElement = document.querySelector('.totall-product strong');
+        if (totalProductElement) {
+            totalProductElement.textContent = totalProducts;
+        }
+    }
+
+    window.fetchProductsPage = function(page) {
+        currentPage = page;
+        fetchProducts();
+    };
+
     function init() {
         initializeElements();
         initializeEventListeners();
+        fetchProducts();
     }
 
-    init();
-
+    document.addEventListener("DOMContentLoaded", init);
 })();
