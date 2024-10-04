@@ -1,8 +1,6 @@
 <style>
     .red-input {
         border: 2px solid red;
-        /* Red border */
-        /* Alternatively, you can use background color or other styles */
     }
 </style>
 
@@ -23,14 +21,14 @@
 
                     <div class="">
 
-                        <form id="editCategoryForm" method="post" action="/admin/editCategory">
+                        <form id="form" method="post" action="/admin/editCategory">
                             <input id="categoryId" type="hidden" name="categoryId" value="<%= category.id %>">
 
                             <div class="mb-4">
 
                                 <label for="categoryName" class="form-label">Category Name</label>
 
-                                <input id="categoryName" type="text" placeholder="Type here" required
+                                <input id="category-name" type="text" placeholder="Type here" required
                                     class="form-control mb-2  <%= nameError ?'red-input':'' %> " name="name"
                                     value="<%= category.name %>" />
                                 <% if (nameError) { %>
@@ -38,7 +36,6 @@
                                         <%= nameError %>
                                     </h5>
                                     <% } %>
-
                             </div>
 
                             <div class="mb-4">
@@ -52,25 +49,21 @@
                                         <%= descriptionError %>
                                     </h5>
                                     <% } %>
-
                             </div>
 
                             <div class="d-grid">
-                                <div style="display: flex; align-items: center; justify-content: space-evenly;  ">
+                                <div style="display: flex; align-items: center; justify-content: space-evenly;">
                                     <a href="/admin/category" class="btn btn-light"> Discard </a>
                                     <button class="btn btn-primary">Save</button>
                                 </div>
-
                             </div>
-
                         </form>
 
                     </div>
-
-                </div> <!-- .row // -->
-            </div> <!-- card body .// -->
-        </div> <!-- card .// -->
-
+                </div>
+            </div> 
+        </div>
     </div>
-
 </section>
+
+<script src="/admin/scripts/category.js"></script>

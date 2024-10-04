@@ -1,14 +1,13 @@
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 
-
 // ---- /category-------------------------------
 
 const loadCategory = async (req, res) => {
 
     try {
 
-        const categoryData = await Category.find()
+        const categoryData = await Category.find().sort({ _id: -1 });
 
         res.render('productCategory', {
             nameError: req.query.nameError || false,
@@ -26,28 +25,28 @@ const loadCategory = async (req, res) => {
 
 // ---- /addCategory ---------------------------
 
+const checkName = async(req,res)=>{
+    const {name} = req.body
+    try {
+        const categoryExists = await Category.findOne({name:new RegExp(`^${name}$`, 'i')});
+
+        if(categoryExists){
+            return res.json({exists:true});
+        }else{
+            return res.json({exists:false})
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Internal server error" });
+
+    }
+}
+
 const addCategory = async (req, res) => {
     try {
         const { name, description } = req.body
         const trimmedName = name.trim()
         const trimmedDescription = description.trim()
-
-        if (!name || name.trim().length === 0) {
-            let options = { nameError: "Category is invalid", descriptionError: "", name, description }
-            return renderCategoryPage(res, options)
-        }
-
-        if (!description || description.trim().length === 0) {
-            let options = { nameError: "", descriptionError: "Please provide Description", name, description }
-            return renderCategoryPage(res, options)
-        }
-
-        const categoryExists = await Category.findOne({ name: trimmedName })
-
-        if (categoryExists) {
-            let options = { nameError: "Category already exit", descriptionError: "", name, description }
-            return renderCategoryPage(res, options)
-        }
 
         const category = new Category({ name: trimmedName, description: trimmedDescription })
 
@@ -62,7 +61,7 @@ const addCategory = async (req, res) => {
 
 const renderCategoryPage = async (res, options) => {
 
-    const categoryData = await Category.find({});
+    const categoryData = await Category.find({}).sort({ _id: -1 });
 
     res.render('productCategory', {
         title: "Product Category", header: true, sidebar: true, footer: true,
@@ -125,8 +124,7 @@ const updateCategory = async (req, res) => {
             options = { nameError: "", descriptionError: "Please enter valid description" }
             return renderEditCategoryPage(res, options, categoryId)
         }
-
-        const categoryExists = await Category.findOne({ name: trimmedName, _id: { $ne: categoryId } })
+        const categoryExists = await Category.findOne({name:new RegExp(`^${name}$`, 'i'), _id: { $ne: categoryId }}); 
 
         if (categoryExists) {
             options = { nameError: "Entered category is already in use", descriptionError: "" }
@@ -165,5 +163,6 @@ module.exports = {
     addCategory,
     disableCategory,
     loadEditCategory,
-    updateCategory
+    updateCategory,
+    checkName
 }

@@ -39,6 +39,8 @@ adminRoute.set('views', './views/admin')
 adminRoute.use(ejsLayouts)
 adminRoute.set('layout', '../admin/layouts/fullWidth')
 
+adminRoute.use(express.json());
+
 // Middleware for static assets
 adminRoute.use(express.static('public'))
 
@@ -121,6 +123,7 @@ adminRoute.get("/dashboard", auth.isLogin, dashboardController.loadDashboard)
 
 adminRoute.get("/category", auth.isLogin, categoryController.loadCategory)
 adminRoute.post("/addCategory", categoryController.addCategory)
+adminRoute.post('/api/category/checkName',categoryController.checkName)
 
 adminRoute.get("/disable/:categoryId", categoryController.disableCategory)
 

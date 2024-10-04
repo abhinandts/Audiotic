@@ -1,124 +1,104 @@
 <style>
     .red-input {
-    border: 2px solid red;
-     /* Red border */
-    /* Alternatively, you can use background color or other styles */
-}
+        border: 2px solid red;
+    }
 </style>
 
 <section class="content-main">
     <div class="content-header">
         <div>
-            <h2 class="content-title card-title">Categories </h2>
+            <h2 class="content-title card-title">Categories</h2>
             <p>Add, edit or delete a category</p>
-        </div>
-        <div>
-            <!-- <input type="text" placeholder="Search Categories" class="form-control bg-white"> -->
         </div>
     </div>
     <div class="card">
         <div class="card-body">
             <div class="row">
-
                 <div class="col-md-3">
-                    
-                    <form method="post" action="/admin/addCategory">
+                    <form method="post" action="/admin/addCategory" id="form">
                         <div class="mb-4">
                             <label for="categoryName" class="form-label">Name</label>
-                            <input type="text" placeholder="Type here" class="form-control mb-2 <%= nameError ?'red-input':'' %>" name="name" id="product_name" required value="<%=name  %>" />
-                            <% if (nameError) { %>
-                                <h5 style="color: red;">
-                                    <%= nameError %>
-                                </h5>
-                            <% } %>
+                            <input type="text" placeholder="Type here" class="form-control mb-2 <%= nameError ?'red-input':'' %>" name="name" id="category-name" required value="<%=name  %>" />
                         </div>
-                    
+
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control mb-2 <%=descriptionError? 'red-input':''  %>" name="description" required><%= description  %></textarea>
+                            <textarea placeholder="Type here" class="form-control mb-2 <%=descriptionError? 'red-input':'' %>" name="description" required><%= description  %></textarea>
                             <% if (descriptionError) { %>
-                                <h5 style="color: red;">
-                                    <%= descriptionError %>
-                                </h5>
+                            <h5 style="color: red;">
+                                <%= descriptionError %>
+                            </h5>
                             <% } %>
                         </div>
-                    
+
                         <div class="d-grid">
                             <button class="btn btn-primary">Create category</button>
                         </div>
                     </form>
-
                 </div>
 
                 <div class="col-md-9">
                     <div class="table-responsive">
-
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th class="text-center col-md-1">
-                                        <div class="form-check ">
-                                        </div>
+                                        <div class="form-check"></div>
                                     </th>
-                                    <!-- <th class="">ID</th> -->
                                     <th class="col-md-2">Name</th>
                                     <th class="col-md-4">Category ID</th>
                                     <th class="col-md-2">Status</th>
                                     <th class="text-end col-md-1">Disable/Enable</th>
-                                    <th class="text-end col-md-2">Edit✎ </th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <% categoryData.forEach((x)=>{ %>
 
-                                    <tr>
-                                        <td class="text-center ">
-                                            <div class="form-check">➤
-                                            </div>
-                                        </td>
-                                        <td><b>
+                                <tr>
+                                    <td class="text-center">
+                                        <div class="form-check">➤</div>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <a href="/admin/editCategory/<%- x._id %>">
                                                 <%= x.name %>
-                                            </b></td>
-                                        <td>
+                                            </a>
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/editCategory/<%- x._id %>">
                                             <%= x._id %>
-                                        </td>
-                                        <td>
-                                            <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                                <% if(x.is_active){ %>
-                                                    <span class="badge rounded-pill alert-success">Active</span>
-                                                    <% }else{ %>
-                                                        <span class="badge rounded-pill alert-danger">Disabled</span>
-                                                        <% } %>
-                                            </div>
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="/admin/disable/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                              <% if(x.is_active){ %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                            <% if(x.is_active){ %>
+                                            <span class="badge rounded-pill alert-success">Active</span>
+                                            <% }else{ %>
+                                            <span class="badge rounded-pill alert-danger">Disabled</span>
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="/admin/disable/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                            <% if(x.is_active){ %>
                                                 🔒 Disable
                                               <% }else{ %>
                                                 🔓</i>Enable
                                               <% } %>
-                                            </a>
-                                          </td>
+                                         </a>
+                                    </td>
+                                </tr>
 
-                                        <td class="text-end">
-                                            <a href="/admin/editCategory/<%- x._id %>"
-                                                class="btn btn-sm font-sm btn-light rounded">
-                                                Edit
-                                            </a>
-                                        </td>
-                                    </tr>
-
-                                    <% }) %>
-
+                                <% }) %>
                             </tbody>
                         </table>
-
                     </div>
-                </div> <!-- .col// -->
-
-            </div> <!-- .row // -->
-        </div> <!-- card body .// -->
-    </div> <!-- card .// -->
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
+<script src="/admin/scripts/category.js"></script>
