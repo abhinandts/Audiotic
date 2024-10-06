@@ -11,23 +11,14 @@
 
     .product-discount-badge {
         background-color: #1882527e;
-        /* Example color from the existing badge */
         color: #fff;
-        /* White text color */
         padding: 3px 7px;
-        /* Adjust padding as needed */
         border-radius: 12px;
-        /* Rounded corners */
         font-size: 10px;
-        /* Adjust font size */
         font-weight: bold;
-        /* Bold text */
         position: absolute;
-        /* Use positioning if needed */
         top: 10px;
-        /* Example positioning */
         left: 10px;
-        /* Example positioning */
     }
 
     .selectable-category {
@@ -40,17 +31,11 @@
         border: 2px solid #0ac06e;
     }
 </style>
-
-
 <section class="content-main">
     <div class="row">
         <div class="col-11">
             <div class="content-header">
                 <h2 class="content-title">Add New Offer</h2>
-                <div>
-                    <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
-                    <button class="btn btn-md rounded font-sm hover-up">Publich</button> -->
-                </div>
             </div>
         </div>
 
@@ -60,150 +45,107 @@
                     <div class="row gx-5">
                         <aside class="col-lg-3 border-end">
                             <nav class="nav nav-pills flex-column mb-4">
-                                <a class="nav-link active" style="font-size: 16px;" id="products-tab"  data-toggle="tab" href="#product-offer-tab"
-                                    role="tab" aria-controls="product-offer-tab" aria-selected="true">Product offer</a>
-                                <a class="nav-link" style="font-size: 16px;" id="category-tab" data-toggle="tab" href="#category-offer-tab"
-                                    role="tab" aria-controls="category-offer-tab" aria-selected="false">Category
-                                    Offer</a>
+                                <a class="nav-link active" style="font-size: 16px;" id="products-tab" data-toggle="tab" href="#product-offer-tab" role="tab" aria-controls="product-offer-tab" aria-selected="true">Product offer</a>
+                                <a class="nav-link" style="font-size: 16px;" id="category-tab" data-toggle="tab" href="#category-offer-tab" role="tab" aria-controls="category-offer-tab" aria-selected="false">Category Offer</a>
                             </nav>
                         </aside>
 
                         <div class="col-lg-9">
                             <div class="tab-content">
-                                <section class="content-body p-xl-4 tab-pane fade show active" id="product-offer-tab"
-                                    role="tabpanel" aria-labelledby="products-tab">
+                                <section class="content-body p-xl-4 tab-pane fade show active" id="product-offer-tab" role="tabpanel" aria-labelledby="products-tab">
                                     <form id="product-offer-form">
-
                                         <div class="row mb-4">
                                             <h1>Select Products</h1>
                                             <p>Select the products you want to give offers</p>
                                             <div class="products">
                                                 <div class="card-body">
-
                                                     <div class="row gx-3" id="product-list">
-
                                                         <% products.forEach(element=> { %>
 
-                                                            <div class="col-xl-3 col-lg-4 col-md-4 col-6">
-                                                                <figure class="card border-1 selectable-product"
-                                                                    data-id="<%=element._id %>">
-                                                                    <div class="product-discount-badge">
-                                                                        <%= element.discount %>%
-                                                                    </div> <!-- New badge div -->
-                                                                    <div class="card-header bg-white text-center">
-                                                                        <img height="76"
-                                                                            src="/admin/productImages/<%=element.image[0]  %>"
-                                                                            class="img-fluid" alt="Logo" />
-                                                                    </div>
-                                                                    <figcaption class="text-center">
-                                                                        <p>
-                                                                            <%= element.productName %>
-                                                                        </p>
-                                                                    </figcaption>
-                                                                </figure>
-                                                            </div>
+                                                        <div class="col-xl-3 col-lg-4 col-md-4 col-6">
+                                                            <figure class="card border-1 selectable-product" data-id="<%=element._id %>">
+                                                                <div class="product-discount-badge">
+                                                                    <%= element.offer %>%
+                                                                </div>
+                                                                <div class="card-header bg-white text-center">
+                                                                    <img height="76" src="/admin/productImages/<%=element.image[0]  %>" class="img-fluid" alt="Logo" />
+                                                                </div>
+                                                                <figcaption class="text-center">
+                                                                    <p>
+                                                                        <%= element.name %>
+                                                                    </p>
+                                                                </figcaption>
+                                                            </figure>
+                                                        </div>
 
-                                                            <% }); %>
-
+                                                        <% }); %>
                                                     </div>
-                                                    <!-- row.// -->
                                                 </div>
-                                                <!-- card-body end// -->
                                             </div>
                                         </div>
-                                        <!-- row.// -->
 
                                         <div class="row mb-4">
                                             <label class="col-lg-3 col-form-label">Discount Percentage</label>
                                             <div class="col-lg-4">
-                                                <input type="number" id="product-offer" min="0" max="99"
-                                                    class="form-control" placeholder="10" />
+                                                <input type="number" id="product-offer" min="0" max="99" class="form-control" placeholder="10" />
                                             </div>
-                                            <!-- col.// -->
                                         </div>
-                                        <!-- row.// -->
 
-                                        <br />
                                         <button class="btn btn-primary" type="submit">Apply offer</button>
                                     </form>
                                 </section>
-                                <!-- content-body .// -->
 
-                                <section class="content-body p-xl-4 tab-pane fade" id="category-offer-tab"
-                                    role="tabpanel" aria-labelledby="category-tab">
+                                <section class="content-body p-xl-4 tab-pane fade" id="category-offer-tab" role="tabpanel" aria-labelledby="category-tab">
                                     <form id="category-offer-form">
-
                                         <div class="row mb-4">
                                             <h1>Select Category</h1>
                                             <p>Select the category you want to give offer</p>
                                             <div>
                                                 <div class="card-body">
-
                                                     <div class="row gx-3" id="category-list">
-
                                                         <% categoryWithCount.forEach(element=> { %>
 
-                                                            <div class="col-xl-4 col-lg-6 col-md-12 ">
-                                                                <figure class="card border-1 selectable-category"
-                                                                    data-id="<%= element._id  %>">
-                                                                    <!-- <div class="card-header bg-white text-center">
-                                                                        <img height="76" src="admin/imgs/brands/brand-9.jpg" class="img-fluid" alt="Logo">
-                                                                        <div class="product-discount-badge">
-                                                                            <%= element.discount %>%
-                                                                        </div> 
+                                                        <div class="col-xl-4 col-lg-6 col-md-12">
+                                                            <figure class="card border-1 selectable-category" data-id="<%= element._id  %>">
+                                                                <div class="product-discount-badge">
+                                                                    <%= element.categoryOffer %>%
+                                                                </div>
 
-                                                                    </div> -->
-                                                                    <figcaption class="card-body text-center">
-                                                                        <p class="card-title m-0">
-                                                                            <%= element.name %>
-                                                                        </p>
-                                                                        <a href="#">
-                                                                            <%= element.count %> items
-                                                                        </a>
-                                                                    </figcaption>
-                                                                </figure>
-                                                            </div>
+                                                                <figcaption class="card-body text-center">
+                                                                    <p class="card-title m-0">
+                                                                        <%= element.name %>
+                                                                    </p>
+                                                                    <a href="#">
+                                                                        <%= element.count %> items
+                                                                    </a>
+                                                                </figcaption>
+                                                            </figure>
+                                                        </div>
 
-                                                            <% }); %>
-
+                                                        <% }); %>
                                                     </div>
-                                                    <!-- row.// -->
                                                 </div>
-                                                <!-- card-body end// -->
                                             </div>
                                         </div>
-                                        <!-- row.// -->
 
                                         <div class="row mb-4">
                                             <label class="col-lg-3 col-form-label">Discount Percentage</label>
                                             <div class="col-lg-4">
-                                                <input type="number" id="category-offer" min="0" max="99"
-                                                    class="form-control" placeholder="10" />
+                                                <input type="number" id="category-offer" min="0" max="99" class="form-control" placeholder="10" />
                                             </div>
-                                            <!-- col.// -->
                                         </div>
-                                        <!-- row.// -->
-
-                                        <br />
                                         <button class="btn btn-primary" type="submit">Apply offer</button>
                                     </form>
                                 </section>
-                                <!-- content-body .// -->
                             </div>
-                            <!-- tab-content -->
                         </div>
-                        <!-- col.// -->
                     </div>
-                    <!-- row.// -->
                 </div>
-                <!-- card body end// -->
             </div>
         </div>
     </div>
 </section>
 
-
-<!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -3,8 +3,8 @@ const Categories = require('../models/categoryModel')
 
 const loadOffers = async (req, res) => {
     try {
-        const products = await Products.find();
-        const categories = await Categories.find({ is_active: true }, { name: 1 })
+        const products = await Products.find({ is_active: true }, { name: 1, offer: 1, image: { $slice: 1 } }).lean()
+        const categories = await Categories.find({ is_active: true }, { name: 1, categoryOffer: 1 })
 
         const categoryWithCount = await Promise.all(
             categories.map(async (category) => {
@@ -21,62 +21,35 @@ const loadOffers = async (req, res) => {
     }
 }
 
-
-
-const updateProductDiscounts = async (products, discount) => {
-    console.log(products, discount);
-    
-    const updatePromises = products
-        .filter(product => product.discount < discount)  // Filter products where discount is less than the new one
-        .map(product => {
-            const discountedPrice = Math.round(product.mrp * (100 - discount) / 100);
-            return Products.updateOne(
-                { _id: product._id },
-                { $set: { discount: discount, price: discountedPrice } }
-            );
-        });
-
-    if (updatePromises.length === 0) {
-        return 0; // If no products are updated
-    }
-
-    const updateResults = await Promise.all(updatePromises);
-    return updateResults.reduce((acc, result) => acc + result.modifiedCount, 0);
-};
-
-// Apply discount to specific products
 const applyProductOffer = async (req, res) => {
     try {
-        const { productIds, discount } = req.body;
+        const { productIds, offer } = req.body;
 
-        if (!Array.isArray(productIds) || productIds.length === 0 || !discount) {
-            return res.status(400).json({ message: "Invalid input. Please provide product IDs and discount." });
+        const parsedOffer = parseFloat(offer);
+        if (isNaN(parsedOffer) || parsedOffer < 0 || parsedOffer > 100) {
+            return res.status(400).json({ message: 'Invalid offer percentage' });
         }
 
-        const products = await Products.find(
-            { _id: { $in: productIds } },
-            { name: 1, price: 1, mrp: 1, discount: 1 }
-        );
-        if (products.length === 0) {
-            return res.status(404).json({ message: 'No products found' });
+        if (!Array.isArray(productIds) || productIds.length === 0) {
+            return res.status(400).json({ message: 'No products selected' });
         }
 
-        const modifiedCount = await updateProductDiscounts(products, discount);
-
-        // if (modifiedCount === 0) {
-        //     return res.status(404).json({ message: "No products updated." });
-        // }
-        if (modifiedCount === 0) {
-            return res.status(200).json({
-                message: "No products were eligible for the new discount.",
-                modifiedCount
-            });
-        }
-
-        res.status(200).json({
-            message: `Offers applied to ${modifiedCount} products`,
-            modifiedCount
+        const bulkOperations = roductIds.map(id => {
+            return {
+                updateOne: {
+                    filter: { _id: id },
+                    update: { $set: { offer: parsedOffer } }
+                }
+            };
         });
+
+        const result = await Products.bulkWrite(bulkOperations);
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: 'No products were updated' });
+        }
+
+        res.status(200).json({ message: 'Offer applied to products successfully' });
 
     } catch (error) {
         console.error(error);
@@ -84,35 +57,21 @@ const applyProductOffer = async (req, res) => {
     }
 };
 
-// Apply discount to all products in a category
 const applyCategoryOffer = async (req, res) => {
     try {
-        const { id, discount } = req.body;
+        const { id, offer } = req.body;
 
-        const products = await Products.find(
-            { category: id },
-            { name: 1, mrp: 1, price: 1, discount: 1 }
+        const updatedCategory = await Categories.findByIdAndUpdate(
+            id,
+            { $set: { categoryOffer: offer } },
+            { new: true }
         );
-        if (products.length === 0) {
-            return res.status(404).json({ message: 'No products found' });
+
+        if (!updatedCategory) {
+            return res.status(404).json({ message: 'Category not found' });
         }
 
-        const modifiedCount = await updateProductDiscounts(products, discount);
-
-        // if (modifiedCount === 0) {
-        //     return res.status(404).json({ message: "No products updated." });
-        // }
-        if (modifiedCount === 0) {
-            return res.status(200).json({
-                message: "No products were eligible for the new discount.",
-                modifiedCount
-            });
-        }
-
-        res.status(200).json({
-            message: `Offers applied to ${modifiedCount} products`,
-            modifiedCount
-        });
+        res.status(200).json({ message: 'Offer applied to category successfully' });
 
     } catch (error) {
         console.error(error);

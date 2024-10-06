@@ -53,7 +53,7 @@
                 },
                 body:JSON.stringify({
                     id:categoryId,
-                    discount:categoryOfferInput.value
+                    offer:categoryOfferInput.value
                 })
             })
 
@@ -104,7 +104,7 @@
                 },
                 body: JSON.stringify({
                     productIds: Array.from(selectedProductIds),
-                    discount: productOfferInput.value
+                    offer: productOfferInput.value
                 })
             });
 

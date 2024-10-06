@@ -150,7 +150,6 @@ const updateProduct = async (req, res) => {
     }
 };
 
-
 const checkProductName = async (req, res) => {
     const { name, currentId } = req.body;
     try {
