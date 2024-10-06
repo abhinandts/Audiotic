@@ -25,20 +25,22 @@ const loadCategory = async (req, res) => {
 
 // ---- /addCategory ---------------------------
 
-const checkName = async(req,res)=>{
-    const {name} = req.body
+const checkName = async (req, res) => {
+    const { name, currentId } = req.body;
     try {
-        const categoryExists = await Category.findOne({name:new RegExp(`^${name}$`, 'i')});
+        const categoryExists = await Category.findOne({
+            name: new RegExp(`^${name}$`, 'i'),
+            _id: { $ne: currentId }
+        });
 
-        if(categoryExists){
-            return res.json({exists:true});
-        }else{
-            return res.json({exists:false})
+        if (categoryExists) {
+            return res.json({ exists: true });
+        } else {
+            return res.json({ exists: false })
         }
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: "Internal server error" });
-
     }
 }
 
@@ -122,12 +124,6 @@ const updateCategory = async (req, res) => {
         }
         if (!trimmedDescription || trimmedDescription.length === 0) {
             options = { nameError: "", descriptionError: "Please enter valid description" }
-            return renderEditCategoryPage(res, options, categoryId)
-        }
-        const categoryExists = await Category.findOne({name:new RegExp(`^${name}$`, 'i'), _id: { $ne: categoryId }}); 
-
-        if (categoryExists) {
-            options = { nameError: "Entered category is already in use", descriptionError: "" }
             return renderEditCategoryPage(res, options, categoryId)
         }
 

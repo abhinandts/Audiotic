@@ -6,35 +6,35 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 1000; /* Ensure the modal appears above other elements */
-        overflow: auto; /* Enable scrolling if content overflows */
-        padding: 20px; /* Add padding for better appearance */
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000; 
+        overflow: auto; 
+        padding: 20px; 
     }
 
     .modal-content {
-        background-color: #fff; /* Background color of the modal content */
-        max-width: 80%; /* Adjust the maximum width of the modal content */
-        max-height: 80%; /* Adjust the maximum height of the modal content */
-        border-radius: 10px; /* Add border radius for rounded corners */
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
-        padding: 20px; /* Add padding for better appearance */
-        margin: auto; /* Center the modal horizontally */
-        overflow: hidden; /* Ensure no content overflows the modal */
+        background-color: #fff; 
+        max-width: 80%; 
+        max-height: 80%; 
+        border-radius: 10px; 
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        padding: 20px; 
+        margin: auto; 
+        overflow: hidden;
     }
 
     .img-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 70%; /* Adjust height of the image container */
-        overflow: hidden; /* Hide overflow of the image */
+        height: 70%; 
+        overflow: hidden;
     }
 
     .img-container img {
-        max-width: 100%; /* Ensure image fits within container */
-        max-height: 100%; /* Ensure image fits within container */
-        object-fit: contain; /* Maintain aspect ratio of the image */
+        max-width: 100%; 
+        max-height: 100%; 
+        object-fit: contain;
     }
 
     .btn {
@@ -44,7 +44,8 @@
 
 
 <section class="content-main">
-    <form method="post" action="/admin/editProduct/<%=product._id %>" enctype="multipart/form-data">
+        <form method="post" action="/admin/editProduct/<%=product._id %>" enctype="multipart/form-data" id="form">
+
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
@@ -53,87 +54,83 @@
                     <div>
                         <a href="/admin/products" class="btn btn-light rounded font-sm mr-5 text-body">Discard</a>
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">save</button>
+
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h4>Details</h4>
+                        <h4>Product Details</h4>
                     </div>
                     <div class="card-body">
+
                         <div class="mb-4">
-                            <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" required placeholder="Type here" class="form-control" id="product-name" name="productName" value="<%= product.productName %>" />
+                            <label for="product_name" class="form-label">Product Name</label>
+                            <input type="text" required placeholder="Type here" class="form-control" name="name" id="name" value="<%=product.name  %>"/>
+                            <span id="name-error" class="text-danger" style="display:none;"></span> 
+                            <input type="hidden" id="product-Id" name="product-Id" value="<%= product._id %>">
                         </div>
                         <div class="mb-4">
-                            <label class="form-label">Full Specification</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications" required><%= product.productSpecifications %></textarea>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" name="description" id="description" required  ><%= product.description  %></textarea>
                         </div>
                         <div class="row">
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Maximum Retail Price</label>
-                                    <div class="row gx-2">
-                                        <input placeholder="₹" type="text" name="mrp" class="form-control" required value="<%= product.mrp %>" id="mrp" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="mb-2">
-                                    <label class="form-label">Discount (%)</label>
-                                    <div class="row gx-2">
-                                        <input value="<%= product.discount %>" type="number" name="discount" id="discount" class="form-control" min="0" max="99" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-6">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" name="price" id="price" class="form-control" required value="<%=product.price  %>" />
+                                    <input placeholder="₹" type="number" id="price" name="price" class="form-control" min="1" required value="<%= product.price  %>" />
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label">Stock</label>
-                                        <input value="<%= product.stock %>" type="number" id="stock" name="stock" class="form-control" min="0" />
+                            <div class="col-lg-6">
+                                <div class="mb-2">
+                                    <label class="form-label">Product Offer (%)</label>
+                                    <div class="row gx-2">
+                                        <input placeholder="%" type="number" id="product-offer" name="product-offer" class="form-control" min="0" max="99" value="<%= product.offer %>"/>
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <label class="form-label">Category</label>
-                                    <select class="form-select" name="category">
-                                        <% categories.forEach(element=> {%>
-                                            <option value="<%= element._id %>"
-                                                <%=(element._id.toString()===product.category._id.toString())
-                                                ? 'selected' : '' %>>
-                                                <%= element.name %>
-                                            </option>
-                                        <% }); %>
-                                    </select>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="mb-4"></div>
-                        <label class="form-check mb-4"> </label>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category" id="category" required>
+                                    <% categories.forEach(element => { %>
+                                        <option value="<%= element._id %>"
+                                          <%= (product.category && element._id.toString() === product.category._id.toString()) ? 'selected' : '' %>>
+                                          <%= element.name %>
+                                        </option>
+                                      <% }); %>
+                                      
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-4">
+                                    <label class="form-label">Stock</label>
+                                    <input placeholder="100" type="number" id="stock" name="stock" class="form-control" min="1" required value="<%= product.stock  %>"/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- images -->
-        <div class="card mb-4">
+        <div class="card">
             <div class="card-header">
                 <h4>Product Images</h4>
             </div>
             <div class="card-body">
+
+
                 <div class="row">
-                    <% product.image.forEach((img, index)=> { %>
+                    <% product.image.forEach((img, index) => { %>
                     <div class="col-lg-3">
                         <img src="/admin/productImages/<%= img %>" class="img-thumbnail" alt="Product Image" />
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="deleteImages" value="<%= img %>" />
+                            <input class="form-check-input delete-image-checkbox" type="checkbox" name="deleteImages" value="<%= img %>" />
                             <label class="form-check-label">Delete Image</label>
                         </div>
                     </div>
@@ -142,14 +139,20 @@
 
                 <div class="card-body">
                     <div class="input-upload">
-                        <div id="input-upload" ><img src="/admin/imgs/theme/upload.svg" alt=""   /></div>
+                        <div id="preview-container">
+                            <img src="/admin/imgs/theme/upload.svg" alt=""/>
+                        </div>
                         
-                        <input class="form-control" type="file" name="image" id="image-input" multiple />
-                        <span id="imageError" class="text-danger" style="display:none;">You can only upload a maximum of 5 images.</span> 
+                        <input class="form-control" type="file" name="image" id="image" multiple accept=".webp, .jpg, .jpeg" />
+
+                        <span id="image-error" class="text-danger" style="display:none;">You can only upload a maximum of 5 images.</span> 
                     </div>
                 </div>
             </div>
         </div>
+
+        <input type="hidden" name="deleteImagesInput" value="" />
+
     </form>
 </section>
 

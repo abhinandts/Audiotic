@@ -6,10 +6,10 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 1000; /* Ensure the modal appears above other elements */
-        overflow: auto; /* Enable scrolling if content overflows */
-        padding: 20px; /* Add padding for better appearance */
+        background: rgba(0, 0, 0, 0.5); 
+        z-index: 1000; 
+        overflow: auto;
+        padding: 20px; 
     }
 
     .modal-content {
@@ -43,7 +43,7 @@
 </style>
 
 <section class="content-main">
-    <form id="productForm" action="/admin/newProduct" method="post" enctype="multipart/form-data">
+    <form id="form" action="/admin/newProduct" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
@@ -57,57 +57,49 @@
             <div class="col-lg-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h4>Details</h4>
+                        <h4>Product Details</h4>
                     </div>
                     <div class="card-body">
 
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product Name</label>
-                            <input type="text" required placeholder="Type here" class="form-control" name="productName" id="productName" />
-                            <span id="nameError" class="text-danger" style="display:none;">Product name already exists.</span> <!-- Error message element -->
+                            <input type="text" required placeholder="Type here" class="form-control" name="name" id="name"/>
+                            <span id="name-error" class="text-danger" style="display:none;"></span> 
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" name="productSpecifications" id="productSpecifications" required></textarea>
+                            <textarea placeholder="Type here" class="form-control" rows="4" name="description" id="description" required></textarea>
                         </div>
                         <div class="row">
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Maximum Retail Price</label>
-                                    <div class="row gx-2">
-                                        <input placeholder="₹" type="number" id="mrp" name="mrp" class="form-control" min="1" required />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="mb-2">
-                                    <label class="form-label">Discount (%)</label>
-                                    <div class="row gx-2">
-                                        <input placeholder="%" type="number" id="discount" name="discount" class="form-control" min="0" max="99"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-6">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="text" id="price" name="price" class="form-control" required />
+                                    <input placeholder="₹" type="number" id="price" name="price" class="form-control" min="1" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-2">
+                                    <label class="form-label">Product Offer (%)</label>
+                                    <div class="row gx-2">
+                                        <input placeholder="%" type="number" id="product-offer" name="product-offer" class="form-control" min="0" max="99"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Stock</label>
-                                    <input placeholder="100" type="number" id="stock" name="stock" class="form-control" min="1"/>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-6">
                                 <label class="form-label">Category</label>
                                 <select class="form-select" name="category" id="category" required>
                                     <% categoryData.forEach(element=> { %>
                                         <option value="<%= element.name %>" <%=element.name===category ? 'selected' : '' %>><%= element.name %></option>    
                                     <% }); %>
                                 </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-4">
+                                    <label class="form-label">Stock</label>
+                                    <input placeholder="100" type="number" id="stock" name="stock" class="form-control" min="1" required/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -121,10 +113,12 @@
                     </div>
                     <div class="card-body">
                         <div class="input-upload">
-                            <div id="input-upload" ><img src="/admin/imgs/theme/upload.svg" alt=""   /></div>
+                            <div id="preview-container">
+                                <img src="/admin/imgs/theme/upload.svg" alt=""/>
+                            </div>
                             
-                            <input class="form-control" type="file" name="image" id="image-input" multiple required />
-                            <span id="imageError" class="text-danger" style="display:none;">You can only upload a maximum of 5 images.</span> 
+                            <input class="form-control" type="file" name="image" id="image" multiple accept=".webp, .jpg, .jpeg" required />
+                            <span id="image-error" class="text-danger" style="display:none;">You can only upload a maximum of 5 images.</span> 
                         </div>
                     </div>
                 </div>

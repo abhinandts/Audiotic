@@ -5,7 +5,6 @@
             <p>✏️ Add , 📝 Edit , and 🚮 Delete Products</p>
         </div>
         <div>
-
             <a href="/admin/newProduct" class="btn btn-primary btn-sm rounded">➕ Add new Product</a>
         </div>
     </div>
@@ -47,18 +46,20 @@
                     </div>
                     <div class="col-lg-3 col-sm-3 col-7 flex-grow-1 col-name">
                         <a class="itemside" href="/admin/editProduct/<%=x._id  %>">
-                            <div class="left"></div>
+                            <div class="left">
+                                <img src="/admin/productImages/<%=x.image[0]  %>" class="img-sm img-thumbnail" alt="Item">
+                            </div>
         
                             <div class="info">
                                 <h6 class="mb-0">
-                                    <%= x.productName %>
+                                    <%= x.name %>
                                 </h6>
                             </div>
                         </a>
                     </div>
                     <div class="col-lg-2 col-sm-2 col-4 col-price">
                         <span>
-                            <%=x.price%>
+                            ₹<%=x.price.toLocaleString("en-IN")%>
                         </span>
                     </div>
         
@@ -93,10 +94,7 @@
 
 
                     <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                        <a href="/admin/editProduct/<%- x._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                            📝 Edit
-                        </a>
-        
+
                         <% if(x.is_active){ %>
                         <a href="/admin/blockProduct/<%- x._id %>" class="btn btn-sm font-sm btn-light rounded">
                             🚮 &nbsp;&nbsp;Delete

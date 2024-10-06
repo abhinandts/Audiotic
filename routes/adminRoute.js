@@ -122,8 +122,8 @@ adminRoute.get("/dashboard", auth.isLogin, dashboardController.loadDashboard)
 // ---- category ----
 
 adminRoute.get("/category", auth.isLogin, categoryController.loadCategory)
-adminRoute.post("/addCategory", categoryController.addCategory)
-adminRoute.post('/api/category/checkName',categoryController.checkName)
+adminRoute.post("/addCategory", auth.isLogin, categoryController.addCategory)
+adminRoute.post('/api/category/checkName', categoryController.checkName)
 
 adminRoute.get("/disable/:categoryId", categoryController.disableCategory)
 
@@ -136,7 +136,7 @@ adminRoute.get("/products", auth.isLogin, productController.loadProducts)
 
 adminRoute.get("/newProduct", auth.isLogin, productController.newProduct)
 adminRoute.post("/newProduct", upload.array('image', 5), productController.addProduct)
-adminRoute.get("/api/product/checkName", productController.checkProductName)
+adminRoute.post("/api/product/checkName", productController.checkProductName)
 
 adminRoute.get("/blockProduct/:productId", productController.blockProduct)
 

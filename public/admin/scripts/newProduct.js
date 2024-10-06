@@ -1,111 +1,70 @@
 (function () {
-    "use strict";
-
-    let imageInput, nameInput, mrpInput, discountInput, priceInput, errorElement, previewContainer;
-
-    const croppedImages = new DataTransfer();
+    let nameInput, nameErrorSpan, imageInput, imageInputSpan, previewContainer,form;
+    let croppedImages = new DataTransfer();
+    let imageQueue = [];
+    let currentIndex = 0;
 
     function initializeElements() {
-        imageInput = document.getElementById("image-input");
-        nameInput = document.getElementById("productName");
-        mrpInput = document.getElementById('mrp')
-        discountInput = document.getElementById('discount')
-        priceInput = document.getElementById('price')
-        errorElement = document.getElementById('imageError');
-        previewContainer = document.getElementById('input-upload')
+        nameInput = document.getElementById('name');
+        nameErrorSpan = document.getElementById('name-error');
+        imageInput = document.getElementById('image');
+        imageInputSpan = document.getElementById('image-error');
+        previewContainer = document.getElementById('preview-container');
+        form = document.getElementById('form')
     }
 
     function initializeEventListeners() {
-        mrpInput.addEventListener('input', calculatePrice);
-        discountInput.addEventListener('input', calculatePrice);
-        imageInput.addEventListener("change", onImageInputChange);
         nameInput.addEventListener('blur', checkName);
-        form.addEventListener('submit', function () {
-            priceInput.disabled = false;
-        });
+        imageInput.addEventListener('change', checkImage);
+        form.addEventListener('submit',checkValidation);
     }
 
-    function calculatePrice() {
+    function checkValidation(event){
+        const nameError = nameErrorSpan.style.display === 'block';
+        const imageError = imageInputSpan.style.display === 'block' || croppedImages.files.length ===0;
 
-        const mrp = parseFloat(document.getElementById('mrp').value);
-        const discount = parseFloat(document.getElementById('discount').value)
-
-        if (!isNaN(mrp) && !isNaN(discount)) {
-            const discountedPrice = mrp - (mrp * (discount / 100))
-            priceInput.value = discountedPrice.toFixed()
-        } else {
-            priceInput.value = ''
+        if(nameError || imageError){
+            event.preventDefault();
+            alert("please make sure all fields are valid")
         }
     }
 
-    async function checkName() {
-        const productName = nameInput.value;
-        const response = await fetch(`/admin/api/product/checkName?name=${encodeURI(productName)}`)
-
-        const result = await response.json();
-
-        if (response.status === 409) {
-            const errorElement = document.getElementById("nameError");
-            errorElement.textContent = result.message;
-            errorElement.style.display = "block";
-
-            nameInput.classList.add("is-invalid");
-        } else {
-            const errorElement = document.getElementById("nameError");
-            errorElement.textContent = "";
-            errorElement.style.display = "none";
-
-            nameInput.classList.remove("is-invalid");
-        }
-    }
-
-    function onImageInputChange(event) {
-                    // imageInput.value = "";
+    async function checkImage(event) {
+        imageInputSpan.style.display = "none";
+        previewContainer.innerHTML = "";
 
         const files = event.target.files;
-
         if (files.length > 5) {
-            errorElement.textContent = `You can only upload 5 images`
-            errorElement.style.display = "block";
-            imageInput.value = "";
+            imageInputSpan.style.display = "block";
             return;
         }
 
-        errorElement.style.display = "none";
+        croppedImages = new DataTransfer(); 
+        imageQueue = Array.from(files);
+        currentIndex = 0;
 
-        previewContainer.innerHTML = "";
+        cropNextImage();
+    }
 
-        if (files.length > 0) {
-            // Process each file for cropping
-            Array.from(files).forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    displayImagePreview(e.target.result);
-                    handleImageCropping(e.target.result, file, index);
-                };
-                reader.readAsDataURL(file);
-            });
+    function cropNextImage() {
+        if (currentIndex < imageQueue.length) {
+            const file = imageQueue[currentIndex];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                handleImageCropping(e.target.result, file);
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            displayImagePreviews();
         }
     }
 
-    function displayImagePreview(imageSrc) {
-        // Create an image element to show the preview
-        const imgElement = document.createElement("img");
-        imgElement.src = imageSrc;
-        imgElement.classList.add("img-thumbnail", "preview-img");
-        imgElement.style.width = "100px";
-        imgElement.style.height = "100px";
-        imgElement.style.objectFit = "cover";
-        imgElement.style.marginRight = "10px";
-
-        // Append the image element to the preview container
-        previewContainer.appendChild(imgElement);
-    }
-
-
-    function handleImageCropping(imageSrc, file, index) {
+    function handleImageCropping(imageSrc, originalFile) {
         const cropperModal = document.createElement("div");
         cropperModal.classList.add("modal");
+        cropperModal.style.display = "flex";
 
         cropperModal.innerHTML = `
             <div class="modal-content">
@@ -118,7 +77,6 @@
         `;
 
         document.body.appendChild(cropperModal);
-
         const imageElement = cropperModal.querySelector("img");
         const cropper = new Cropper(imageElement, {
             aspectRatio: 1 / 1,
@@ -126,35 +84,85 @@
             autoCropArea: 1,
         });
 
-        const saveCropButton = cropperModal.querySelector(".save-crop");
-        saveCropButton.addEventListener("click", function () {
-            saveCroppedImage(cropper, file, cropperModal);
+        cropperModal.querySelector(".save-crop").addEventListener("click", function () {
+            saveCroppedImage(cropper, originalFile, cropperModal);
         });
 
-        const cancelCropButton = cropperModal.querySelector(".cancel-crop");
-        cancelCropButton.addEventListener("click", function () {
+        cropperModal.querySelector(".cancel-crop").addEventListener("click", function () {
             cropper.destroy();
             cropperModal.remove();
+            currentIndex++; 
+            cropNextImage(); 
         });
-
-        cropperModal.style.display = "flex";
     }
 
     function saveCroppedImage(cropper, originalFile, cropperModal) {
-        cropper
-            .getCroppedCanvas({
-                width: 1160,
-                height: 1160,
-            })
-            .toBlob(function (blob) {
-                const newFile = new File([blob], originalFile.name, { type: originalFile.type });
-                croppedImages.items.add(newFile); // Add to cropped images
-                imageInput.files = croppedImages.files; // Update the input field with all cropped images
+        cropper.getCroppedCanvas({
+            width: 1160,
+            height: 1160,
+        }).toBlob(function (blob) {
+            const newFile = new File([blob], originalFile.name, { type: originalFile.type });
+            croppedImages.items.add(newFile); 
+            imageInput.files = croppedImages.files;
 
-                // Close modal and clean up
-                cropper.destroy();
-                cropperModal.remove();
+            cropper.destroy();
+            cropperModal.remove();
+            currentIndex++; 
+            cropNextImage();
+        });
+    }
+
+    function displayImagePreviews() {
+        previewContainer.innerHTML = ""; 
+        const files = croppedImages.files;
+
+        Array.from(files).forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgElement = document.createElement("img");
+                imgElement.src = e.target.result;
+                imgElement.classList.add("img-thumbnail", "preview-img");
+                imgElement.style.width = "100px";
+                imgElement.style.height = "100px";
+                imgElement.style.objectFit = "cover";
+                imgElement.style.marginRight = "10px";
+                previewContainer.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function checkName() {
+        let name = nameInput.value.trim();
+
+        if (!(/^[A-Za-z0-9\s]+$/.test(name))) {
+            displayError("Only letters, numbers, and spaces are allowed.");
+            return;
+        }
+        let currentId = document.getElementById('product-Id') ? document.getElementById('product-id').value : null ;
+
+        try {
+            const response = await fetch('/admin/api/product/checkName',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({name,currentId})
             });
+            const result = await response.json();
+            if (result.exists) {
+                displayError(result.message);
+            } else {
+                displayError("");                
+            }
+        } catch (error) {
+            console.error(error);
+            displayError("Error checking product name.");
+
+        }
+    }
+
+    function displayError(message) {
+        nameErrorSpan.textContent = message;
+        nameErrorSpan.style.display = message ? 'block' : 'none';
     }
 
     function init() {
@@ -162,5 +170,5 @@
         initializeEventListeners();
     }
 
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener('DOMContentLoaded', init);
 })();

@@ -6,8 +6,6 @@
     function initializeElements() {
         nameInput = document.getElementById('category-name');
         formElement = document.getElementById('form'); 
-
-       
         errorContainer = document.createElement('div');
         nameInput.parentElement.appendChild(errorContainer);
     }
@@ -25,12 +23,13 @@
         if (!validateName(name)) {
             return;
         }
+        let currentId =document.getElementById('category-id') ? document.getElementById('category-id').value : null;
 
         try {
             let response = await fetch('/admin/api/category/checkName', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name })
+                body: JSON.stringify({ name,currentId })
             });
 
             let data = await response.json();
