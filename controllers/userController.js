@@ -265,19 +265,67 @@ const logout = async (req, res) => {
     }
 }
 
-
 // ---- /home -----------------------
+
+// const loadHome = async (req, res) => {
+//     try {
+//         const products = await Product.find({ is_active: true, stock: { $gt: 0 } }).populate('category', 'name')
+//         console.log(products)
+//         const banners = await Banner.find()
+
+//         res.render('home', { title: "Home", products, banners, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
+//     } catch (error) {
+//         console.log(error.message)
+//     }
+// }
 
 const loadHome = async (req, res) => {
     try {
-        const products = await Product.find({ is_active: true, stock: { $gt: 0 } }).populate('category', 'name')
-        const banners = await Banner.find()
+        const products = await Product.find({ is_active: true, stock: { $gt: 0 } })
+            .populate('category', 'name categoryOffer')
+            .select('name price image category offer')
 
-        res.render('home', { title: "Home", products, banners, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
+        const streamlinedProducts = products.map(product => {
+            const { name, price, image, category, offer: productOffer } = product;
+            const categoryOffer = category.categoryOffer || 0;
+            const categoryName = category.name;
+
+            let finalOffer = Math.max(productOffer, categoryOffer);
+            let offerPrice = null;
+            let offerApplied = null;
+
+            if (finalOffer > 0) {
+                offerPrice = price - (price * finalOffer / 100);
+                offerApplied = finalOffer === productOffer ? 'Product Offer' : 'Category Offer';
+            }
+
+            return {
+                name,
+                price,
+                image: image[0],
+                offerPrice,
+                offerApplied,
+                offer:finalOffer,
+                categoryName
+            };
+        });
+
+        const banners = await Banner.find();
+
+        res.render('home', {
+            title: "Home",
+            products: streamlinedProducts,
+            banners,
+            breadcrumb: "AUDIOTIC Home Page",
+            header: true,
+            smallHeader: false,
+            footer: true
+        });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
     }
-}
+};
+
 
 // ---- /productPage ----------------
 
