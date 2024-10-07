@@ -1,33 +1,27 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <%- include('../partials/style') %>
+    </head>
 
-<head>
-    <%- include('../partials/style') %>
-</head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/admin/scripts/toast.js"></script>
 
-<body>
-    <div class="screen-overlay"></div>
+    <body>
+        <div class="screen-overlay"></div>
 
-    <% if (sidebar) { %>
-        <%- include('../partials/sidebar') %>
-    <% } %>
-                <main class="main-wrap">
+        <% if (sidebar) { %> <%- include('../partials/sidebar') %> <% } %>
+        <main class="main-wrap">
+            <% if (header) { %> <%- include('../partials/header') %> <% } %>
 
-                    <% if (header) { %>
-                        <%- include('../partials/header') %>
-                    <% } %>
+            <!-- content-main // -->
+            <%- body %>
+            <!-- content-main end// -->
 
-                    <!-- content-main // -->
-                            <%- body %>
-                    <!-- content-main end// -->
+            <% if (footer) { %> <%- include('../partials/footer') %> <% } %>
+        </main>
 
-                    <% if (footer) { %>
-                        <%- include('../partials/footer') %>
-                    <% } %>
-
-                </main>
-
-    <%- include('../partials/script') %>
-</body>
-
+        <%- include('../partials/script') %>
+    </body>
 </html>

@@ -11,7 +11,7 @@ const Transaction = require('../models/transactionModel')
 const orderConfirmation = async (req, res) => {
     try {
         const order = await Orders.findOne({ orderId: req.params.orderId }).populate("products.product")
-        
+
         res.render('orderConfirmedPage', { order, header: true, smallHeader: false, breadcrumb: "order confirmed", footer: true })
     } catch (error) {
         console.error(error)
@@ -21,9 +21,9 @@ const orderConfirmation = async (req, res) => {
 const getOrders = async (req, res) => {
     try {
         const allOrders = await Orders.find({ user: req.session.userId })
-        .lean()
-        .sort({ createdAt: -1 });
-        
+            .lean()
+            .sort({ createdAt: -1 });
+
         if (!allOrders || allOrders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
         }
@@ -86,17 +86,7 @@ const trackOrder = async (req, res) => {
 
 const loadOrderPage = async (req, res) => {
     try {
-        const orders = await Orders.find({}, { orderId: 1, orderTotal: 1, createdAt: 1, orderStatus: 1, paymentStatus: 1 }).populate({ path: 'user', select: 'name email' })
-        orders.forEach(order => {
-            const date = new Date(order.createdAt);
-            const formattedDate = date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            order.formattedDate = formattedDate
-        });
-        res.render('orders', { orders, title: "Orders List", sidebar: true, header: true, footer: true })
+        res.render('orders', { title: "Orders List", sidebar: true, header: true, footer: true })
     } catch (error) {
         console.error("Error ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -153,9 +143,6 @@ const updateStatus = async (req, res) => {
         const id = req.body.orderId
         const orderStatus = req.body.orderStatus
 
-        console.log(id)
-        console.log(orderStatus)
-
         if (orderStatus === "Delivered") {
 
             await Orders.findByIdAndUpdate(id, { orderStatus: orderStatus, paymentStatus: "Paid" })
@@ -179,7 +166,6 @@ const cancelOrder = async (req, res) => {
         const reason = req.body.reason
 
         const order = await Orders.findById(id);
-        console.log(order._id)
 
         let updatedOrder
 
@@ -234,7 +220,6 @@ const returnOrder = async (req, res) => {
             wallet.money = wallet.money + order.orderTotal
             wallet.save()
         } else {
-            console.error(error)
             return res.status(404).json({ success: false, message: 'Wallet is not found' })
         }
 
@@ -256,7 +241,6 @@ const returnOrder = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error)
         return res.status(500).json({ success: false, message: "An error occured while returning the order" })
     }
 }
@@ -272,21 +256,7 @@ const salesPage = async (req, res) => {
         console.error(error)
     }
 }
-const loadSalesOrders = async (req, res) => {
-    try {
-        const orders = await Orders.find({ orderStatus: "Delivered" })
-            .populate({
-                path: 'user',          // Path to populate the 'user' field
-                select: 'email'        // Select only the 'email' field from the User model
-            })
-            .select('createdAt orderId paymentMethod paymentStatus orderTotal') // Select specific fields from the Orders model
-            .exec();
 
-        res.status(200).json(orders)
-    } catch (error) {
-        console.error(error)
-    }
-}
 
 const filter = async (req, res) => {
     try {
@@ -320,6 +290,31 @@ const filter = async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const filterBydDate = async (req, res) => {
+    try {
+        const { sDate, eDate } = req.body;
+
+        const orders = await Orders.find(
+            { orderStatus: "Delivered" },
+            {
+                createdAt: {
+                    $gte: new Date(sDate),
+                    $lte: new Date(eDate)
+                }
+            }).populate('user').populate({
+                path: 'user',
+                select: 'email'
+            }).select('createdAt orderId paymentMethod paymentStatus orderTotal')
+            .sort({ createdAt: -1 })
+            .lean()
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        res.status(500)
     }
 }
 
@@ -366,9 +361,8 @@ const getChartData = async (req, res) => {
         let returnedOrdersArray = new Array(12).fill(0);
 
         returnedOrdersPerMonth.forEach((order) => {
-            returnedOrdersArray[order._id.month - 1] = order.totalOrders; // -1 since month is 1-based
+            returnedOrdersArray[order._id.month - 1] = order.totalOrders;
         });
-
 
 
         const cancelledOrdersPerMonth = await Orders.aggregate([
@@ -391,11 +385,11 @@ const getChartData = async (req, res) => {
         });
 
 
-        const data = { labels, deliveredOrders: deliveredOrdersArray,returnedOrders:returnedOrdersArray,cancelledOrders:cancelledOrdersArray }
+        const data = { labels, deliveredOrders: deliveredOrdersArray, returnedOrders: returnedOrdersArray, cancelledOrders: cancelledOrdersArray }
 
         res.status(200).json(data)
     } catch (error) {
-
+        res.status(500)
     }
 }
 
@@ -408,8 +402,8 @@ module.exports = {
     updateStatus,
     getOrder,
     salesPage,
-    loadSalesOrders,
     filter,
+    filterBydDate,
     loadOrders,
 
     getChartData,

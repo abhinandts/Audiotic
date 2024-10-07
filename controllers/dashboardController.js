@@ -10,7 +10,6 @@ const loadDashboard = async (req, res) => {
         const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-        // Combine multiple aggregations into one call
         const orderStats = await Orders.aggregate([
             {
                 $facet: {
@@ -23,11 +22,11 @@ const loadDashboard = async (req, res) => {
                         { $count: "totalOrders" }
                     ],
                     totalMonthRevenue: [
-                        { 
-                            $match: { 
+                        {
+                            $match: {
                                 orderStatus: "Delivered",
                                 createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
-                            } 
+                            }
                         },
                         { $group: { _id: null, totalRevenue: { $sum: "$orderTotal" } } }
                     ]
@@ -134,17 +133,7 @@ const loadDashboard = async (req, res) => {
                 $limit: 3  // Limit the result to top 3 categories
             }
         ]);
-        
-        console.log(topSellingCategories);
-        
-        
 
-
-
-
-
-
-        
 
         // Separate the data from the aggregation result
         const totalRevenue = orderStats[0].totalRevenue.length > 0 ? orderStats[0].totalRevenue[0].totalRevenue : 0;
@@ -155,11 +144,8 @@ const loadDashboard = async (req, res) => {
         const totalProducts = await Products.countDocuments();
         const totalCategories = await Categories.countDocuments();
 
-        const latestUsers = await Users.find({},{name:1,email:1}).sort({_id:-1}).limit(3)
+        const latestUsers = await Users.find({}, { name: 1, email: 1 }).sort({ _id: -1 }).limit(3)
 
-  
-
-        // Render the dashboard view with fetched data
         res.render('dashboard', {
             totalRevenue,
             totalOrders,

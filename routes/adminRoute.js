@@ -7,8 +7,6 @@ const mongoose = require("mongoose")
 
 const fs = require('fs');
 
-const Toastify = require('toastify-js'); // Import Toastify
-
 const adminRoute = express()
 
 // Database connection
@@ -117,7 +115,9 @@ adminRoute.get("/blockUser/:userId", auth.isLogin, adminController.blockUser)
 // ---- dashboard ----
 
 adminRoute.get("/dashboard", auth.isLogin, dashboardController.loadDashboard)
-
+adminRoute.get('/api/dashboard/getChartData', orderController.getChartData)
+adminRoute.get('/api/dashboard/value', orderController.filter)
+adminRoute.post('/api/dashboard/filterByDate', orderController.filterBydDate);
 
 // ---- category ----
 
@@ -149,14 +149,6 @@ adminRoute.get("/orders", auth.isLogin, orderController.loadOrderPage)
 adminRoute.get('/showOrder/:orderId', orderController.showOrder)
 adminRoute.post('/api/orders/updateOrderStatus', orderController.updateStatus)
 adminRoute.get('/api/orders/loadOrders', orderController.loadOrders)
-
-// ---- sales ----
-
-adminRoute.get('/sales', auth.isLogin, orderController.salesPage)
-adminRoute.get('/api/sales/getSalesOrders', orderController.loadSalesOrders)
-adminRoute.get('/api/sales/value', orderController.filter)
-
-adminRoute.get('/api/dashboard/getChartData', orderController.getChartData)
 
 // ---- coupons ----
 
