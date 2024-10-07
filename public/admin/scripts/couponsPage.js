@@ -33,11 +33,10 @@
                 body: JSON.stringify({ couponId })
             });
             if (response.ok) {
-                // await fetchAndLoadCoupons();
                 window.location.reload();
             } else {
                 const errorData = await response.json()
-                console.log(errorData)
+                showToast(errorData,"error")
             }
         } catch (error) {
             console.error(error)
@@ -77,7 +76,7 @@
                 showError(createBtn, error.message || "Failed to create coupon");
             } else {
                 const result = await response.json();
-                console.log('Coupon created successfully:', result);
+                showToast("Coupon created","success")
                 window.location.reload();
             }
         } catch (error) {
