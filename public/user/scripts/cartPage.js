@@ -17,7 +17,6 @@
         cartTable.addEventListener("click", handleCartBodyClick);
         checkoutBtn.addEventListener('click',proceedToCheckout);
     }
-
     async function proceedToCheckout(){
         let checkoutUrl = '/checkout';
 
@@ -115,30 +114,30 @@
         productRow.className = 'productRow';
         productRow.innerHTML = `
                                     <td class="image product-thumbnail">
-                                        <img src="/admin/productImages/${element.product.image[0]}" alt="#">
+                                        <img src="/admin/productImages/${element.image}" alt="#">
                                     </td>
                                     <td class="product-des product-name">
                                         <h5 class="product-name">
-                                            <a href="/productPage?productId=${element.product._id}">
-                                                ${element.product.productName}
+                                            <a href="/productPage?productId=${element._id}">
+                                                ${element.name}
                                             </a>
                                         </h5>
                                     </td>
                                     <td class="price" data-title="Price">
                                         <span>
-                                            ₹${element.product.price.toLocaleString("en-IN")} 
+                                            ₹${element.offerPrice.toLocaleString("en-IN")}
                                         </span>
                                     </td>
                                     <td class="text-center" data-title="Stock">
                                         <div class="detail-qty border radius  m-auto" style="display:flex; flex-direction: row; justify-content: center;">
 
-                                            <button type="button" style="flex: 1; background: none; border: none; cursor: pointer; padding: 2px;" class="qty-down" data-product-id="${element.product._id}" aria-label="Decrease quantity">
+                                            <button type="button" style="flex: 1; background: none; border: none; cursor: pointer; padding: 2px;" class="qty-down" data-product-id="${element._id}" aria-label="Decrease quantity">
                                                 <i class="fi-rs-minus-small" aria-hidden="true"></i>
                                             </button>
     
                                             <span style="flex: 1; margin-left: 10%; margin-right: 10%;" class="qty-val">${element.quantity}</span>
     
-                                            <button style="flex: 1; background: none; border: none; cursor: pointer; padding: 2px;" type="button" class="qty-up" data-product-id="${element.product._id}" aria-label="Increase quantity">
+                                            <button style="flex: 1; background: none; border: none; cursor: pointer; padding: 2px;" type="button" class="qty-up" data-product-id="${element._id}" aria-label="Increase quantity">
                                                 <i class="fi-rs-plus-small" aria-hidden="true"></i>
                                             </button>
 
@@ -149,7 +148,7 @@
                                     </td>
 
                                      <td class="action" data-title="Remove">
-                                        <a href="#" class="text-muted delete-product" data-product-id="${element.product._id}">
+                                        <a href="#" class="text-muted delete-product" data-product-id="${element._id}">
                                             <i class="fi-rs-trash"></i>
                                         </a>
                                     </td>

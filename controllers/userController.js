@@ -267,18 +267,6 @@ const logout = async (req, res) => {
 
 // ---- /home -----------------------
 
-// const loadHome = async (req, res) => {
-//     try {
-//         const products = await Product.find({ is_active: true, stock: { $gt: 0 } }).populate('category', 'name')
-//         console.log(products)
-//         const banners = await Banner.find()
-
-//         res.render('home', { title: "Home", products, banners, breadcrumb: "AUDIOTIC Home Page", header: true, smallHeader: false, footer: true })
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// }
-
 const loadHome = async (req, res) => {
     try {
         const products = await Product.find({ is_active: true, stock: { $gt: 0 } })
@@ -286,7 +274,7 @@ const loadHome = async (req, res) => {
             .select('name price image category offer')
 
         const streamlinedProducts = products.map(product => {
-            const { name, price, image, category, offer: productOffer } = product;
+            const { _id,name, price, image, category, offer: productOffer } = product;
             const categoryOffer = category.categoryOffer || 0;
             const categoryName = category.name;
 
@@ -300,6 +288,7 @@ const loadHome = async (req, res) => {
             }
 
             return {
+                _id,
                 name,
                 price,
                 image: image[0],
@@ -325,7 +314,6 @@ const loadHome = async (req, res) => {
         console.log(error.message);
     }
 };
-
 
 // ---- /productPage ----------------
 
