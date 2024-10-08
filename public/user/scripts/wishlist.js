@@ -1,7 +1,3 @@
-// const { default: Swal } = require("sweetalert2");
-
-// const { addToCart } = require("../../../controllers/cartController");
-
 (function () {
 
     let wishlistTable, wishlistProducts, wholeBody;
@@ -112,7 +108,7 @@
         productRow.innerHTML = `
                                 <td class="image"><img src="/admin/productImages/${element.product.image[0]}" alt="#"></td>
                                 <td class="product-des">
-                                    <h5 class="product-name"><a href="/productPage?productId=${element.product._id}">${element.product.productName} </a></h5>
+                                    <h5 class="product-name"><a href="/productPage?productId=${element.product._id}">${element.product.name} </a></h5>
                                      <p class="font-xs"></p>
                                 </td>
                                 <td class="price" data-title="Price">
@@ -147,30 +143,6 @@
                             `
     }
 
-    function showToast(message, type) {
-        let backgroundColor;
-        switch (type) {
-            case 'success':
-                backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
-                break;
-            case 'error':
-                backgroundColor = "linear-gradient(to right, #ff5f6d, #ffc371)";
-                break;
-            case 'warning':
-                backgroundColor = "linear-gradient(to right, #f39c12, #e67e22)";
-                break;
-            default:
-                backgroundColor = "linear-gradient(to right, #3498db, #2980b9)";
-        }
-        Toastify({
-            text: message,
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            backgroundColor: type === 'success' ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
-        }).showToast();
-    }
     function init() {
         initializeElements();
         initializeEventListeners();

@@ -340,14 +340,12 @@ const loadProducts = async (req, res) => {
         let breadcrumb, products;
         const categoryId = req.query.categoryId;
         
-        // Pagination variables
-        const page = parseInt(req.query.page) || 1; // default to page 1
-        const limit = parseInt(req.query.limit) || 6; // default limit (10 products per page)
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 6; 
         const skip = (page - 1) * limit;
 
         let query = { is_active: true };
 
-        // If a category filter is applied
         if (categoryId) {
             query.category = categoryId;
             breadcrumb = await Category.find({ name: 1 });
@@ -355,19 +353,16 @@ const loadProducts = async (req, res) => {
             breadcrumb = "All Products";
         }
 
-        // Find the products based on the query with pagination
         products = await Product.find(query)
             .populate('category', 'name')
             .skip(skip)
             .limit(limit);
 
-        // Get total count for pagination
         const totalProducts = await Product.countDocuments(query);
         const totalPages = Math.ceil(totalProducts / limit);
 
         const categories = await Category.find({ is_active: true }, { name: 1 });
 
-        // Send the products, categories, breadcrumb, pagination info to the frontend
         res.render('products', {
             products,
             categories,
@@ -389,8 +384,8 @@ const searchProducts = async (req, res) => {
     try {
         const searchTerm = req.query.q;
         const products = await Product.find({
-            productName: { $regex: searchTerm, $options: 'i' },  // Case-insensitive search
-            is_active: true  // Ensure only active products are returned
+            name: { $regex: searchTerm, $options: 'i' },
+            is_active: true 
         }).populate('category');
 
         res.json(products);

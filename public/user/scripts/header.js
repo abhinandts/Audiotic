@@ -80,8 +80,8 @@
                 <img class="default-img" src="/admin/productImages/${product.image[0]}" alt="${product.productName}">
             </div>
             <div  class="product-info">
-                <span class="product-name">${product.productName}</span>
-                <p class="product-price">Category: ₹${product.category.name}</p>
+                <span class="product-name">${product.name}</span>
+                <p class="product-price">Category: ${product.category.name}</p>
             </div>
         `;
         productItem.addEventListener('click', () => getProduct(product._id));
@@ -91,7 +91,7 @@
     async function getProduct(id) {
         try {
             const response = await fetch(`/productPage?productId=${id}`)
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error('Failed to fetch product');
             }
             window.location.href = response.url;

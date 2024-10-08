@@ -1,6 +1,6 @@
 (function () {
     let coupons = [];
-    let cartTable, wholeBody, cartSubtotalSpan, shippingCharge, totalSpan,checkoutBtn;
+    let cartTable, wholeBody, cartSubtotalSpan, shippingCharge, totalSpan, checkoutBtn;
     let selectedCoupon = null;
     let currentCart = null;
 
@@ -15,13 +15,13 @@
 
     function initializeEventListeners() {
         cartTable.addEventListener("click", handleCartBodyClick);
-        checkoutBtn.addEventListener('click',proceedToCheckout);
+        checkoutBtn.addEventListener('click', proceedToCheckout);
     }
-    async function proceedToCheckout(){
+    async function proceedToCheckout() {
         let checkoutUrl = '/checkout';
 
-        if(selectedCoupon){
-            checkoutUrl +=`?couponId=${selectedCoupon._id}`;
+        if (selectedCoupon) {
+            checkoutUrl += `?couponId=${selectedCoupon._id}`;
         }
         window.location.href = checkoutUrl;
     }
@@ -54,13 +54,13 @@
                     checkbox.checked = false;
                 }
             });
-    
+
             if (event.target.checked) {
                 selectedCoupon = coupons.find(coupon => coupon._id === event.target.value);
             } else {
                 selectedCoupon = null;
             }
-    
+
             updateCartTotals(currentCart);
         }
     }
@@ -71,14 +71,14 @@
                 fetch('/api/cart/getProducts'),
                 fetch('/api/coupons/getCoupons')
             ]);
-    
+
             if (!cartResponse.ok || !couponsResponse.ok) {
                 throw new Error('Failed to fetch data');
             }
-    
+
             currentCart = await cartResponse.json();
             const coupons = await couponsResponse.json();
-    
+
             if (!currentCart || !currentCart.cartProducts || currentCart.cartProducts.length === 0) {
                 showEmptyPage();
             } else {
@@ -222,7 +222,6 @@
                 const data = await response.json();
                 console.log("Product deleted Successfully", data);
 
-                // Instead of reloading the page, update the cart
                 await fetchAndUpdateCart();
                 showToast("Product removed from cart", "success");
 
@@ -277,30 +276,6 @@
             console.error(error);
             showToast('Failed to update quantity', error);
         }
-    }
-    function showToast(message, type) {
-        let backgroundColor;
-        switch (type) {
-            case 'success':
-                backgroundColor = "linear-gradient(to right, #00b09b, #96c93d)";
-                break;
-            case 'error':
-                backgroundColor = "linear-gradient(to right, #ff5f6d, #ffc371)";
-                break;
-            case 'warning':
-                backgroundColor = "linear-gradient(to right, #f39c12, #e67e22)";
-                break;
-            default:
-                backgroundColor = "linear-gradient(to right, #3498db, #2980b9)";
-        }
-        Toastify({
-            text: message,
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            backgroundColor: type === 'success' ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #ff5f6d, #ffc371)",
-        }).showToast();
     }
 
     function init() {
