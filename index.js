@@ -1,4 +1,4 @@
-require("dotenv").config();
+const config = require("./config/env");
 const express = require("express");
 const nocache = require("nocache");
 const mongoose = require("mongoose");
@@ -10,7 +10,7 @@ const app = express();
 
 // Database connection
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(config.mongoURI)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Unified session middleware with role-based separation
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -100,7 +100,7 @@ app.use((err, req, res, next) => {
   res.status(500).send("Internal server error");
 });
 
-const PORT = process.env.PORT;
+const PORT = config.port;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}/`);
 });
