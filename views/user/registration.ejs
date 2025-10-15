@@ -1,4 +1,3 @@
-<script src="https://apis.google.com/js/platform.js" async defer></script>
 
 <section class="pt-100 pb-150 ">
     <div class="container">
@@ -38,24 +37,21 @@
 
                             </div>
                             <div class="form-group">
-                                <input required="" type="password" name="password" id="password" name="password"
-                                    placeholder="Password" onkeyup="checkPasswords()">
+                                <input required="" type="password" name="password" id="password"
+                                    placeholder="Password" onkeyup="checkPasswords()"> 
                             </div>
                             <div class="form-group">
                                 <input required="" type="password" name="confirmPassword" id="confirmPassword"
                                     placeholder="Confirm Password" onkeyup="checkPasswords();">
-                                <!-- value="Hello123" -->
                                 <span id="passwordErr" style="color: crimson;"></span>
                             </div>
-                            <div class="p">
-                                <div class="">
-                                    <div class="">
-                                        <input class="form-check-input" type="checkbox" name="showPassword"
-                                            id="showPassword" onclick="passwordVisibility();">
-                                        <label class="form-check-label" for="exampleCheckbox12"><span>Show
-                                                Password</span></label>
-                                    </div>
-                                </div>
+                            <div>
+
+                                <input class="form-check-input" type="checkbox" name="showPassword"
+                                    id="showPassword" onclick="passwordVisibility()">
+                                <label class="form-check-label" for="exampleCheckbox12">
+                                    <span>Show password</span></label>
+
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-fill-out btn-block hover-up" id="register"
@@ -82,152 +78,4 @@
     </div>
 </section>
 
-<script>
-
-    let passwordInput = document.getElementById('password');
-    let confirmPasswordInput = document.getElementById('confirmPassword');
-
-    document.addEventListener('DOMContentLoaded', function () {
-        let form = document.getElementById('form');
-        let usernameInput = document.getElementById('userName');
-        let emailInput = document.getElementById('email');
-        let numberInput = document.getElementById('mNumber');
-        let submitButton = document.getElementById('register');
-
-        // Disable the submit button by default
-        submitButton.disabled = true;
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (validateInputs()) {
-                form.submit(); // submit the form if all inputs are valid
-            }
-        });
-
-        function validateInputs() {
-            let isUsernameValid = validateUserName();
-            let isEmailValid = validateEmail();
-            let isNumberValid = validateNumber();
-            let arePasswordsValid = checkPasswords();
-
-            // Enable or disable the submit button based on validation results
-            if (isUsernameValid && isEmailValid && isNumberValid && arePasswordsValid) {
-                submitButton.disabled = false;
-            } else {
-                submitButton.disabled = true;
-            }
-
-            return isUsernameValid && isEmailValid && isNumberValid && arePasswordsValid;
-        }
-
-        function validateUserName() {
-            let username = usernameInput.value.trim();
-            let userNameErr = document.getElementById('userNameErr');
-            let regex = /^[a-zA-Z]{4,12}$/;
-
-            if (username.length === 0) {
-                userNameErr.innerHTML = "Please enter Username (a-z/A-Z)";
-                usernameInput.style.borderColor = "red";
-                return false;
-            } else if (!regex.test(username)) {
-                userNameErr.innerHTML = "Username should have 4-12 characters";
-                usernameInput.style.borderColor = "red";
-                return false;
-            } else {
-                usernameInput.style.borderColor = "green";
-                userNameErr.innerHTML = "";
-                return true;
-            }
-        }
-
-        function validateEmail() {
-            let email = emailInput.value.trim();
-            let emailErr = document.getElementById('emailErr');
-            let regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-
-            if (email.length === 0) {
-                emailErr.innerHTML = "Please enter valid email";
-                emailInput.style.borderColor = "red";
-                return false;
-            } else if (!regex.test(email)) {
-                emailErr.innerHTML = "Please enter a valid email address from the domain gmail.com";
-                emailInput.style.borderColor = "red";
-                return false;
-            } else {
-                emailInput.style.borderColor = "green";
-                emailErr.innerHTML = "";
-                return true;
-            }
-        }
-
-        function validateNumber() {
-            let number = numberInput.value.trim();
-            let err = document.getElementById('mNumberErr');
-            let regex = /^[0-9]{10}$/;
-
-            if (number.length === 0) {
-                err.innerHTML = "please enter 10 digits.";
-                numberInput.style.borderColor = "red";
-                return false;
-            } else if (!regex.test(number)) {
-                err.innerHTML = "Please enter valid 10-digit phone number";
-                numberInput.style.borderColor = "red";
-                return false;
-            } else {
-                numberInput.style.borderColor = "green";
-                err.innerHTML = "";
-                return true;
-            }
-        }
-
-        function checkPasswords() {
-            let password = passwordInput.value.trim();
-            let confirmPassword = confirmPasswordInput.value.trim();
-            let err = document.getElementById('passwordErr');
-            let regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-            if (password.length < 8) {
-                err.innerHTML = "Passwords should be at least 8 characters long";
-                passwordInput.style.borderColor = "red";
-                confirmPasswordInput.style.borderColor = "red";
-                return false;
-            } else if (password !== confirmPassword) {
-                err.innerHTML = "Passwords don't match";
-                passwordInput.style.borderColor = "red";
-                confirmPasswordInput.style.borderColor = "red";
-                return false;
-            } else if (!regex.test(password)) {
-                err.innerHTML = "Your password should include at least 8 characters, one letter, and one number.";
-                passwordInput.style.borderColor = "red";
-                confirmPasswordInput.style.borderColor = "red";
-                return false;
-            } else {
-                passwordInput.style.borderColor = "green";
-                confirmPasswordInput.style.borderColor = "green";
-                err.innerHTML = "";
-                return true;
-            }
-        }
-
-        function updateSubmitButton() {
-            // Revalidate inputs and update submit button state
-            validateInputs();
-        }
-
-        usernameInput.addEventListener('input', updateSubmitButton);
-        emailInput.addEventListener('input', updateSubmitButton);
-        numberInput.addEventListener('input', updateSubmitButton);
-        passwordInput.addEventListener('input', updateSubmitButton);
-        confirmPasswordInput.addEventListener('input', updateSubmitButton);
-    });
-
-    function passwordVisibility() {
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            confirmPasswordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-            confirmPasswordInput.type = "password";
-        }
-    }
-</script>
+<script src="/scripts/registration.js"></script>

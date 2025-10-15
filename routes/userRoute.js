@@ -16,12 +16,12 @@ const checkoutController = require('../controllers/checkoutController')
 const walletController = require('../controllers/walletController')
 
 // Auth routes
-userRoute.get("/register", check.isLoggedOut, userController.loadRegister)
+userRoute.get("/register", userController.loadRegister)
 userRoute.post('/register', userController.insertUser)
 
-userRoute.get('/verify_otp', check.isLoggedOut, userController.verifyOtp)
+userRoute.get('/verifyOtp', userController.verifyOtp)
 userRoute.post('/verifyOtp', userController.compareOtp)
-userRoute.get('/api/resendOtp', userController.resendOtp)
+userRoute.post('/api/resendOtp', userController.resendOtp)
 
 userRoute.get('/forgotPassword', check.isLoggedOut, userController.loadForgotPassword)
 userRoute.post('/api/checkUser', userController.checkEmail)
